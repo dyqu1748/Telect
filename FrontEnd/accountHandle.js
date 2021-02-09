@@ -9,7 +9,7 @@ firebase.auth().onAuthStateChanged(function(user) {
 
     if(user != null){
       // Change elements for signed in user.
-    var email_id = user.email;
+      location.replace("index.html");
     }
 
   } else {
@@ -67,20 +67,20 @@ function create_account(){
 		verify_email();
 
     // Need to test below for functionality
-    var db = firebase.database().ref();
-    var user = firebase.auth().currentUser;
-    var allUsers = db.child('users');
+    // var db = firebase.database().ref();
+    // var user = firebase.auth().currentUser;
+    // var allUsers = db.child('users');
 
-    allUsers.child(user.uid).set({
-      "email": user.email,
-      "first_name": fName,
-      "last_name": lName,
-      "phone": phone,
-      "address": address,
-      "apartment_info": apartmentInfo,
-      "city": city,
-      "state": state
-    })
+    // allUsers.child(user.uid).set({
+    //   "email": user.email,
+    //   "first_name": fName,
+    //   "last_name": lName,
+    //   "phone": phone,
+    //   "address": address,
+    //   "apartment_info": apartmentInfo,
+    //   "city": city,
+    //   "state": state
+    // })
     // ---
 	})
 	.catch(function(error) {
@@ -98,7 +98,7 @@ function create_account(){
 //Log user out and refresh page to diplay correct elements
 function logout(){
   firebase.auth().signOut();
-  location.reload();
+  location.replace("sign_in.html");
 }
 
 function verify_email(){
