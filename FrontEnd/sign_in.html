@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Telect - Sign In</title>
+</head>
+<body>
+
+<div id="login_div" class="signin">
+                
+    <div class="form-label-group">
+        <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required>
+        <label for="inputEmail">Email address</label>
+    </div>
+
+    <div class="form-label-group">
+        <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+        <label for="inputPassword">Password</label>
+    </div>
+
+    <button class="btn btn-lg btn-primary btn-block text-uppercase" onclick="login()">Sign In</button>
+    <a class="d-block text-center mt-2 small" href="reset_pw.html">Forgot Password?</a>
+    <a class="d-block text-center mt-2 small" href="register.html">Register Here</a>
+</div>
+
+<div id="user_div">
+<p>You will be redirected to the home page momentarily. Please wait. If you are not redirected back to the home page, please <a href="index.html">click here.</a></a></p>              
+</div>
+
+<script src="accountHandle.js"></script>
+<script>
+		  // Initialize Firebase
+		  var config = {
+			apiKey: ,
+			authDomain: ,
+			databaseURL: ,
+			projectId: ,
+			storageBucket: ,
+			messagingSenderId: 
+			};
+		firebase.initializeApp(config);
+  </script>
+
+</body>
+</html>

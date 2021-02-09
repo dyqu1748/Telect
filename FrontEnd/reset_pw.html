@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Telect - Reset Password</title>
+</head>
+<body>
+
+<div id="login_div" class="signin">
+                
+    <div class="form-label-group">
+        <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required>
+        <label for="inputEmail">Email address</label>
+    </div>
+
+    <button class="btn btn-lg btn-primary btn-block text-uppercase" onclick="resetPassword()">Reset Password</button>
+    <a class="d-block text-center mt-2 small" href="sign_in.html">Sign in</a>
+    </div>
+
+    <div id="user_div">
+    <p>A password reset email has been sent. Please check your inbox to reset your email.</p>
+    <a class="d-block text-center mt-2" href="sign_in.html">Sign in</a>              
+    </div>
+        
+</div>
+
+<script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "",
+      authDomain: "",
+      databaseURL: "",
+      projectId: "",
+      storageBucket: "",
+      messagingSenderId: ""
+      };
+  firebase.initializeApp(config);
+</script>
+<script src="accountHandle.js"></script>
+
+</body>
+</html>
+ 
+ 
+ 
