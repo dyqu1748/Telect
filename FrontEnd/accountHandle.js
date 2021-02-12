@@ -59,29 +59,36 @@ function create_account(){
   var lName  = document.getElementById("lName").value;
   var phone = document.getElementById("phone").value;
   var address = document.getElementById("address").value;
-  var apartmentInfo = document.getElementById("apartmentInfo").value;
+  // var apartmentInfo = document.getElementById("apartmentInfo").value;
   var city = document.getElementById("city").value;
   var state = document.getElementById("state").value;
-		
+  var minSession = document.getElementById("minSession").value;
+  var maxSession = document.getElementById("maxSession").value;
+  // var childName = document.getElementById("childName").value;
+  var grade = document.getElementById("grade").value;
+		 
 	firebase.auth().createUserWithEmailAndPassword(userEmail, userPass).then(function() {
 		verify_email();
 
     // Need to test below for functionality
-    // var db = firebase.database().ref();
-    // var user = firebase.auth().currentUser;
-    // var allUsers = db.child('users');
+    var db = firebase.database().ref();
+    var user = firebase.auth().currentUser;
+    var allUsers = db.child('users');
 
-    // allUsers.child(user.uid).set({
-    //   "email": user.email,
-    //   "first_name": fName,
-    //   "last_name": lName,
-    //   "phone": phone,
-    //   "address": address,
-    //   "apartment_info": apartmentInfo,
-    //   "city": city,
-    //   "state": state
-    // })
+    allUsers.child(user.uid).set({
+      "email": user.email,
+      "first_name": fName,
+      "last_name": lName,
+      "phone": phone,
+      "address": address,
+      "city": city,
+      "state": state,
+      "minSession": minSession,
+      "maxSession": maxSession,
+      "grade": grade
+    })
     // ---
+    setTimeout(() => {  location.replace("sign_in.html"); }, 1000);
 	})
 	.catch(function(error) {
 	  // Handle Errors here.

@@ -19,7 +19,7 @@
 
     <button class="btn btn-lg btn-primary btn-block text-uppercase" onclick="login()">Sign In</button>
     <a class="d-block text-center mt-2 small" href="reset_pw.html">Forgot Password?</a>
-    <a class="d-block text-center mt-2 small" href="register.html">Register Here</a>
+    <a class="d-block text-center mt-2 small" href="register_parent.html">Register Here</a>
 </div>
 
 <div id="user_div">
@@ -33,6 +33,7 @@
 
 <!-- Add Firebase products that you want to use -->
 <script src="https://www.gstatic.com/firebasejs/8.2.6/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.2.6/firebase-database.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.2.6/firebase-firestore.js"></script>
 <script>
     // Initialize Firebase
@@ -40,12 +41,9 @@
     var config = {
         apiKey: "AIzaSyC_RpCqU1yIDiyhEBadqOL-ph09x-7wzJg",
         authDomain: "telect-6026a.firebaseapp.com",
-        projectId: "telect-6026a",
-        storageBucket: "telect-6026a.appspot.com",
-        messagingSenderId: "193710214424",
-        appId: "1:193710214424:web:d0269dce35f3a81b53226d",
-        measurementId: "G-GBP3LB0T8V"
-        };
+        databaseURL: "https://telect-6026a-default-rtdb.firebaseio.com/",
+        storageBucket: "telect-6026a.appspot.com"
+    };
   firebase.initializeApp(config);
 </script>
 <script src="accountHandle.js"></script>
