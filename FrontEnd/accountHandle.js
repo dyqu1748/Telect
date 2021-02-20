@@ -52,22 +52,14 @@ function resetPassword(){
   });
 }
 
-function create_account(){
-	var userEmail = document.getElementById("inputEmail").value;
-	var userPass = document.getElementById("inputPassword").value;
-  var fName = document.getElementById("fName").value;
-  var lName  = document.getElementById("lName").value;
-  var phone = document.getElementById("phone").value;
-  var address = document.getElementById("address").value;
-  // var apartmentInfo = document.getElementById("apartmentInfo").value;
-  var city = document.getElementById("city").value;
-  var state = document.getElementById("state").value;
+function create_account_parent(basicInfo){
   var minSession = document.getElementById("minSession").value;
   var maxSession = document.getElementById("maxSession").value;
-  // var childName = document.getElementById("childName").value;
+  var childName = document.getElementById("childName").value;
   var grade = document.getElementById("grade").value;
-		 
-	firebase.auth().createUserWithEmailAndPassword(userEmail, userPass).then(function() {
+  var subjects = $('#subjects').val()
+ 
+	firebase.auth().createUserWithEmailAndPassword(basicInfo[0], basicInfo[1]).then(function() {
 		verify_email();
 
     // Need to test below for functionality
@@ -77,18 +69,64 @@ function create_account(){
 
     allUsers.child(user.uid).set({
       "email": user.email,
-      "first_name": fName,
-      "last_name": lName,
-      "phone": phone,
-      "address": address,
-      "city": city,
-      "state": state,
+      "first_name": basicInfo[2],
+      "last_name": basicInfo[3],
+      "phone": basicInfo[4],
+      "address": basicInfo[5],
+      "apartment_info": basicInfo[6],
+      "city": basicInfo[7],
+      "state": basicInfo[8],
       "minSession": minSession,
       "maxSession": maxSession,
-      "grade": grade
+      "child_name": childName,
+      "grade": grade,
+      "subjects": subjects
     })
     // ---
-    setTimeout(() => {  location.replace("sign_in.html"); }, 1000);
+    setTimeout(() => {  logout(); }, 1000);
+	})
+	.catch(function(error) {
+	  // Handle Errors here.
+	  var errorCode = error.code;
+	  var errorMessage = error.message;
+	  
+	  window.alert("Error : " + errorMessage);
+
+		// ...
+  
+});
+}
+
+function create_account_tutor(basicInfo){
+  var minSession = document.getElementById("minSession").value;
+  var grades = $('#grade').val();
+  var subjects = $('#subjects').val()
+  var bio = document.getElementById("bio").value;
+ 
+  firebase.auth().createUserWithEmailAndPassword(basicInfo[0], basicInfo[1]).then(function() {
+		verify_email();
+
+    // Need to test below for functionality
+    var db = firebase.database().ref();
+    var user = firebase.auth().currentUser;
+    var allUsers = db.child('users');
+
+    allUsers.child(user.uid).set({
+      "email": user.email,
+      "first_name": basicInfo[2],
+      "last_name": basicInfo[3],
+      "phone": basicInfo[4],
+      "address": basicInfo[5],
+      "apartment_info": basicInfo[6],
+      "city": basicInfo[7],
+      "state": basicInfo[8],
+      "minSession": minSession,
+      "grade": grades,
+      "subjects": subjects,
+      "bio": bio
+    })
+    // ---
+    setTimeout(() => {  logout(); }, 1000);
 	})
 	.catch(function(error) {
 	  // Handle Errors here.
@@ -118,7 +156,7 @@ user.sendEmailVerification().then(function() {
 });
 }
 
-function newaccount() {
+function newaccount(account_type) {
 	var pass1 = document.getElementById("inputPassword").value;
 	var pass2 = document.getElementById("inputConfirmPassword").value;
 	var good = true;
@@ -128,7 +166,22 @@ function newaccount() {
 	}
 	else
 	{
-		create_account();
+    var userEmail = document.getElementById("email").value;
+    var userPass = document.getElementById("inputPassword").value;
+    var fname = document.getElementById("fname").value;
+    var lname  = document.getElementById("lname").value;
+    var phone = document.getElementById("phone").value;
+    var address = document.getElementById("address").value;
+    var city = document.getElementById("city").value;
+    var apartmentInfo = document.getElementById("apartmentInfo").value;
+    var state = document.getElementById("state").value;
+    var basicInfo = [userEmail,userPass,fname,lname,phone,address,apartmentInfo,city,state]
+    if (account_type == "parent"){
+      create_account_parent(basicInfo);
+    }
+    else{
+      create_account_tutor(basicInfo);
+    }
 	}
-	return good;
+	return false;
 }
