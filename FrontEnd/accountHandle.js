@@ -6,7 +6,6 @@ firebase.auth().onAuthStateChanged(function(user) {
     document.getElementById("login_div").style.display = "none";
 
     var user = firebase.auth().currentUser;
-
     if(user != null){
       // Change elements for signed in user.
       location.replace("index.html");
@@ -14,7 +13,6 @@ firebase.auth().onAuthStateChanged(function(user) {
 
   } else {
     // No user is signed in. Display appropriate elements.
-
   }
 });
 

@@ -2,28 +2,52 @@
 <html>
 <head>
 <title>Telect - Sign In</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <body>
 
-<div id="login_div" class="signin">
+<div id="login_div" class="container-fluid">
                 
-    <div class="form-label-group">
-        <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required>
-        <label for="inputEmail">Email address</label>
+    <div class="form-group row">
+        <div class="col-md-6">
+            <label for="inputEmail">Email address</label>
+            <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required>
+        </div>
     </div>
 
-    <div class="form-label-group">
-        <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
-        <label for="inputPassword">Password</label>
+    <div class="form-group row">
+        <div class="col-md-6">
+            <label for="inputPassword">Password</label>
+            <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+        </div>
     </div>
 
-    <button class="btn btn-lg btn-primary btn-block text-uppercase" onclick="login()">Sign In</button>
-    <a class="d-block text-center mt-2 small" href="reset_pw.html">Forgot Password?</a>
-    <a class="d-block text-center mt-2 small" href="register_parent.html">Register Here</a>
+    <div class="form-group row">
+        <div class="col-md-6">
+            <button class="btn btn-lg btn-primary btn-block" onclick="login()">Sign In</button>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-auto">
+            <a class="d-block text-center mt-2 small" href="reset_pw.html">Forgot Password?</a>
+        </div>
+        <div class="col-auto">
+            <a class="d-block text-center mt-2 small" href="register_inter.html">Register Here</a>
+        </div>
+    </div>
+    
+    
 </div>
 
-<div id="user_div">
-<p>You will be redirected to the home page momentarily. Please wait. If you are not redirected back to the home page, please <a href="index.html">click here.</a></a></p>              
+<div id="user_div" class="container-fluid">
+    <p>You will be redirected to the home page momentarily. Please wait. If you are not redirected back to the home page, please <a href="index.html">click here.</a></a></p>              
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/8.2.6/firebase-app.js"></script>
@@ -35,17 +59,7 @@
 <script src="https://www.gstatic.com/firebasejs/8.2.6/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.2.6/firebase-database.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.2.6/firebase-firestore.js"></script>
-<script>
-    // Initialize Firebase
-    // NEED TO OBTAIN INFO 
-    var config = {
-        apiKey: "AIzaSyC_RpCqU1yIDiyhEBadqOL-ph09x-7wzJg",
-        authDomain: "telect-6026a.firebaseapp.com",
-        databaseURL: "https://telect-6026a-default-rtdb.firebaseio.com/",
-        storageBucket: "telect-6026a.appspot.com"
-    };
-  firebase.initializeApp(config);
-</script>
+<script src="fire.js"></script>
 <script src="accountHandle.js"></script>
 
 </body>
