@@ -54,6 +54,8 @@ function create_account_parent(basicInfo){
   var minSession = document.getElementById("minSession").value;
   var maxSession = document.getElementById("maxSession").value;
   var childName = document.getElementById("childName").value;
+  var locPref = $('input[name="session_pref"]:checked').val();
+  var backgroundCheck = $('input[name="background_check"]:checked').val();
   var grade = document.getElementById("grade").value;
   var subjects = $('#subjects').val()
  
@@ -66,6 +68,7 @@ function create_account_parent(basicInfo){
     var allUsers = db.child('users');
 
     allUsers.child(user.uid).set({
+      "user_type":"parent",
       "email": user.email,
       "first_name": basicInfo[2],
       "last_name": basicInfo[3],
@@ -76,6 +79,8 @@ function create_account_parent(basicInfo){
       "state": basicInfo[8],
       "minSession": minSession,
       "maxSession": maxSession,
+      "location_pref": locPref,
+      "background_check": backgroundCheck,
       "child_name": childName,
       "grade": grade,
       "subjects": subjects
@@ -96,10 +101,24 @@ function create_account_parent(basicInfo){
 }
 
 function create_account_tutor(basicInfo){
+  if ( $('input[name="grades"]:checked').length == 0){
+    alert("Please select at least one grade level that you're interesteed in working with.");
+    return false;
+  }
   var minSession = document.getElementById("minSession").value;
-  var grades = $('#grade').val();
+  // var grades = $('#grade').val();
+  var grades = [];
+  $('input[name="grades"]:checked').each(function() { 
+    grades.push(this.value); 
+  });
   var subjects = $('#subjects').val()
   var bio = document.getElementById("bio").value;
+  if ($('input[name="grades"]:checked').val() == "yes"){
+    var locationPref = ["in_person","online"]
+  }
+  else{
+    var locationPref = ["online"]
+  }
  
   firebase.auth().createUserWithEmailAndPassword(basicInfo[0], basicInfo[1]).then(function() {
 		verify_email();
@@ -110,6 +129,7 @@ function create_account_tutor(basicInfo){
     var allUsers = db.child('users');
 
     allUsers.child(user.uid).set({
+      "user_type":"tutor",
       "email": user.email,
       "first_name": basicInfo[2],
       "last_name": basicInfo[3],
@@ -119,6 +139,7 @@ function create_account_tutor(basicInfo){
       "city": basicInfo[7],
       "state": basicInfo[8],
       "minSession": minSession,
+      "session_location": locationPref, 
       "grade": grades,
       "subjects": subjects,
       "bio": bio

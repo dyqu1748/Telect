@@ -153,6 +153,30 @@
                 </div>
             </div>
 
+            <h3>Select your location preference for sessions</h3>
+            <div class="form-group form-inline">
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label class="btn btn-outline-primary active">
+                      <input type="radio" name="session_pref" value="online" checked> Online
+                    </label>
+                    <label class="btn btn-outline-primary">
+                      <input type="radio" name="session_pref" value="in_person"> In-Person
+                    </label>
+                  </div>
+            </div>
+
+            <h3>Would you like your tutors to be background checked?</h3>
+            <div class="form-group form-inline">
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label class="btn btn-outline-primary active">
+                      <input type="radio" name="background_check" value="yes"> Yes
+                    </label>
+                    <label class="btn btn-outline-primary">
+                      <input type="radio" name="background_check" value="no" checked> No
+                    </label>
+                  </div>
+            </div>
+
             <h3>Add your child's full name (optional)</h3>
             <div class="form-group row">
                 <div class="col-md-6">
@@ -163,7 +187,17 @@
             <h3>Add your child's current grade level</h3>
             <div class="form-group row">
                 <div class="col-md-2">
-                    <input type ="number" id="grade" class="form-control" placeholder="Child's Grade Level" required>
+                    <select class="selectpicker" id="grade" data-actions-box="true" title="Select Grade Level" required>
+                        <option value="k">Kindergarten</option>
+                        <option value="1">1st Grade</option>
+                        <option value="2">2nd Grade</option>
+                        <option value="3">3rd Grade</option>
+                        <option value="4">4th Grade</option>
+                        <option value="5">5th Grade</option>
+                        <option value="6">6th Grade</option>
+                        <option value="7">7th Grade</option>
+                        <option value="8">8th Grade</option>
+                    </select>   
                 </div>
             </div>
 

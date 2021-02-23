@@ -160,27 +160,61 @@
         </div>
         
         <h3>Which grade levels are you interested in working with? (Select all that apply)</h3>
-        <div class="form-group row">
-            <div class="col-md-3">
-                <select class="selectpicker" id="grade" multiple data-actions-box="true" title="Select Grade Levels" required>
-                    <option value="k">Kindergarten</option>
-                    <option value="1">1st Grade</option>
-                    <option value="2">2nd Grade</option>
-                    <option value="3">3rd Grade</option>
-                    <option value="4">4th Grade</option>
-                    <option value="5">5th Grade</option>
-                    <option value="6">6th Grade</option>
-                    <option value="7">7th Grade</option>
-                    <option value="8">8th Grade</option>
-                </select>    
-            </div>
-                  
+        <div class="form-group form-inline">
+            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <label class="btn btn-outline-primary">
+                  <input type="checkbox" name="grades" value="k"/> K
+                </label>
+                <label class="btn btn-outline-primary">
+                  <input type="checkbox" name="grades" value="1"/> 1
+                </label>
+                <label class="btn btn-outline-primary">
+                  <input type="checkbox" name="grades" value="2"/> 2
+                </label>
+                <label class="btn btn-outline-primary">
+                    <input type="checkbox" name="grades" value="3"/> 3
+                </label>
+                <label class="btn btn-outline-primary">
+                    <input type="checkbox" name="grades" value="4"/> 4
+                </label>
+                <label class="btn btn-outline-primary">
+                    <input type="checkbox" name="grades" value="5"/> 5
+                </label>
+                <label class="btn btn-outline-primary">
+                    <input type="checkbox" name="grades" value="6"/> 6
+                </label>
+                <label class="btn btn-outline-primary">
+                    <input type="checkbox" name="grades" value="7"/> 7
+                </label>
+                <label class="btn btn-outline-primary">
+                    <input type="checkbox" name="grades" value="8"/> 8
+                </label>
+              </div>          
         </div>
+
+        <h3>Are you comfortable with doing in-person sessions along with online sessions?</h3>
+            <div class="form-group form-inline">
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label class="btn btn-outline-primary active">
+                      <input type="radio" name="in_person_sessions" value="yes"> Yes
+                    </label>
+                    <label class="btn btn-outline-primary">
+                      <input type="radio" name="in_person_sessions" value="no" checked> No
+                    </label>
+                  </div>
+            </div>
         
         <h3>Upload your resume</h3>
         <div class="form-group row">
             <div class="col-auto">
                 <input type="file" id="resume" accept=".pdf,.doc" required/>  
+            </div>
+        </div>
+
+        <h3>Upload a photo of yourself</h3>
+        <div class="form-group row">
+            <div class="col-auto">
+                <input type="file" id="photo" accept="image/*" required/>  
             </div>
         </div>
 
