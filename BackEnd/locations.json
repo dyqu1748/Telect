@@ -1,0 +1,16 @@
+{
+  "locations": [
+    {
+      "states": [
+        {
+          "name": "Colorado",
+          "cities": [
+            {
+              "name": "Boulder"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
