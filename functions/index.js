@@ -21,7 +21,7 @@ exports.helloWorld = functions.https.onRequest((request, response) => {
   response.send("Hello from Firebase!");
 });
 
-exports.activeLocations = functions.https.onRequest((request, response) => {
+exports.availableLocations = functions.https.onRequest((request, response) => {
   functions.logger.info("Begin: activeLocations", {structuredData: true});
 
   response.send("Hello from Firebase!");
