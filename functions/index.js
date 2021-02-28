@@ -37,3 +37,19 @@ exports.availableLocations = functions.https.onRequest((request, response) => {
         response.send({"success": false});
      });
 });
+
+exports.tutorMatches = functions.https.onRequest((request, response) => {
+    const params = request.url.split("/");
+    userid = params[1]
+    //response.setHeader('Content-Type', 'application/json')
+    return firebase.database().ref('users/'+ userid).once('value', (snapshot) => {
+        var user = snapshot.val();
+        //user.maxSession, user.minSession
+        //query users that have a pay range that is within the min and the max for the user
+        // Create a reference to the cities collection
+        const tutors = firebase.database().ref("users").where('user_type', '==', 'tutor');
+        // Create a query against the collection
+        const tutorMatch = tutors.where('minSession','>=',user.minSession).where('minSession','<=',user.maxSession).get();
+        response.send(tutorMatch.val());
+     });
+});
