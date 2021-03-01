@@ -44,12 +44,20 @@ exports.tutorMatches = functions.https.onRequest((request, response) => {
     //response.setHeader('Content-Type', 'application/json')
     return firebase.database().ref('users/'+ userid).once('value', (snapshot) => {
         var user = snapshot.val();
+        firebase.database().ref('users').index("user_type").equalTo("tutor").once('value')
+            .then(function(tutorsSnapshot) {
+            tutorsSnapshot.forEach(function(oneTutor){
+                if (oneTutor.minSession <= user.minSession) {
+                    // add to colleciton
+                }
+            });
+        });
         //user.maxSession, user.minSession
         //query users that have a pay range that is within the min and the max for the user
         // Create a reference to the cities collection
-        const tutors = firebase.database().ref("users").where('user_type', '==', 'tutor');
+        //const tutors = firebase.database().ref("users")//.where('user_type', '==', 'tutor');
         // Create a query against the collection
-        const tutorMatch = tutors.where('minSession','>=',user.minSession).where('minSession','<=',user.maxSession).get();
-        response.send(tutorMatch.val());
+        //const tutorMatch = tutors.where('minSession','>=',user.minSession).where('minSession','<=',user.maxSession).get();
+        response.send("user.user_type");
      });
 });
