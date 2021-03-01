@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Telect - Home</title>
+<title>Telect - Account Settings</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -11,11 +11,13 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <body>
-<button class="btn btn-danger text-uppercase" onclick="logout()">Log Out</button>
-<img src="https://i.redd.it/x2bs4d8f6xe61.jpg">
 
-<button class="view-profile" onclick="location.href='account_page.html'">View Profile</button>
+<h1>User Settings Page<h1>
 
+<form id="display-details" onsubmit="return updateaccount()">
+</form>
+
+<button onclick="location.href='index.html'">Return Home</button>
 
 <script src="https://www.gstatic.com/firebasejs/8.2.6/firebase-app.js"></script>
 
@@ -27,6 +29,6 @@
 <script src="https://www.gstatic.com/firebasejs/8.2.6/firebase-database.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.2.6/firebase-firestore.js"></script>
 <script src="fire.js"></script>
-<script src="accountHandle.js"></script>
+<script src="manageSettings.js"></script>
 </body>
 </html>
