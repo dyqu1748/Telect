@@ -1,18 +1,18 @@
 firebase.auth().onAuthStateChanged(function(user) {
-  if (user) {
+  if (user != null) {
     // User is signed in. Show appropiate elements for signed in user and vice-versa.
-
-    document.getElementById("user_div").style.display = "block";
-    document.getElementById("login_div").style.display = "none";
-
-    var user = firebase.auth().currentUser;
-    if(user != null){
-      // Change elements for signed in user.
+    console.log("USER SIGNED IN");
+    if (location.pathname.substring(location.pathname.lastIndexOf("/") + 1,location.pathname.lastIndexOf(".")) == "sign_in"){
       location.replace("index.html");
     }
+    $('[class$="logged_in"]').css('display', 'block');
+    $('[class$="not_logged_in"]').css('display', 'none');
 
   } else {
+    console.log("USER NOT SIGNED IN");
     // No user is signed in. Display appropriate elements.
+    $('[class$="logged_in"]').css('display', 'none');
+    $('[class$="not_logged_in"]').css('display', 'block');
   }
 });
 
@@ -33,15 +33,15 @@ function login(){
 
     // ...
   });
-
+  return false;
 }
 
 function resetPassword(){
   var userEmail = document.getElementById("inputEmail").value;
   firebase.auth().sendPasswordResetEmail(userEmail).then(function() {
     // Email sent.
-    document.getElementById("user_div").style.display = "block";
-    document.getElementById("login_div").style.display = "none";
+    document.getElementById("logged_in").style.display = "block";
+    document.getElementById("not_logged_in").style.display = "none";
   }).catch(function(error) {
     // An error happened.
     var errorMessage = error.message;
@@ -59,17 +59,10 @@ function create_account_parent(basicInfo){
   var grade = document.getElementById("grade").value;
   var subjects = $('#subjects').val()
  
-	firebase.auth().createUserWithEmailAndPassword(basicInfo[0], basicInfo[1]).then(function() {
-		verify_email();
+	firebase.auth().createUserWithEmailAndPassword(basicInfo[0], basicInfo[1]).then(cred => {
 
-    // Need to test below for functionality
-    var db = firebase.database().ref();
-    var user = firebase.auth().currentUser;
-    var allUsers = db.child('users');
-
-    allUsers.child(user.uid).set({
+    db.collection('users').doc(cred.user.uid).set({
       "user_type":"parent",
-      "email": user.email,
       "first_name": basicInfo[2],
       "last_name": basicInfo[3],
       "phone": basicInfo[4],
@@ -85,7 +78,7 @@ function create_account_parent(basicInfo){
       "grade": grade,
       "subjects": subjects
     })
-    // ---
+		verify_email();
     setTimeout(() => {  logout(); }, 1000);
 	})
 	.catch(function(error) {
@@ -120,17 +113,10 @@ function create_account_tutor(basicInfo){
     var locationPref = ["online"]
   }
  
-  firebase.auth().createUserWithEmailAndPassword(basicInfo[0], basicInfo[1]).then(function() {
-		verify_email();
+  firebase.auth().createUserWithEmailAndPassword(basicInfo[0], basicInfo[1]).then(cred => {
 
-    // Need to test below for functionality
-    var db = firebase.database().ref();
-    var user = firebase.auth().currentUser;
-    var allUsers = db.child('users');
-
-    allUsers.child(user.uid).set({
+    db.collection('users').doc(cred.user.uid).set({
       "user_type":"tutor",
-      "email": user.email,
       "first_name": basicInfo[2],
       "last_name": basicInfo[3],
       "phone": basicInfo[4],
@@ -145,6 +131,7 @@ function create_account_tutor(basicInfo){
       "bio": bio
     })
     // ---
+    verify_email();
     setTimeout(() => {  logout(); }, 1000);
 	})
 	.catch(function(error) {

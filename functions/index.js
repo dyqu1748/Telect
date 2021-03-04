@@ -24,6 +24,13 @@ exports.helloWorld = functions.https.onRequest((request, response) => {
   response.send("Hello from Firebase!");
 });
 
+// Example code for use 
+// db.collection("locations").get().then((querySnapshot) => {
+//     querySnapshot.forEach((doc) => {
+//       var location = doc.data();
+//         console.log(`${location.city}, ${location.state}`);
+//     });
+
 exports.availableLocations = functions.https.onRequest((request, response) => {
     const params = request.url.split("/");
     response.setHeader('Content-Type', 'application/json')

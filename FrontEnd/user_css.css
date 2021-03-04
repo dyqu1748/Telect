@@ -1,0 +1,7 @@
+[class $='logged_in']{
+    display: none;
+}
+
+[class $='not_logged_in']{
+    display: block;
+}

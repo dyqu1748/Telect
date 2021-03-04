@@ -3,14 +3,12 @@ firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
     console.log("User found");
     var user = firebase.auth().currentUser;
-	var database = firebase.database().ref('users/' + user.uid);
-    var data;
-    // const name = user.first_name;
-    database.on('value', (snapshot) => {
-    	data = snapshot.val();
-    	console.log(data);
-    	displayProfile(data);
-    });
+	console.log(user.uid);
+
+	db.collection('users').doc(user.uid).onSnapshot((doc)=> {
+		console.log(doc.data());
+		displayProfile(doc.data());
+	});
   } else {
     console.log("No user signed in");
   }
@@ -34,7 +32,7 @@ function displayProfile(data)
 				  ${data.city}, ${data.state} ${data.zipCode}
 			  </div>
 			  <div>
-				  Session Payment Range<br> ${data.minSesssion} to ${data.maxSession}
+				  Session Payment Range<br> ${data.minSession} to ${data.maxSession}
 			  </div>
 			  <div>
 			  	  Location Preference<br>
@@ -52,14 +50,11 @@ function onEdit()
 	  if (user) {
 	    console.log("User found");
 	    var user = firebase.auth().currentUser;
-		var database = firebase.database().ref('users/' + user.uid);
-	    var data;
-	    // const name = user.first_name;
-	    database.on('value', (snapshot) => {
-	    	data = snapshot.val();
-	    	console.log(data);
-	    	editProfile(data);
-	    });
+
+		db.collection('users').doc(user.uid).onSnapshot((doc)=> {
+			console.log(doc.data());
+			editProfile(doc.data());
+		});
 	  } else {
 	    console.log("No user signed in");
 	  }
@@ -69,9 +64,9 @@ function onEdit()
 function editProfile(data)
 {
 	// Display info in an editable form
-	 html =  `
+	var userInfo =  `
 	 		  <div>
-					Name<br><input type="text" id="fname" placeholder="First Name">
+					Name<br><input type="text" id="fname" value="${data.first_name}" placeholder="First Name">
 					<input type="text" id="lname" value="${data.last_name}" placeholder="Last Name">
 			  </div>
 			  <div>
@@ -89,7 +84,7 @@ function editProfile(data)
 			  </div>
 			  <div>
 				  Session Payment Range<br> <input type="number" id="max-session" class="form-control" value="${data.maxSession}" placeholder="0.00">
-				  <input type="number" id="min-session" class="form-control" value="${data.minSesssion}" placeholder="0.00"> <br>
+				  <input type="number" id="min-session" class="form-control" value="${data.minSession}" placeholder="0.00"> <br>
 			  </div>
 			  <div>
 			  	  Location Preference<br>
@@ -103,7 +98,7 @@ function editProfile(data)
 			  <input type="submit" value="Update Profile">
 				  `;
 	var editDetails = document.getElementById('display-details');
-	editDetails.innerHTML = html;
+	editDetails.innerHTML = userInfo;
 }
 
 function updateaccount()
@@ -112,8 +107,7 @@ function updateaccount()
 	  if (user) {
 	    console.log("User found");
 	    var user = firebase.auth().currentUser;
-		var updateUser = firebase.database().ref('users/' + user.uid);
-	    var data;
+
 	    var fname = document.getElementById("fname").value;
 		var lname = document.getElementById("lname").value;
 		var email = document.getElementById("email").value;
@@ -126,6 +120,8 @@ function updateaccount()
 		var min_session = document.getElementById("min-session").value;
 		var max_session = document.getElementById("max-session").value;
 		var location_pref = $('input[name="location_pref"]:checked').val();
+
+		var updateUser = db.collection('users').doc(user.uid);
 
 	    updateUser.update({
 	      "email": email,
@@ -140,11 +136,24 @@ function updateaccount()
 	      "maxSession": max_session,
 	      "location_pref": location_pref
 	    })
+		setTimeout(() => {  
+			updateUser.get().then((doc) => {
+				if (doc.exists) {
+					displayProfile(doc.data());
+				} else {
+					// doc.data() will be undefined in this case
+					console.log("No such document!");
+				}
+			}).catch((error) => {
+				console.log("Error getting document:", error);
+			});
+			// displayProfile(updateUser);
+	}, 1000);
 	  } else {
 	    console.log("No user signed in");
 	  }
 	});
-
+	return false;
 	
 }
 
