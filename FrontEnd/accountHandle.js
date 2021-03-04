@@ -70,6 +70,7 @@ function create_account_parent(basicInfo){
       "apartment_info": basicInfo[6],
       "city": basicInfo[7],
       "state": basicInfo[8],
+      "zipCode": basicInfo[9],
       "minSession": minSession,
       "maxSession": maxSession,
       "location_pref": locPref,
@@ -124,6 +125,7 @@ function create_account_tutor(basicInfo){
       "apartment_info": basicInfo[6],
       "city": basicInfo[7],
       "state": basicInfo[8],
+      "zipCode": basicInfo[9],
       "minSession": minSession,
       "session_location": locationPref, 
       "grade": grades,
@@ -181,7 +183,8 @@ function newaccount(account_type) {
     var city = document.getElementById("city").value;
     var apartmentInfo = document.getElementById("apartmentInfo").value;
     var state = document.getElementById("state").value;
-    var basicInfo = [userEmail,userPass,fname,lname,phone,address,apartmentInfo,city,state]
+    var zipCode = document.getElementById("zipCode").value;
+    var basicInfo = [userEmail,userPass,fname,lname,phone,address,apartmentInfo,city,state,zipCode]
     if (account_type == "parent"){
       create_account_parent(basicInfo);
     }

@@ -17,28 +17,95 @@ firebase.auth().onAuthStateChanged(function(user) {
 function displayProfile(data)
 {
 	// Account Info
-	var html =  `<div>
-					Name<br>${data.first_name} ${data.last_name}
+	var html =  `<div class="row">
+					<div class ="col-md-3">
+						<h3>Name</h3>
+					</div>
+			  	</div>
+				<div class ="row">
+					<div class="col-md-3">
+						<p class="lead">${data.first_name} ${data.last_name}</p>
+					</div>
+				</div>
+			  <div class="row">
+			  	<div class="col-md-3">
+			  		<h3>Email</h3>
+				</div>
 			  </div>
-			  <div>
-			  		Email<br>
-			  		${data.email}
+			  <div class="row>
+			 	<div class="col-md-3">
+				 	<p class="lead">${data.email}</p>
+				 </div> 
 			  </div>
-			  <div>
-			  		Phone Number<br>${data.phone}
+			  <div class="row">
+			  	<div class="col-md-3">
+					<h3>Phone Number</h3>
+				</div>
 			  </div>
-			  <div>
-				  Address<br> ${data.address} ${data.apartment_info}<br>
-				  ${data.city}, ${data.state} ${data.zipCode}
+			  <div class="row">
+			 	<div class="col-md-3">
+				 	<p class="lead">${data.phone}</p>
+				 </div> 
 			  </div>
-			  <div>
-				  Session Payment Range<br> ${data.minSession} to ${data.maxSession}
+			  <div class="row">
+			  	<div class="col-md-3">
+					<h3>Address</h3>
+				</div>
+				<div class="col-md-3">
+					<h3>Apartment Info</h3>
+				</div> 
 			  </div>
-			  <div>
-			  	  Location Preference<br>
-			  	  <p>${data.location_pref}</p>
+			  <div class="row">
+			  	<div class="col-md-3">
+				  <p class="lead">${data.address}</p>
+				</div>
+			 	<div class="col-md-3">
+					<p class="lead">${data.apartment_info}</p>
+				 </div> 
 			  </div>
-			  <button onclick="onEdit()">Edit Profile</button>
+			  <div class="row">
+			  	<div class="col-md-3">
+					<h3>City</h3>
+				</div>
+				<div class="col-md-3">
+					<h3>State</h3>
+				</div>
+				<div class="col-md-3">
+					<h3>Zip Code</h3>
+				</div> 
+			  </div>
+			  <div class="row">
+			  	<div class="col-md-3">
+				  <p class="lead">${data.city}</p>
+				</div>
+			 	<div class="col-md-3">
+					<p class="lead">${data.state}</p>
+				 </div>
+				 <div class="col-md-3">
+					<p class="lead">${data.zipCode}</p>
+				 </div>  
+			  </div>
+			  <div class="row">
+				<div class="col-md-3">
+					<h3>Session Payment Range</h3> 
+				</div>
+			  </div>
+			  <div class="row">
+			 	<div class="col-md-3">
+				 	<p class="lead">$${data.minSession} to $${data.maxSession}</p>
+				 </div> 
+			  </div>
+			  <div class="row">
+				<div class ="col-md-3">
+					<h3>Location Preference</h3> 
+				</div>
+			  </div>
+			  <div class="row">
+			 	<div class="col">
+				 	<p class="lead">${data.location_pref}</p>
+				</div> 
+			  </div>
+			  <button class="btn btn-secondary" onclick="onEdit()">Edit Profile</button>
 				  `;
 	var displayDetails = document.getElementById('display-details');
 	displayDetails.innerHTML = html;

@@ -11,13 +11,15 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <body>
+<div class="container-fluid">
+  <h1>User Settings Page<h1>
 
-<h1>User Settings Page<h1>
+  <form id="display-details" onsubmit="return updateaccount()">
+  </form>
 
-<form id="display-details" onsubmit="return updateaccount()">
-</form>
+  <a class="btn btn-primary" href="index.html">Return Home</a>
+</div>
 
-<button onclick="location.href='index.html'">Return Home</button>
 
 <script src="https://www.gstatic.com/firebasejs/8.2.6/firebase-app.js"></script>
 
