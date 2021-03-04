@@ -15,7 +15,7 @@ const firebase = require("firebase-admin");
   };
 
  firebase.initializeApp(firebaseConfig)
-
+ const db = firebase.firestore();
 // Get a reference to the database service
 var database = firebase.database();
 
@@ -34,30 +34,24 @@ exports.helloWorld = functions.https.onRequest((request, response) => {
 exports.availableLocations = functions.https.onRequest((request, response) => {
     const params = request.url.split("/");
     response.setHeader('Content-Type', 'application/json')
-    return firebase.database().ref('locations').once('value', (snapshot) => {
-        snapshot.forEach(function(childSnapshot) {
-        var location = childSnapshot.val();
-        if (location.state === params[1] && location.city === params[2]){
-            response.send({"success": true});
+    return db.collection('locations').where('state','==',params[1]).where('city','==',params[2]).get().then((snapshot) => {
+        if (!snapshot.empty) {
+            // doc.data() is never undefined for query doc snapshots
+            response.send({"success": true})
+        } else {
+        response.send({"success": true});
         }
-        });
-        response.send({"success": false});
-     });
+    });
+
 });
 
 exports.tutorMatches = functions.https.onRequest((request, response) => {
     const params = request.url.split("/");
     userid = params[1]
     //response.setHeader('Content-Type', 'application/json')
-    return firebase.database().ref('users/'+ userid).once('value', (snapshot) => {
+    return db.collection('users').doc(userid).get()((snapshot) => {
         var user = snapshot.val();
-        firebase.database().ref('users').index("user_type").equalTo("tutor").once('value')
-            .then(function(tutorsSnapshot) {
-            tutorsSnapshot.forEach(function(oneTutor){
-                if (oneTutor.minSession <= user.minSession) {
-                    // add to colleciton
-                }
-            });
+            response.send ({"success": user.user_type})
         });
         //user.maxSession, user.minSession
         //query users that have a pay range that is within the min and the max for the user
@@ -65,6 +59,5 @@ exports.tutorMatches = functions.https.onRequest((request, response) => {
         //const tutors = firebase.database().ref("users")//.where('user_type', '==', 'tutor');
         // Create a query against the collection
         //const tutorMatch = tutors.where('minSession','>=',user.minSession).where('minSession','<=',user.maxSession).get();
-        response.send("user.user_type");
-     });
+        response.send("error");
 });
