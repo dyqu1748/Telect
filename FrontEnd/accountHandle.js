@@ -50,15 +50,73 @@ function resetPassword(){
   });
 }
 
+var child_counter = 0;
+
+function showAddChild() {
+    child_counter++;
+    $("#add-child").addClass('d-none')
+    $("#child-form1").removeClass('d-none')
+    $("#grade").selectpicker('refresh');
+    $("#subjects").selectpicker('refresh');
+    $("#avatar").selectpicker('refresh');
+}
+
+function addChildForm() {
+    child_counter++;
+
+    var newChildForm = $("#child-form1").clone().find("input").val("").end()
+    newChildForm.id = "child-form" + child_counter
+
+    // rename IDs
+    newChildForm.find("input").attr("id", "childName" + child_counter)
+    var selectFields = newChildForm.find("select")
+    for (var i = 0; i < selectFields.length; i++) {
+            var fieldId = selectFields[i].id
+            if (fieldId)
+                $(selectFields[i]).attr('id', fieldId + child_counter)
+    }
+    newChildForm.appendTo("#child-placeholder")
+
+    // reset select dropdowns
+    newChildForm.find('.bootstrap-select').replaceWith(function() { return $('select', this); });
+    newChildForm.find('ul').remove()
+    $("#grade" + child_counter).selectpicker();
+    $("#subjects" + child_counter).selectpicker();
+    $("#avatar" + child_counter).imagepicker();
+}
+
 function create_account_parent(basicInfo){
   var minSession = document.getElementById("minSession").value;
   var maxSession = document.getElementById("maxSession").value;
-  var childName = document.getElementById("childName").value;
   var locPref = $('input[name="session_pref"]:checked').val();
   var backgroundCheck = $('input[name="background_check"]:checked').val();
-  var grade = document.getElementById("grade").value;
-  var subjects = $('#subjects').val()
- 
+
+  // compose child array
+  var childData = []
+  for (var i=1; i <= child_counter; i++) {
+      if (i == 1) {
+        var childName = document.getElementById("childName").value;
+        var grade = document.getElementById("grade").value;
+        var subjects = $('#subjects').val()
+        var avatar = document.getElementById("avatar").value;
+      } else {
+        var childName = document.getElementById("childName" + i).value;
+        var grade = document.getElementById("grade" + i).value;
+        var subjects = $('#subjects' + i).val()
+        var avatar = document.getElementById("avatar" + i).value;
+      }
+
+    childItem = {
+        "child_name": childName,
+        "grade": grade,
+        "subjects": subjects,
+        "avatar": avatar
+    }
+    childData.push(childItem)
+  }
+
+  console.log(childData)
+
 	firebase.auth().createUserWithEmailAndPassword(basicInfo[0], basicInfo[1]).then(cred => {
 
     db.collection('users').doc(cred.user.uid).set({
@@ -75,10 +133,9 @@ function create_account_parent(basicInfo){
       "maxSession": maxSession,
       "location_pref": locPref,
       "background_check": backgroundCheck,
-      "child_name": childName,
-      "grade": grade,
-      "subjects": subjects
+      "children": childData
     })
+
 		verify_email();
     setTimeout(() => {  logout(); }, 1000);
 	})
@@ -96,7 +153,7 @@ function create_account_parent(basicInfo){
 
 function create_account_tutor(basicInfo){
   if ( $('input[name="grades"]:checked').length == 0){
-    alert("Please select at least one grade level that you're interesteed in working with.");
+    alert("Please select at least one grade level that you're interested in working with.");
     return false;
   }
   var minSession = document.getElementById("minSession").value;
