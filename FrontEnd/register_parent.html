@@ -20,41 +20,54 @@
     .thumbnails li img{
         width: 300px;
     }
+    .container-fluid.required .control-label:after, .header-control::after{
+        content:" *";
+        color: red;
+    }
+
 </style>
 </head>
 <body>
-
-<form onsubmit="return newaccount('parent')">
-    <div id="login_div" class="container-fluid">
+<div id="login_div" class="container-fluid required">
+    <form onsubmit="return newaccount('parent')">
+    
         <h1>We just need a few things before you can get started</h1>        
         <h3>Setup your account</h3>
             <div class="form-group row">
                 <div class="col-md-3">
+                    <label for="fname" class="control-label">First Name</label>
                     <input type ="text" id="fname" class="form-control" placeholder="First Name" required>
                 </div> 
                 <div class="col-md-3">
+                    <label for="lname" class="control-label">Last Name</label>
                     <input type ="text" id="lname" class="form-control" placeholder="Last Name" required>
                 </div>
             </div>
             
             <div class="form-group row">
                 <div class="col-md-6">
+                    <label for="email" class="control-label">Email</label>
                     <input type="email" id="email" class="form-control" placeholder="Email" required>
                 </div>
             </div>
 
             <div class="form-group row">
                 <div class="col-md-6">
-                    <input type="tel" id="phone" class="form-control" placeholder="Phone Number" pattern="[0-9]{10}|[0-9]{3}-[0-9]{3}-[0-9]{4}" required>
+                    <label for="phone" class="control-label">Phone Number</label>
+                    <input type="tel" id="phone" class="form-control" placeholder="Phone Number" pattern="[0-9]{10}" required>
+                    <small id="phoneHelp" class="form-text text-muted">Format: 1234567890</small>
                 </div>
             </div>
 
 
             <div class="form-group row">
                 <div class="col-md-3">
-                    <input type="password" id="inputPassword" class="form-control" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" placeholder="Password" required>
+                    <label for="password" class="control-label">Password</label>
+                    <input type="password" id="inputPassword" class="form-control" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Your password must contain at least one uppercase, one lowercase letter, and one number" placeholder="Password" required>
+                    <small id="pswdHelp" class="form-text text-muted">Your password must contain at least one uppercase, one lowercase letter, and one number.</small>
                 </div>
                 <div class="col-md-3">
+                    <label for="inputConfirmPassword" class="control-label">Confirm Password</label>
                     <input type="password" id="inputConfirmPassword" class="form-control" placeholder="Confirm Password" required>    
                 </div>
             </div>
@@ -63,25 +76,30 @@
 
             <div class="form-group row">
                 <div class="col-md-6">
+                    <label for="address" class="control-label">Address</label>
                     <input type ="text" id="address" class="form-control" placeholder="Address" required>
                 </div>
             </div>
             
             <div class="form-group row">
                 <div class="col-md-3">
+                    <label for="apartmentInfo">Apartment Info</label>
                     <input type = "number" id="apartmentInfo" class="form-control" placeholder="Apartment #, floor, etc.">
                 </div>
                 <div class="col-md-3">
-                    <input type ="number" id="zipCode" class="form-control" placeholder="Enter Zip Code" pattern="[0-9]{5}" required>
+                    <label for="zipCode" class="control-label">Zip Code</label>
+                    <input type ="number" id="zipCode" class="form-control" placeholder="Zip Code" pattern="[0-9]{5}" required>
                 </div>
             </div>
 
             <div class="form-group row">
                 <div class="col-md-3">
-                    <input type ="text" id="city" class="form-control" placeholder="Enter City" required>
+                    <label for="city" class="control-label">City</label>
+                    <input type ="text" id="city" class="form-control" placeholder="City" required>
                 </div>
                 <div class="col-md-3">
-                    <select class="selectpicker form-control" id="state" data-live-search="true" title="Enter State" required>
+                    <label for="state" class="control-label">State</label>
+                    <select class="selectpicker form-control" id="state" data-live-search="true" title="State" required>
                         <option value="AL">Alabama</option>
                         <option value="AK">Alaska</option>
                         <option value="AZ">Arizona</option>
@@ -137,7 +155,7 @@
                 </div>
             </div>
 
-            <h3>Enter the minimum amount you would like to pay for a session</h3>
+            <h3 class="header-control">Enter the minimum amount you would like to pay for a session</h3>
             <div class="form-group form-inline">
                 <label for="minSession">$</label>
                 <div class="col-md-3">
@@ -145,7 +163,7 @@
                 </div>
             </div>
 
-            <h3>Enter the maximum amount you would like to pay for a session</h3>
+            <h3 class="header-control">Enter the maximum amount you would like to pay for a session</h3>
             <div class="form-group form-inline">
                 <label for="maxSession">$</label>
                 <div class="col-md-3">
@@ -153,9 +171,9 @@
                 </div>
             </div>
 
-            <h3>Select your location preference for sessions</h3>
+            <h3 class="header-control">Select your location preference for sessions</h3>
             <div class="form-group form-inline">
-                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <div class="btn-group btn-group-toggle required" data-toggle="buttons">
                     <label class="btn btn-outline-primary active">
                       <input type="radio" name="session_pref" value="online" checked> Online
                     </label>
@@ -165,9 +183,9 @@
                   </div>
             </div>
 
-            <h3>Would you like your tutors to be background checked?</h3>
+            <h3 class="header-control">Would you like your tutors to be background checked?</h3>
             <div class="form-group form-inline">
-                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <div class="btn-group btn-group-toggle required" data-toggle="buttons">
                     <label class="btn btn-outline-primary active">
                       <input type="radio" name="background_check" value="yes"> Yes
                     </label>
@@ -177,6 +195,7 @@
                   </div>
             </div>
 
+<<<<<<< Updated upstream
             <h3>Add your child's full name (optional)</h3>
             <div class="form-group row">
                 <div class="col-md-6">
@@ -223,18 +242,86 @@
             <div class="form-label-group">
                 <h3>Choose an avatar for your child</h3>
                 <select class="image-picker show-html" required>
+=======
+            <div class="form-group form-inline">
+                <div class="com-md-3">
+                    <button type="button" id="add-child" class="btn btn-secondary" onclick="showAddChild()">Add Child</button>
+                </div>
+            </div>
+            
+            <div id="child-form1" class="d-none">
+                <h3>Add your child's full name (optional)</h3>
+                <input type ="text" id="childName" class="form-control" placeholder="Child's Full Name">
+                <h3 class="header-control">Add your child's current grade level</h3>
+
+                <select id="grade" title="Select Grade Level" required>
+                    <option value="k">Kindergarten</option>
+                    <option value="1">1st Grade</option>
+                    <option value="2">2nd Grade</option>
+                    <option value="3">3rd Grade</option>
+                    <option value="4">4th Grade</option>
+                    <option value="5">5th Grade</option>
+                    <option value="6">6th Grade</option>
+                    <option value="7">7th Grade</option>
+                    <option value="8">8th Grade</option>
+                </select>
+
+                <h3 class="header-control">Select the subjects your child needs help with</h3>
+
+                <select class="selectpicker" id ='subjects' data-live-search="true" multiple title="Select Subjects" required>
+                    <option value="math">Math</option>
+                    <option value="geometry">Geometry</option>
+                    <option value="pre-algebra">Pre-algebra</option>
+                    <option value="algebra">Algebra</option>
+                    <option value="science">Science</option>
+                    <option value="geology">Geology</option>
+                    <option value="chemistry">Chemistry</option>
+                    <option value="social_studies">Social Studies</option>
+                    <option value="govtHist">U.S. Government and History</option>
+                    <option value="language_arts">Language Arts</option>
+                    <option value="spanish">Spanish</option>
+                </select>
+
+                <h3 class="header-control">Choose an avatar for your child</h3>
+                <select id="avatar" class="image-picker show-html" required>
+>>>>>>> Stashed changes
                     <option data-img-src="https://c-sf.smule.com/rs-s23/arr/d6/75/227c4be5-3914-427b-91be-eac339869d70_1024.jpg" value="avatar1">Avatar 1</option>
                     <option data-img-src="https://static.zerochan.net/Dango.%28CLANNAD%29.full.113867.jpg" value="avatar2">Avatar 2</option>
                     <option data-img-src="https://static.zerochan.net/Dango.%28CLANNAD%29.full.113865.jpg" value="avatar3">Avatar 3</option>
                 </select>
+<<<<<<< Updated upstream
+=======
+                
+                
+                
+>>>>>>> Stashed changes
             </div>
             
             <button type="submit" class="btn btn-lg btn-primary">Register</button>
         </form>
         <a href="sign_in.html">Sign In</a>
 
+<<<<<<< Updated upstream
     </div>
 </form>
+=======
+    
+
+            <div class="form-group form-inline">
+                <div class="col col-lg-2">
+                    <button type="button" class="btn btn-secondary d-none" id="addChildButton" onclick="addChildForm()">Add Child</button>
+                </div>
+                <div class="col col-lg-2">
+                    <button type="button" class="btn btn-secondary d-none" id="remChildButton" onclick="delChildForm()">Remove Child</button>
+                </div>
+            </div>
+    
+        <button type="submit" class="btn btn-lg btn-primary">Register</button>
+        <a href="sign_in.html">Sign In</a>
+    </form>
+
+</div>
+>>>>>>> Stashed changes
 
 <script src="https://www.gstatic.com/firebasejs/8.2.6/firebase-app.js"></script>
 

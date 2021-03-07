@@ -50,6 +50,60 @@ function resetPassword(){
   });
 }
 
+<<<<<<< Updated upstream
+=======
+var child_counter = 0;
+
+function showAddChild() {
+    child_counter++;
+    $("#add-child").addClass('d-none');
+    $("#child-form1").removeClass('d-none');
+    $("#grade").selectpicker('refresh');
+    $("#subjects").selectpicker('refresh');
+    $("#avatar").selectpicker('refresh');
+    $("#addChildButton").removeClass('d-none');
+    $("#remChildButton").removeClass('d-none');
+}
+
+function addChildForm() {
+    child_counter++;
+
+    var newChildForm = $("#child-form1").clone().find("input").val("").end();
+    newChildForm.attr('id', 'child-form'+ child_counter);
+
+    // rename IDs
+    newChildForm.find("input").attr("id", "childName" + child_counter)
+    var selectFields = newChildForm.find("select")
+    for (var i = 0; i < selectFields.length; i++) {
+            var fieldId = selectFields[i].id
+            if (fieldId)
+                $(selectFields[i]).attr('id', fieldId + child_counter)
+    }
+    newChildForm.appendTo("#child-placeholder")
+
+    // reset select dropdowns
+    newChildForm.find('.bootstrap-select').replaceWith(function() { return $('select', this); });
+    newChildForm.find('ul').remove()
+    $("#grade" + child_counter).selectpicker();
+    $("#subjects" + child_counter).selectpicker();
+    $("#avatar" + child_counter).imagepicker();
+}
+
+function delChildForm() {
+  if (child_counter == 1){
+    $("#addChildButton").addClass('d-none');
+    $("#remChildButton").addClass('d-none');
+    $("#add-child").removeClass("d-none");
+    $("#child-form1").addClass('d-none');
+  }
+  else{
+    $("#child-form"+child_counter).remove();
+  }
+  child_counter--;
+  
+}
+
+>>>>>>> Stashed changes
 function create_account_parent(basicInfo){
   var minSession = document.getElementById("minSession").value;
   var maxSession = document.getElementById("maxSession").value;
