@@ -29,7 +29,7 @@
 </head>
 <body>
 <div id="login_div" class="container-fluid required">
-    <form onsubmit="return newaccount('parent')">
+    <form onsubmit="return review_info()">
     
         <h1>We just need a few things before you can get started</h1>        
         <h3>Setup your account</h3>
@@ -201,49 +201,7 @@
                 </div>
             </div>
             
-            <div id="child-form1" class="d-none">
-                <h3>Add your child's full name (optional)</h3>
-                <input type ="text" id="childName" class="form-control" placeholder="Child's Full Name">
-                <h3 class="header-control">Add your child's current grade level</h3>
-
-                <select id="grade" title="Select Grade Level" required>
-                    <option value="k">Kindergarten</option>
-                    <option value="1">1st Grade</option>
-                    <option value="2">2nd Grade</option>
-                    <option value="3">3rd Grade</option>
-                    <option value="4">4th Grade</option>
-                    <option value="5">5th Grade</option>
-                    <option value="6">6th Grade</option>
-                    <option value="7">7th Grade</option>
-                    <option value="8">8th Grade</option>
-                </select>
-
-                <h3 class="header-control">Select the subjects your child needs help with</h3>
-
-                <select class="selectpicker" id ='subjects' data-live-search="true" multiple title="Select Subjects" required>
-                    <option value="math">Math</option>
-                    <option value="geometry">Geometry</option>
-                    <option value="pre-algebra">Pre-algebra</option>
-                    <option value="algebra">Algebra</option>
-                    <option value="science">Science</option>
-                    <option value="geology">Geology</option>
-                    <option value="chemistry">Chemistry</option>
-                    <option value="social_studies">Social Studies</option>
-                    <option value="govtHist">U.S. Government and History</option>
-                    <option value="language_arts">Language Arts</option>
-                    <option value="spanish">Spanish</option>
-                </select>
-
-                <h3 class="header-control">Choose an avatar for your child</h3>
-                <select id="avatar" class="image-picker show-html" required>
-                    <option data-img-src="https://c-sf.smule.com/rs-s23/arr/d6/75/227c4be5-3914-427b-91be-eac339869d70_1024.jpg" value="avatar1">Avatar 1</option>
-                    <option data-img-src="https://static.zerochan.net/Dango.%28CLANNAD%29.full.113867.jpg" value="avatar2">Avatar 2</option>
-                    <option data-img-src="https://static.zerochan.net/Dango.%28CLANNAD%29.full.113865.jpg" value="avatar3">Avatar 3</option>
-                </select>
-                
-                
-                
-            </div>
+            <div id="child-form1"></div>
             <div id="child-placeholder"></div>
 
     
