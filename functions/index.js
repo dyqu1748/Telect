@@ -47,15 +47,25 @@ exports.tutorMatches =  functions.https.onRequest(async (request, response) => {
     response.setHeader('Content-Type', 'application/json')
     const params = request.url.split("/");
     userid = params[1]
-    if (admin.auth().currentUser !== null)
-        console.log("user id: " + userid);
-        const usersRef = firestore.collection('users');
-        let doc = await usersRef.doc(userid).get();
-        if (!doc.exists) {
-            response.send({"success": false});
-        } else {
-            response.send({"success": doc.data()});
-        }
+    console.log("user id: " + userid);
+    const usersRef = firestore.collection('users');
+    let doc = await usersRef.doc(userid).get();
+    if (!doc.exists) {
+        response.send({"success": false});
+    } else {
+        //query for tutor match
+        await usersRef.where("user_type","==","tutor").where("minSession", '>=',
+            doc.data().minSession).where("minSession", '<=', doc.data().maxSession).get()
+        .then((tutorSnapshot) => {
+            response.send(tutorSnapshot.docs.map(doc => doc.data()))
+         })
+        .catch((error) => {
+            response.send("Error getting documents: " + error);
+        });
+    }
 });
+
+
+
 
 
