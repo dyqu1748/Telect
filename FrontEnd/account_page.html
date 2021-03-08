@@ -1,41 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Telect - Reset Password</title>
+<title>Telect - Account Settings</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="user_css.css">
+
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <body>
+<div class="container-fluid">
+  <h1>User Settings Page<h1>
 
-<div id="not_logged_in" class="container-fluid">
+  <form id="display-details" onsubmit="return updateaccount()">
+  </form>
 
-    <div class="form-group row">
-        <div class="col-md-6">
-            <label for="inputEmail">Email address</label>
-            <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required>
-        </div>
-    </div>
-
-    <div class="form-group row"> 
-        <div class="col-md-6">
-            <button class="btn btn-lg btn-primary btn-block text-uppercase" onclick="resetPassword()">Reset Password</button>
-            <a class="d-block text-center mt-2 small" href="sign_in.html">Sign in</a>
-        </div>
-    </div>
-        
+  <a class="btn btn-primary" href="index.html">Return Home</a>
 </div>
 
-<div id="logged_in" class="container-fluid">
-    <div class="col">
-        <p>A password reset email has been sent. Please check your inbox to reset your email.</p>
-        <a class="d-block text-center mt-2" href="sign_in.html">Sign in</a>    
-    </div>
-</div>
+
 <script src="https://www.gstatic.com/firebasejs/8.2.6/firebase-app.js"></script>
 
   <!-- If you enabled Analytics in your project, add the Firebase SDK for Analytics -->
@@ -46,10 +31,6 @@
 <script src="https://www.gstatic.com/firebasejs/8.2.6/firebase-database.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.2.6/firebase-firestore.js"></script>
 <script src="fire.js"></script>
-<script src="accountHandle.js"></script>
-
+<script src="manageSettings.js"></script>
 </body>
 </html>
- 
- 
- 
