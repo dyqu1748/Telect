@@ -1,0 +1,7 @@
+.thumbnails li img{
+    width: 300px;
+}
+.container-fluid.required .control-label:after, .header-control::after{
+    content:" *";
+    color: red;
+}

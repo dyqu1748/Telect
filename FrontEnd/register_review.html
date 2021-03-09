@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Telect - Parent Register</title>
+<title>Telect - Account Register Review</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -27,7 +27,7 @@
     <div id="login_div" class="container-fluid">
         <h1>Review your account information, and then get started!</h1>  
         <br>  
-        <h3>Parent information</h3> 
+        <h3>User information</h3> 
         <br>
             <div class="row">
                 <div class ="col-md-3">
@@ -120,11 +120,107 @@
                 </div>
             </div>
 
-            <div id="infoPlaceholder"></div>
+            <div id="parentInfo" class="d-none">
+                <br>
+                <h3>Session Preferences</h3>
+                <br>
+                <div class="row">
+                <div class="col-md-3">
+                    <h3>Minimum Session Rate</h3>
+                </div>
+                <div class="col-md-3">
+                    <h3>Maximum Session Rate</h3>
+                </div> 
+                </div>
+                <div class="row">
+                <div class="col-md-3">
+                <p class="lead" id="minSessionParent"></p>
+                </div>
+                <div class="col-md-3">
+                    <p class="lead" id="maxSessionParent"></p>
+                </div>
+                </div>
+                <div class="row">
+                <div class="col-md-3">
+                    <h3>Session Location Preference</h3> 
+                </div>
+                </div>
+                <div class="row">
+                <div class="col-md-3">
+                    <p class="lead" id="session_prefParent"></p>
+                </div> 
+                </div>
+                <div class="row">
+                <div class ="col-md-3">
+                    <h3>Prefer Background Checked Tutors</h3> 
+                </div>
+                </div>
+                <div class="row">
+                <div class="col">
+                    <p class="lead" id="background_checkParent"></p>
+                </div> 
+                </div>
+            </div>
+
+            <div id="tutorInfo" class="d-none">
+                <br>
+                <h3>Session Preferences</h3>
+                <br>
+                <div class="row">
+                <div class="col-md-3">
+                    <h3>Minimum Session Rate</h3>
+                </div> 
+                </div>
+                <div class="row">
+                <div class="col-md-3">
+                <p class="lead" id="minSessionTutor"></p>
+                </div>
+                </div>
+                <div class="row">
+                <div class="col-md-3">
+                    <h3>Session Location Preference</h3> 
+                </div>
+                </div>
+                <div class="row">
+                <div class="col-md-3">
+                    <p class="lead" id="session_prefTutor"></p>
+                </div> 
+                </div>
+                <div class="row">
+                <div class="col-md-3">
+                    <h3>Grade Level(s)</h3> 
+                </div>
+                </div>
+                <div class="row">
+                <div class="col-md-3">
+                    <p class="lead" id="gradesTutor"></p>
+                </div> 
+                </div>
+                <div class="row">
+                <div class="col-md-3">
+                    <h3>Subject(s)</h3> 
+                </div>
+                </div>
+                <div class="row">
+                <div class="col-md-3">
+                    <p class="lead" id="subjectsTutor"></p>
+                </div> 
+                </div>
+                <div class="row">
+                <div class ="col-md-3">
+                    <h3>About Me</h3> 
+                </div>
+                </div>
+                <div class="row">
+                <div class="col">
+                    <p class="lead" id="bioTutor"></p>
+                </div> 
+                </div>
+            </div>
 
     </div>
-    <button type="submit" class="btn btn-lg btn-primary">Register</button>
-    <a href="register_parent.html">Go Back</a>
+    <button type="submit" class="btn btn-lg btn-primary" onclick="create_account()">Register</button>
+    <a class="btn btn-lg btn-primary" href="register.html" role="button">Go Back</a>
 
 
 <script src="https://www.gstatic.com/firebasejs/8.2.6/firebase-app.js"></script>
@@ -139,7 +235,7 @@
 
 <script src="fire.js"></script>
 <script src="accountHandle.js"></script>
-<script src="review.js"></script>
+<script src="register_scripts.js"></script>
 <script>$("select").imagepicker()</script>
 </body>
 </html>
