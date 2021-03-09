@@ -3,7 +3,7 @@ firebase.auth().onAuthStateChanged(function(user) {
     // User is signed in. Show appropiate elements for signed in user and vice-versa.
     console.log("USER SIGNED IN");
     if (location.pathname.substring(location.pathname.lastIndexOf("/") + 1,location.pathname.lastIndexOf(".")) == "sign_in"){
-      location.replace("index.html");
+      location.replace("home.html");
     }
     $('[class$="logged_in"]').css('display', 'block');
     $('[class$="not_logged_in"]').css('display', 'none');
@@ -22,7 +22,7 @@ function login(){
   var userPass = document.getElementById("inputPassword").value;
 
   firebase.auth().signInWithEmailAndPassword(userEmail, userPass).then(function() {
-	  location.replace("index.html");
+	  location.replace("home.html");
 	})
 	.catch(function(error) {
     // Handle Errors here.
@@ -53,7 +53,7 @@ function resetPassword(){
 //Log user out and refresh page to diplay correct elements
 function logout(){
   firebase.auth().signOut();
-  location.replace("sign_in.html");
+  location.replace("index.html");
   return true;
 }
 
