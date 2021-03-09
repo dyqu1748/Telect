@@ -53,7 +53,7 @@ function resetPassword(){
 //Log user out and refresh page to diplay correct elements
 function logout(){
   firebase.auth().signOut();
-  location.replace("sign_in.html");
+  location.replace("index.html");
   return true;
 }
 

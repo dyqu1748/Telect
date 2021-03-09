@@ -431,3 +431,16 @@ function create_account(){
 });
 
 }
+
+function get_username_and_email() {
+  firebase.auth().onAuthStateChanged(function(user) {
+    if (user != null) {
+      first_name = user.first_name;
+      email = user.email;
+      document.getElementById("thanks_name").innerHTML += first_name + "."
+      document.getElementById("verify_email").innerHTML += email + "."
+    } else {
+      console.log("user is null :(");
+    }
+  });
+}
