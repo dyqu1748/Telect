@@ -2,7 +2,8 @@ var child_counter = 0;
 
 // Make sure parent doesn't put lower max session value when compared to min session
 $('#minSession').change(function(){
-  $('#maxSession').attr('min', ($('#minSession').val()+0.01));
+  var newMin = parseFloat($('#minSession').val())+0.01;
+  $('#maxSession').attr('min', newMin);
 });
 
 function storeAccountType(account_type){
@@ -110,6 +111,23 @@ function reviewInfo(){
       }
         $('#tutorInfo').removeClass("d-none");
     }
+    var url  = "https://us-central1-telect-6026a.cloudfunctions.net/availableLocations/" + basicInfo['state'] + "/" + basicInfo['city'];
+    const request = async (url) => {
+      const response = await fetch(url);
+      
+      if (!response.ok) {
+        const message = `An error has occured: ${response.status}`;
+        throw new Error(message);
+      }
+
+      const json = await response.json();
+      console.log(json);
+      if (json.success == false){
+        alert("Telect does not currently serve the area that you are currently in. However, you may still make an account and we will inform you when Telect has begun supporting your current area.");
+      }
+    }
+    
+    request(url);
 }
 
 function show_form(){
