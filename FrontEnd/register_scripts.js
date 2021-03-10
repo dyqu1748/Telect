@@ -1,38 +1,34 @@
-$(document).ready(function() {
-    if (document.title == "Telect - Account Register Review"){
-        reviewInfo();
-    }
-    else{
-        var account_type = sessionStorage.getItem("account_type");
-        if (account_type == 'parent'){
-            $('#tutorFields').remove();
-        }
-        else{
-            $('#parentFields').remove();
-        }
-        if (JSON.parse(sessionStorage.getItem("basicInfo")) != null){
-            reloadInfo();
-        }
-    }
-    
+var child_counter = 0;
+
+// Make sure parent doesn't put lower max session value when compared to min session
+$('#minSession').change(function(){
+  $('#maxSession').attr('min', ($('#minSession').val()+0.01));
 });
 
 function storeAccountType(account_type){
+    if (account_type == 'parent'){
+        $('#tutorFields').remove();
+    }
+    else{
+        $('#parentFields').remove();
+    }
     sessionStorage.setItem("account_type", account_type);
-    location.replace("register.html");
+    $("#account_choice").addClass("d-none");
+    $('#register_fields').fadeIn();
 }
 
 function reviewInfo(){
+    window.scrollTo(0, 0);
     var basicInfo = JSON.parse(sessionStorage.getItem("basicInfo"));
     var account_specific= JSON.parse(sessionStorage.getItem("account_specific"));
+    // console.log(account_specific);
+
     for (let id in basicInfo){
-        console.log(id);
-        console.log(basicInfo[id]);
         if (basicInfo[id] == ""){
-            $('#'+id).text("N/A");
+            $('#'+id+"Review").text("N/A");
         }
         else{
-            $('#'+id).text(basicInfo[id])
+            $('#'+id+"Review").text(basicInfo[id])
         }
     }
     if (account_specific.accountType == "parent"){
@@ -101,79 +97,28 @@ function reviewInfo(){
         for (let id in account_specific){
             $('#'+id+"Tutor").text(account_specific[id]);
         }
+        $('#resumeTutor').text($('#resume').prop('files')[0].name);
+        var photo = $('#photo').prop('files')[0];
+        if(photo){
+          var reader = new FileReader();
+
+          reader.onload = function(){
+              $("#photoTutor").attr("src", reader.result);
+          }
+
+          reader.readAsDataURL(photo);
+      }
         $('#tutorInfo').removeClass("d-none");
     }
 }
 
-function reloadInfo(){
-    var basicInfo = JSON.parse(sessionStorage.getItem("basicInfo"));
-    var account_specific = JSON.parse(sessionStorage.getItem("account_specific"));
-
-    for (let id in basicInfo){
-        $('#'+id).val(basicInfo[id])
-    }
-    console.log(account_specific);
-    if (account_specific['accountType'] == 'parent'){
-        for (let id in account_specific){
-        if (id == 'background_check' || id == 'session_pref'){
-            $('#'+id+"_"+account_specific[id]).click();
-        }
-        else{
-            $('#'+id).val(account_specific[id])
-        }
-        }
-        if (account_specific['childData'].length > 0){
-        showAddChild();
-        account_specific['childData'].forEach(function(child,index){
-            if (index == 0){
-            $('#childName').val(child.child_name);
-            $('#grade').val(child.grade).change();
-            $('#avatar').val(child.avatar);
-            $('#subjects').val(child.subjects);
-            $('#avatar').val(child.avatar).change();
-            }
-            else{
-            console.log(index+1);
-            addChildForm();
-            $('#childName'+(index+1)).val(child.child_name);
-            $('#grade'+(index+1)).val(child.grade).change();
-            $('#avatar'+(index+1)).val(child.avatar);
-            $('#subjects'+(index+1)).val(child.subjects);
-            $('#avatar'+(index+1)).val(child.avatar).change();
-            }
-        });
-        
-        }
-    }
-    else{
-        for (let id in account_specific){
-        if (id == 'session_pref'){
-            $('#'+id+"_"+account_specific[id]).click();
-        }
-        else if (id == 'grades'){
-            account_specific[id].forEach(function(gradeLevel){
-            $('#'+id+"_"+gradeLevel).click();
-            });
-        }
-        else{
-            $('#'+id).val(account_specific[id])
-        }
-        }
-    }
-    $('.selectpicker').selectpicker('refresh');
+function show_form(){
+    $('#review_div').css('display','none');
+    $('#register_fields').fadeIn();
+    window.scrollTo(0, 0);
 }
 
-function redirect(){
-    var account_specific= JSON.parse(sessionStorage.getItem("account_specific"));
-    if (account_specific['accountType'] == 'parent'){
-        location.replace("register_parent.html");
-    }
-    else{
-        location.replace("register_tutor.html");
-    }
-}
-
-function review_info(){
+function display_review(){
     var account_type = sessionStorage.getItem("account_type");
     var userEmail = document.getElementById("email").value;
     firebase.auth().fetchSignInMethodsForEmail(userEmail)
@@ -267,12 +212,15 @@ function review_info(){
             'subjects':subjects,
             'session_pref': session_pref,
             'bio':bio,
-            'accountType':'tutor'
+            'accountType':'tutor',
           }
         }
         sessionStorage.setItem("basicInfo", JSON.stringify(basicInfo));
         sessionStorage.setItem("account_specific", JSON.stringify(account_specific));
-        location.replace('register_review.html');
+        // location.replace('register_review.html');
+        reviewInfo();
+        $('#register_fields').css('display','none');
+        $('#review_div').fadeIn();
         return false;
       }
     })
@@ -284,8 +232,6 @@ function review_info(){
     });
     return false;
 }
-
-var child_counter = 0;
 
 function showAddChild() {
     child_counter++;
@@ -376,13 +322,14 @@ function delChildForm() {
 }
 
 function create_account(){
+  $('#loading_icon').fadeIn();
+  $('#review_div').css('filter', 'blur(1.5rem)');
   var basicInfo = JSON.parse(sessionStorage.getItem("basicInfo"));
   var account_specific= JSON.parse(sessionStorage.getItem("account_specific"));
-
   firebase.auth().createUserWithEmailAndPassword(basicInfo['email'], basicInfo['inputPassword']).then(cred => {
     verify_email();
     db.collection('users').doc(cred.user.uid).set({
-      "user_type":"tutor",
+      'email':basicInfo['email'],
       "first_name": basicInfo['fname'],
       "last_name": basicInfo['lname'],
       "phone": basicInfo['phone'],
@@ -395,6 +342,7 @@ function create_account(){
 
     if (account_specific['accountType'] == 'parent'){
       return db.collection('users').doc(cred.user.uid).update({
+        "user_type":"parent",
         "minSession": account_specific['minSession'],
         "maxSession": account_specific['maxSession'],
         "location_pref": account_specific['session_pref'], 
@@ -404,12 +352,27 @@ function create_account(){
 
     }
     else{
-      return db.collection('users').doc(cred.user.uid).update({
-        "minSession": account_specific['minSession'],
-        "location_pref": account_specific['session_pref'], 
-        "grade": account_specific['grades'],
-        "subjects": account_specific['subjects'],
-        "bio": account_specific['bio']
+      var resumeFile = $('#resume').prop('files')[0];
+      var profilePic = $('#photo').prop('files')[0];
+      var storageRef = firebase.storage().ref();
+      var resumeRef = storageRef.child(cred.user.uid+'/'+resumeFile.name);
+      var picRef = storageRef.child(cred.user.uid+'/'+profilePic.name);
+      return resumeRef.put(resumeFile,resumeFile.type).then((snapshot) =>{
+        console.log("Uploaded resume!");
+      })
+      .then(() => {
+        return picRef.put(profilePic,profilePic.type).then((snapshot) =>{
+          console.log("Uploaded profile pic!");
+        });
+      }).then(() =>{
+        return db.collection('users').doc(cred.user.uid).update({
+          "user_type":"tutor",
+          "minSession": account_specific['minSession'],
+          "location_pref": account_specific['session_pref'], 
+          "grade": account_specific['grades'],
+          "subjects": account_specific['subjects'],
+          "bio": account_specific['bio']
+        });
       })
     }
     // ---
