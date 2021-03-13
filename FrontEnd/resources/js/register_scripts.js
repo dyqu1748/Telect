@@ -113,7 +113,7 @@ function reviewInfo(){
     }
     var url  = "https://us-central1-telect-6026a.cloudfunctions.net/availableLocations/" + basicInfo['state'] + "/" + basicInfo['city'];
     const request = async (url) => {
-      const response = await fetch(url);
+      const response = await fetch(url, {credentials: 'include'});
       
       if (!response.ok) {
         const message = `An error has occured: ${response.status}`;
@@ -326,17 +326,8 @@ function addChildForm() {
 }
 
 function delChildForm() {
-  if (child_counter == 1){
-    $("#addChildButton").addClass('d-none');
-    $("#remChildButton").addClass('d-none');
-    $("#add-child").removeClass("d-none");
-    $("#child-form1").addClass('d-none');
-  }
-  else{
-    $("#child-form"+child_counter).remove();
-  }
+  $("#child-form"+child_counter).remove();
   child_counter--;
-  
 }
 
 function create_account(){
