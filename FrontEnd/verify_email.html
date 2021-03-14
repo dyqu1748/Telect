@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Telect - Home</title>
+<title>Telect - Verify Email</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -10,24 +10,28 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
-<body>
+<body onload = "get_username_and_email()">
 
     <div class="container-fluid">
         <div class="row justify-content-center">
-            <h1>Sign Up</h1>
-        </div>
-        <br>
-        <div class = "row justify-content-center">
-            <button class="btn btn-primary btn-lg" onclick="storeAccountType('parent')">I am a Parent</button>
-        </div>
-    </br>
+            <h2>Welcome to Telect!</h2>
+        </div>    
+            <br>
         <div class="row justify-content-center">
-            <button class="btn btn-primary btn-lg" onclick="storeAccountType('tutor')">I am a Tutor</a>
+            <h3 id = "thanks_name"> Thanks for joining, </h3>
+        </div>
+            <br>
+        <div class="row justify-content-center">
+            <p id = "verify_email">We have sent a verification email to </p>
+        </div>
+        <div class="row justify-content-center">    
+            <p>Follow the instructions there to get started!</p>
         </div>
         <br>
 
-        <div class="row justify-content-center">
-            <p>Already have an account? <a href="sign_in.html"> Log in!</a></p>
+        <br>
+        <div class = "row justify-content-center">
+            <button type="submit" class="btn btn-lg btn-primary" onclick="logout()">Got It!</button>
         </div>
     </div>
 
@@ -42,8 +46,12 @@
 <script src="https://www.gstatic.com/firebasejs/8.2.6/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.2.6/firebase-database.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.2.6/firebase-firestore.js"></script>
-<script src="fire.js"></script>
-<script src="accountHandle.js"></script>
-<script src="register_scripts.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.2.6/firebase-storage.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.2.10/firebase-functions.js"></script>
+
+
+<script src="resources/js/fire.js"></script>
+<script src="resources/js/accountHandle.js"></script>
+<script src="resources/js/register_scripts.js"></script>
 </body>
 </html>
