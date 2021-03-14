@@ -1,3 +1,9 @@
+#user_name {
+    margin-top: 50px;
+    margin-bottom: 50px;
+    color: #5476FB;
+}
+
 .wrapper {
     display: grid;
     grid-template-columns: 300px 300px 300px;
@@ -20,6 +26,16 @@
     width: 300px;
     height: 200px;
     
+}
+
+#find_tutors {
+    display: flex;
+    /* flex-direction: column; */
+    border-radius: 25px;
+    background: #5476FB;
+    padding: 20px;
+    width: 300px;
+    height: 200px;
 }
 
 #view_schedule {
