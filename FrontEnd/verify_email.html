@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Telect - Verify Email</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body onload = "get_username_and_email()">
+
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <h2>Welcome to Telect!</h2>
+        </div>    
+            <br>
+        <div class="row justify-content-center">
+            <h3 id = "thanks_name"> Thanks for joining, </h3>
+        </div>
+            <br>
+        <div class="row justify-content-center">
+            <p id = "verify_email">We have sent a verification email to </p>
+        </div>
+        <div class="row justify-content-center">    
+            <p>Follow the instructions there to get started!</p>
+        </div>
+        <br>
+
+        <br>
+        <div class = "row justify-content-center">
+            <button type="submit" class="btn btn-lg btn-primary" onclick="logout()">Got It!</button>
+        </div>
+    </div>
+
+
+
+<script src="https://www.gstatic.com/firebasejs/8.2.6/firebase-app.js"></script>
+
+  <!-- If you enabled Analytics in your project, add the Firebase SDK for Analytics -->
+<script src="https://www.gstatic.com/firebasejs/8.2.6/firebase-analytics.js"></script>
+
+<!-- Add Firebase products that you want to use -->
+<script src="https://www.gstatic.com/firebasejs/8.2.6/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.2.6/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.2.6/firebase-firestore.js"></script>
+<script src="fire.js"></script>
+<script src="accountHandle.js"></script>
+<script src="register_scripts.js"></script>
+</body>
+</html>

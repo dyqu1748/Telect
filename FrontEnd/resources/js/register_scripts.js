@@ -389,7 +389,7 @@ function create_account(){
   .then(() => {
     sessionStorage.removeItem("basicInfo");
     sessionStorage.removeItem("account_specific");
-    return logout();
+    location.replace("verify_email.html");
   })
   .catch(function(error) {
     // Handle Errors here.
@@ -402,4 +402,25 @@ function create_account(){
   
 });
 
+}
+
+function get_username_and_email() {
+  firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+      console.log("User found");
+      var user = firebase.auth().currentUser;
+      console.log(user.uid);
+  
+    db.collection('users').doc(user.uid).onSnapshot((doc)=> {
+      data = doc.data();
+      console.log("all data", data);
+      console.log("first_name", data.first_name);
+      document.getElementById("thanks_name").innerHTML += data.first_name + "."
+      document.getElementById("verify_email").innerHTML += user.email + "."
+    });
+    } else {
+      console.log("No user signed in");
+    }
+  });
+  
 }
