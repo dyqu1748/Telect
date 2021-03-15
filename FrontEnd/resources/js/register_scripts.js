@@ -1,9 +1,16 @@
 var child_counter = 0;
 
+var subject_keys = {'math':'Math','geometry':'Geometry','pre-algebra':'Pre-Algebra','algebra':'Algebra','science':'Science','geology':'Geology','chemistry':'Chemistry','social_studies':'Social Studies','govtHist': 'U.S. Government and History','language_arts':'Language Arts','spanish': 'Spanish'};
+var location_keys = {'online':'Online','in_person':'In Person'};
+var grade_keys = {'k':'Kindergarten', '1':'1st Grade', '2':'2nd Grade', '3':'3rd Grade', '4':'4th Grade', '5':'5th Grade', '6':'6th Grade', '7':'7th Grade', '8':'8th Grade'}; 
 // Make sure parent doesn't put lower max session value when compared to min session
 $('#minSession').change(function(){
   var newMin = parseFloat($('#minSession').val())+0.01;
   $('#maxSession').attr('min', newMin);
+});
+
+$( document ).ready(function() {
+  $("#account_choice").fadeIn("slow");
 });
 
 function storeAccountType(account_type){
@@ -35,17 +42,38 @@ function reviewInfo(){
     if (account_specific.accountType == "parent"){
         for (let id in account_specific){
             if (id != "childData"){
+              if (id == "session_pref"){
+                $('#'+id+"Parent").text(location_keys[account_specific[id]]);
+              }
+              else if(id == "background_check"){
+                if (account_specific[id] == 'no'){
+                  $('#'+id+"Parent").text('No');
+                }
+                else{
+                  $('#'+id+"Parent").text('Yes');
+                }
+              }
+              else{
                 $('#'+id+"Parent").text(account_specific[id]);
+              }
+                
             }
         }
         var childData = account_specific['childData'];
         if (childData.length > 0){
-            var allChildInfo = `<br><h3>Child Information</h3><br>`;
+            var allChildInfo = `<br><h2><u>Child Information</u></h2><br>`;
             childData.forEach(function(child,index){
+                var all_subjects = "";
+                child.subjects.forEach(function(subject,subInd){
+                  all_subjects+= subject_keys[subject];
+                  if (subInd < child.subjects.length-1){
+                    all_subjects+= ', ';
+                  }
+                });
                 allChildInfo += `
                 <div class="row">
                 <div class="col-md-3">
-                    <h3>Child ${index+1}</h3> 
+                    <h2><u>Child ${index+1}</u></h2> 
                 </div>
                 </div>
                 <div class="row">
@@ -65,7 +93,7 @@ function reviewInfo(){
                 </div>
                 <div class="row">
                     <div class="col">
-                        <p class="lead">${child.grade}</p>
+                        <p class="lead">${grade_keys[child.grade]}</p>
                 </div> 
                 </div>
                 <div class="row">
@@ -75,7 +103,7 @@ function reviewInfo(){
                 </div>
                 <div class="row">
                     <div class="col">
-                        <p class="lead">${child.subjects}</p>
+                        <p class="lead">${all_subjects}</p>
                 </div> 
                 </div>
                 <div class="row">
@@ -85,18 +113,53 @@ function reviewInfo(){
                 </div>
                 <div class="row">
                     <div class="col">
-                        <p class="lead">${child.avatar}</p>
+                        <img src="resources/img/child-${child.avatar}.png" style="width: 10%">
                 </div> 
-                </div>`; 
+                </div>
+                <br>`;
+                for (let subject in child.subjects){
+                  $('#subjectsReview').append(subject_keys[subject]);
+                }
                 });
-            console.log(allChildInfo);
             $('#parentInfo').append(allChildInfo);
         }
         $('#parentInfo').removeClass("d-none"); 
     }
     else{
         for (let id in account_specific){
+          if (id == 'subjects'){
+            var all_subjects = "";
+            account_specific[id].forEach(function(subject,ind){
+              all_subjects+=subject_keys[subject];
+              if (ind < account_specific[id].length-1){
+                all_subjects+= ', ';
+              }
+            });
+            $('#'+id+'Tutor').text(all_subjects);
+          }
+          else if (id == "session_pref"){
+            var all_loc = "";
+            account_specific[id].forEach(function(locat,ind){
+              all_loc +=location_keys[locat];
+              if (ind < account_specific[id].length-1){
+                all_loc+=', '
+              }
+            });
+            $('#'+id+'Tutor').text(all_loc);
+          }
+          else if (id == "grades"){
+            var all_grades = "";
+            account_specific[id].forEach(function(grade,ind){
+              all_grades+=grade_keys[grade];
+              if (ind < account_specific[id].length-1){
+                all_grades+= ', ';
+              }
+            })
+            $('#'+id+'Tutor').text(all_grades);
+          }
+          else{
             $('#'+id+"Tutor").text(account_specific[id]);
+          }
         }
         $('#resumeTutor').text($('#resume').prop('files')[0].name);
         var photo = $('#photo').prop('files')[0];
@@ -113,7 +176,7 @@ function reviewInfo(){
     }
     var url  = "https://us-central1-telect-6026a.cloudfunctions.net/availableLocations/" + basicInfo['state'] + "/" + basicInfo['city'];
     const request = async (url) => {
-      const response = await fetch(url, {credentials: 'include'});
+      const response = await fetch(url);
       
       if (!response.ok) {
         const message = `An error has occured: ${response.status}`;
@@ -289,9 +352,10 @@ function showAddChild() {
 
     <h3 class="header-control">Choose an avatar for your child</h3>
     <select id="avatar" class="image-picker show-html" required>
-        <option data-img-src="https://c-sf.smule.com/rs-s23/arr/d6/75/227c4be5-3914-427b-91be-eac339869d70_1024.jpg" value="avatar1">Avatar 1</option>
-        <option data-img-src="https://static.zerochan.net/Dango.%28CLANNAD%29.full.113867.jpg" value="avatar2">Avatar 2</option>
-        <option data-img-src="https://static.zerochan.net/Dango.%28CLANNAD%29.full.113865.jpg" value="avatar3">Avatar 3</option>
+        <option data-img-src="resources/img/child-avatar1.png" value="avatar1">Avatar 1</option>
+        <option data-img-src="resources/img/child-avatar2.png" value="avatar2">Avatar 2</option>
+        <option data-img-src="resources/img/child-avatar3.png" value="avatar3">Avatar 3</option>
+        <option data-img-src="resources/img/child-avatar4.png" value="avatar4">Avatar 4</option>
     </select>`;
     $("#child-form1").append(childHTML);
       $("#grade").selectpicker('refresh');
