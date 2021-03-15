@@ -6,43 +6,40 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-<link rel="stylesheet" href="index.css">
-<link rel="stylesheet" href="user_css.css">
+<link rel="stylesheet" href="resources/css/index.css">
+<link rel="stylesheet" href="resources/css/user_css.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <body>
+  <div id="page-container">
+    <div id="content-wrap">
 <div>
-  <nav class="navbar navbar-expand-sm bg-primary navbar-dark">
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
     <a class="navbar-brand" href="#page-top">
-      <img src="logo-without-computer-resize.png" alt="Logo" style="width: 22.5%;">
+      <img src="resources/img/logo-without-computer-resize.png" alt="Logo" style="width: 22.5%;">
     </a>
 
     <ul class="navbar-nav ml-auto"> 
-      <li class="nav-item not_logged_in"> 
-        <a class="btn btn-warning ml-auto mr-1" href="sign_in.html">Sign In</a>
+      <li class="nav-item"> 
+        <a class="btn btn-warning rounded-pill ml-auto mr-3" href="sign_in.html">Sign In</a>
       </li> 
-      <li class="nav-item not_logged_in"> 
-        <a class="btn btn-light ml-auto mr-1" href="register.html">Sign Up</a>
+      <li class="nav-item"> 
+        <a class="btn btn-light rounded-pill ml-auto mr-3" href="register.html">Sign Up</a>
       </li> 
-      <li class="nav-item logged_in"> 
-        <a class="btn btn-light ml-auto mr-1" href="account_page.html">Manage Account</a>
-      </li> 
-      <li class="nav-item logged_in">
-        <button class="btn btn-danger" onclick="logout()">Log Out</button>
       </li>
   </ul> 
     
   </nav>
 </div>
 
-<header class="masthead text-white text-center">
-  <div class="container">
-    <div class="row">
-      <div class="col-xl-9 mx-auto">
-        <h1 class="mb-5">Catchy Quote Here</h1>
-      </div>
+<header class="masthead text-center text-white">
+  <div class="masthead-content">
+    <div class="container">
+      <h1 class="masthead-heading mb-0">A Better Way to Finding Tutors</h1>
+      <!-- <h2 class="masthead-subheading mb-0">Select with Telect</h2> -->
+      <a href="#about_us" class="btn btn-primary btn-lg rounded-pill mt-5">Learn More</a>
     </div>
   </div>
 </header>
@@ -60,7 +57,7 @@
             </svg>
           </div>
           <h3>Save Time</h3>
-          <p class="lead mb-0">Put text here.</p>
+          <p class="lead mb-0">Get quickly matched with tutors that meets your child's educational needs.</p>
         </div>
       </div>
       <div class="col-lg-4">
@@ -72,7 +69,7 @@
             </svg>
           </div>
           <h3>Save Money</h3>
-          <p class="lead mb-0">Put text here.</p>
+          <p class="lead mb-0">Find tutors that fit your budget with our Name Your Price system.</p>
         </div>
       </div>
       <div class="col-lg-4">
@@ -83,40 +80,40 @@
             </svg>
           </div>
           <h3>Help Others</h3>
-          <p class="lead mb-0">Put text here.</p>
+          <p class="lead mb-0">A portion of our revenue will be put towards pro bono session for children in lower-income families.</p>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<section class="mission">
+<section class="mission" id="about_us">
   <div class="container-fluid">
     <div class="row">
       <div class="col-lg-8 mx-auto">
-        <h2>Our Mission</h2>
-        <p class="lead">We're driven on making enriched tutoring accessible for all families by bringing together parents, students, and educators.</p>
+        <h2>About Us</h2>
+        <p class="lead">Telect is a web-based tutoring platform on a mission to give every child access to tutoring resources no matter their financial circumstances. We do this using a Name Your Price strategy where both parents and tutors set what they can pay and earn for a session.This price can even be zero, so those who otherwise couldn't afford help can still receive it. Through subsidizing a portion of our revenue and volunteer tutors we will be able to achieve this cost for middle and low income families.</p>
       </div>
     </div>
   </div>
 </section>
-
-<footer class="py-4  bg-dark">
+</div>
+<footer id="footer" class="py-5 bg-dark">
   <div class="container">
-    <p class="m-0 text-center text-white">&copy; 2021 Telect</p>
+    <p class="m-0 text-center text-white">Copyright &copy; 2021 - Telect</p>
   </div>
 </footer>
-
-<script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
-
-  <!-- If you enabled Analytics in your project, add the Firebase SDK for Analytics -->
-<script src="https://www.gstatic.com/firebasejs/8.2.6/firebase-analytics.js"></script>
+</div>
+<script src="https://www.gstatic.com/firebasejs/8.2.6/firebase-app.js"></script>
 
 <!-- Add Firebase products that you want to use -->
 <script src="https://www.gstatic.com/firebasejs/8.2.6/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.2.6/firebase-database.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-firestore.js"></script>
-<script src="fire.js"></script>
-<script src="accountHandle.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.2.6/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.2.6/firebase-storage.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.2.10/firebase-functions.js"></script>
+<script src="resources/js/fire.js"></script>
+<script src="resources/js/accountHandle.js"></script>
+<script src="resources/js/home_page.js"></script>
 </body>
 </html>

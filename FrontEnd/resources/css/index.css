@@ -1,0 +1,85 @@
+header.masthead {
+  position: relative;
+  overflow: hidden;
+  padding-top: calc(7rem + 72px);
+  padding-bottom: 7rem;
+  background: url("https://cms-tc.pbskids.org/parents/articles/When-to-Get-a-Math-Tutor-for-Your-Child.jpg?mtime=20181203090023") no-repeat center center;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-attachment: scroll;
+  background-size: cover;
+}
+
+header.masthead .masthead-content {
+  z-index: 1;
+  position: relative;
+}
+
+header.masthead .masthead-content .masthead-heading {
+  font-size: 4rem;
+}
+
+header.masthead .masthead-content .masthead-subheading {
+  font-size: 2rem;
+}
+
+nav, .btn-primary{
+  background-color: #5476FB;
+}
+
+.btn-primary:hover{
+  background-color: #2f59ff;
+}
+
+@media (min-width: 768px) {
+  header.masthead {
+    padding-top: 12rem;
+    padding-bottom: 12rem;
+  }
+  header.masthead h1 {
+    font-size: 3rem;
+  }
+}
+
+.benefits {
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+}
+
+.benefits .benefits-item {
+    max-width: 20rem;
+}
+
+.benefits .benefits-item .benefits-icon {
+    height: 7rem;
+}
+
+.benefits .benefits-item .benefits-icon svg {
+    font-size: 4.5rem;
+  }
+
+.mission{
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+}
+
+#page-container {
+  position: relative;
+  min-height: 100vh;
+}
+
+#content-wrap {
+  padding-bottom: 2.5rem;    /* Footer height */
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 2.5rem;            /* Footer height */
+}
+
+
+html {
+  scroll-behavior: smooth;
+}
