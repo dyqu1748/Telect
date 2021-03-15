@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="resources/css/index.css">
+    <link rel="stylesheet" href="resources/css/user_css.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<h2 class="text-center" id = "user_name">Here are your matches</h2>
+</br>
+
+<div class="container">
+    <div class="row">
+        <div class="card w-75">
+            <div class="card-body">
+                <div class="row">
+                <h5 class="card-title">John Doe</h5>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="row">
+                            <a href="#" class="btn btn-primary">Request Tutor</a>
+                        </div>
+                        <div class="row">
+                            <a href="#" class="stretched-link">More Info</a>
+                        </div>
+                    </div>
+                <div class="col">
+                    <p class="card-text">Location: Westminster, CO</p>
+                    <p class="card-text">Desired Hourly Rate: $10</p>
+                    <p class="card-text">Subjects: Math</p>
+                    <p class="card-text">Online and In-Person</p>
+                    <p class="card-text">About me: insert bio here</p>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="tutor-matches"></div>
+</div>
+
+
+
+<script src="https://www.gstatic.com/firebasejs/8.2.6/firebase-app.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/8.2.6/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.2.6/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.2.6/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.2.6/firebase-storage.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.2.10/firebase-functions.js"></script>
+<script src="resources/js/fire.js"></script>
+<script src="resources/js/findTutors.js"></script>
+</body>
+</html>
