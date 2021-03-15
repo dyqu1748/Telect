@@ -31,11 +31,11 @@
         <img src="resources/img/logo-without-computer-resize.png" alt="Logo" style="width: 22.5%;">
       </a>
   
-      <ul class="navbar-nav ml-auto"> 
-        <li class="nav-item logged_in">
+      <ol id = "nav_items" class="navbar-nav ml-auto"> 
+        <li class="nav-item logged_in" value = "7">
           <button class="btn btn-danger" onclick="logout()">Log Out</button>
         </li>
-    </ul> 
+      </ol>  
       
     </nav>
   </div>
@@ -46,7 +46,7 @@
   <div class="container-fluid">
     <form id="display-details" onsubmit="return updateaccount()">
     </form>
-    <a class="btn btn-primary" href="index.html">Return Home</a>
+    <a class="btn btn-primary" href="home.html">Return Home</a>
   </div>
 
   
