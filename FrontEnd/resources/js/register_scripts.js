@@ -186,7 +186,7 @@ function reviewInfo(){
       const json = await response.json();
       console.log(json);
       if (json.success == false){
-        alert("Telect does not currently serve the area that you are currently in. However, you may still make an account and we will inform you when Telect has begun supporting your current area.");
+        alert("Telect does not currently serve the area that you are currently in, so matching for in-person sessions will be unavailable. However, you may still make an account and we will inform you when Telect has begun supporting your current area.");
       }
     }
     
