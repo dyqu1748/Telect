@@ -1,0 +1,56 @@
+.scheduler {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(25, 1fr);
+    gap: 0px 0px;
+    grid-template-areas:
+        ". . . . . . ."
+        ". . . . . . ."
+        ". . . . . . ."
+        ". . . . . . ."
+        ". . . . . . ."
+        ". . . . . . ."
+        ". . . . . . ."
+        ". . . . . . ."
+        ". . . . . . ."
+        ". . . . . . ."
+        ". . . . . . ."
+        ". . . . . . ."
+        ". . . . . . ."
+        ". . . . . . ."
+        ". . . . . . ."
+        ". . . . . . ."
+        ". . . . . . ."
+        ". . . . . . ."
+        ". . . . . . ."
+        ". . . . . . ."
+        ". . . . . . ."
+        ". . . . . . ."
+        ". . . . . . ."
+        ". . . . . . .";
+}
+
+.scheduler_item {
+    border:0.5px solid gray;
+    background-color: #ff9194;
+    display: inline-grid;
+    place-items: center;
+
+}
+
+.scheduler_item:hover {
+    background-color: #82c291c5;
+}
+
+.scheduler_item_selected {
+    border:0.5px solid gray;
+    background-color: #A7FBBB;
+    display: inline-grid;
+    place-items: center;
+}
+
+.scheduler_item_selected:hover {
+    background-color: #82c291c5;
+}
+
+
