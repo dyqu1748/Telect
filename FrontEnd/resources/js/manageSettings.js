@@ -2,12 +2,11 @@
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
     console.log("User found");
-    var user = firebase.auth().currentUser;
 	console.log(user.uid);
 
 	db.collection('users').doc(user.uid).onSnapshot((doc)=> {
 		console.log(doc.data());
-		displayProfile(doc.data());
+		displayProfile(doc.data(),user);
 	});
   } else {
     console.log("No user signed in");
@@ -15,13 +14,33 @@ firebase.auth().onAuthStateChanged(function(user) {
   }
 });
 
-function displayProfile(data)
+var subject_keys = {'math':'Math','geometry':'Geometry','pre-algebra':'Pre-Algebra','algebra':'Algebra','science':'Science','geology':'Geology','chemistry':'Chemistry','social_studies':'Social Studies','govtHist': 'U.S. Government and History','language_arts':'Language Arts','spanish': 'Spanish'};
+var location_keys = {'online':'Online','in_person':'In Person'};
+var grade_keys = {'k':'Kindergarten', '1':'1st Grade', '2':'2nd Grade', '3':'3rd Grade', '4':'4th Grade', '5':'5th Grade', '6':'6th Grade', '7':'7th Grade', '8':'8th Grade'}; 
+
+function displayProfile(data,user)
 {
 	// Account Info
 	for (let key in data){
 		console.log(key);
 	}
-	var html =  `<div class="row">
+	var all_loc ="";
+	if (typeof data.location_pref != "string"){
+		data.location_pref.forEach(function(locat,ind){
+		all_loc+= location_keys[locat]
+		if (ind < data.location_pref.length-1){
+			all_loc +=', ';
+		}
+	});
+	}
+	else{
+		all_loc = location_keys[data.location_pref];
+	}
+	
+	var html =  `<br>  
+			<h2><u>User information</u></h2> 
+			<br>
+				<div class="row">
 					<div class ="col-md-3">
 						<h3>Name</h3>
 					</div>
@@ -35,22 +54,21 @@ function displayProfile(data)
 			  	<div class="col-md-3">
 			  		<h3>Email</h3>
 				</div>
-			  </div>
-			  <div class="row">
-			 	<div class="col-md-3">
-				 	<p class="lead">${data.email}</p>
-				 </div> 
-			  </div>
-			  <div class="row">
-			  	<div class="col-md-3">
+				<div class="col-md-3">
 					<h3>Phone Number</h3>
 				</div>
 			  </div>
 			  <div class="row">
 			 	<div class="col-md-3">
+				 	<p class="lead">${data.email}</p>
+				 </div>
+				 <div class="col-md-3">
 				 	<p class="lead">${data.phone}</p>
 				 </div> 
 			  </div>
+			  <br>
+				<h2><u>Location Information</u></h2>
+				<br>
 			  <div class="row">
 			  	<div class="col-md-3">
 					<h3>Address</h3>
@@ -89,6 +107,9 @@ function displayProfile(data)
 					<p class="lead">${data.zipCode}</p>
 				 </div>  
 			  </div>
+			  <br>
+			<h2><u>Session Preferences</u></h2>
+			<br>
 			  <div class="row">
 				<div class ="col-md-3">
 					<h3>Location Preference</h3> 
@@ -96,7 +117,7 @@ function displayProfile(data)
 			</div>
 			<div class="row">
 				<div class="col">
-					<p class="lead">${data.location_pref}</p>
+					<p class="lead">${all_loc}</p>
 				</div> 
 			</div>
 				  `;
@@ -114,12 +135,19 @@ function displayProfile(data)
 		</div>
 		`;
 		if (data.children.length > 0){
-			var allChildInfo = `<br><h3>Child Information</h3><br>`;
+			var allChildInfo = `<br><h2><u>Child Information</u></h2><br>`;
             data.children.forEach(function(child,index){
+				var all_subjects ="";
+				child.subjects.forEach(function(subject,ind){
+					all_subjects+= subject_keys[subject];
+					if (ind < child.subjects.length - 1){
+						all_subjects += ', ';
+					}
+				})
                 allChildInfo += `
                 <div class="row">
                 <div class="col-md-3">
-                    <h3>Child ${index+1}</h3> 
+                    <h2><u>Child ${index+1}</u></h3> 
                 </div>
                 </div>
                 <div class="row">
@@ -139,7 +167,7 @@ function displayProfile(data)
                 </div>
                 <div class="row">
                     <div class="col">
-                        <p class="lead">${child.grade}</p>
+                        <p class="lead">${grade_keys[child.grade]}</p>
                 </div> 
                 </div>
                 <div class="row">
@@ -149,7 +177,7 @@ function displayProfile(data)
                 </div>
                 <div class="row">
                     <div class="col">
-                        <p class="lead">${child.subjects}</p>
+                        <p class="lead">${all_subjects}</p>
                 </div> 
                 </div>
                 <div class="row">
@@ -159,14 +187,29 @@ function displayProfile(data)
                 </div>
                 <div class="row">
                     <div class="col">
-                        <p class="lead">${child.avatar}</p>
+						<img src="resources/img/child-${child.avatar}.png" style="width: 10%">
                 </div> 
-                </div>`; 
+                </div>
+				</br>`; 
                 });
 				html+=allChildInfo;
 		}
 	}
 	else{
+		var all_grades="";
+		data.grade.forEach(function(curGrade,ind){
+			all_grades+=grade_keys[curGrade];
+              if (ind < data.grade.length-1){
+                all_grades+= ', ';
+              }
+		})
+		var all_subjects ="";
+		data.subjects.forEach(function(subject,ind){
+			all_subjects+=subject_keys[subject];
+              if (ind < data.subjects.length-1){
+                all_subjects+= ', ';
+              }
+		})
 		html+= `
 		<div class="row">
 			<div class="col-md-3">
@@ -184,33 +227,46 @@ function displayProfile(data)
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-md-3">
-				<p class="lead">${data.grade}</p>
+			<div class="col">
+				<p class="lead">${all_grades}</p>
 			</div> 
 		</div>
 		<div class="row">
-			<div class="col-md-3">
+			<div class="col">
 				<h3>Subjects</h3> 
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-md-3">
-				<p class="lead">${data.subjects}</p>
+			<div class="col">
+				<p class="lead">${all_subjects}</p>
 			</div> 
 		</div>
 		<div class="row">
-			<div class="col-md-3">
+			<div class="col">
+				<h3>Profile Picture</h3> 
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				<img src="${user.photoURL}"  width="15%">
+			</div> 
+		</div>
+		<div class="row">
+			<div class="col">
 				<h3>About Me</h3> 
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-md-3">
+			<div class="col">
 				<p class="lead">${data.bio}</p>
 			</div> 
 		</div>
 		`;
 	}
-	html += `<button class="btn btn-secondary" onclick="onEdit()">Edit Profile</button>`;
+	html += `<div class="form-group row">
+	<div class="col">
+	<button class="btn btn-secondary" onclick="onEdit()">Edit Profile</button>
+	</div></div>`;
 	$('#display-details').html(html);
 }
 
@@ -263,7 +319,7 @@ function editProfile(data)
 	</div>
 </div>
 
-<h2>Add your current address</h2>
+<h2>Location Information</h2>
 
 <div class="form-group row">
 	<div class="col-md-6">
@@ -581,7 +637,11 @@ function editProfile(data)
 			}
 		}
 	}
-	var subButton = `<button type="submit" class="btn btn-lg btn-primary">Update Profile</button>`;
+	var subButton = `<div class="form-group row">
+	<div class="col">
+	<button type="submit" class="btn btn-lg btn-primary">Update Profile</button>
+	</div>
+	</div>`;
 	$('#display-details').append(subButton);
 	$(".image-picker").imagepicker('refresh');
 	$('.selectpicker').selectpicker('refresh');

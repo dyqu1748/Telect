@@ -400,8 +400,9 @@ function create_account(){
   var basicInfo = JSON.parse(sessionStorage.getItem("basicInfo"));
   var account_specific= JSON.parse(sessionStorage.getItem("account_specific"));
   firebase.auth().createUserWithEmailAndPassword(basicInfo['email'], basicInfo['inputPassword']).then(cred => {
+    var user = cred.user;
     verify_email();
-    db.collection('users').doc(cred.user.uid).set({
+    db.collection('users').doc(user.uid).set({
       'email':basicInfo['email'],
       "first_name": basicInfo['fname'],
       "last_name": basicInfo['lname'],
@@ -414,7 +415,7 @@ function create_account(){
     })
 
     if (account_specific['accountType'] == 'parent'){
-      return db.collection('users').doc(cred.user.uid).update({
+      return db.collection('users').doc(user.uid).update({
         "user_type":"parent",
         "minSession": account_specific['minSession'],
         "maxSession": account_specific['maxSession'],
@@ -428,8 +429,9 @@ function create_account(){
       var resumeFile = $('#resume').prop('files')[0];
       var profilePic = $('#photo').prop('files')[0];
       var storageRef = firebase.storage().ref();
-      var resumeRef = storageRef.child(cred.user.uid+'/'+resumeFile.name);
-      var picRef = storageRef.child(cred.user.uid+'/'+profilePic.name);
+      var picName = user.uid+'/'+'profilePic.'+profilePic.name.split('.').pop(); 
+      var resumeRef = storageRef.child(user.uid+'/'+'resume.'+resumeFile.name.split('.').pop());
+      var picRef = storageRef.child(picName);
       return resumeRef.put(resumeFile,resumeFile.type).then((snapshot) =>{
         console.log("Uploaded resume!");
       })
@@ -437,7 +439,13 @@ function create_account(){
         return picRef.put(profilePic,profilePic.type).then((snapshot) =>{
           console.log("Uploaded profile pic!");
         });
-      }).then(() =>{
+      }).then(()=>{
+        var store = firebase.storage();
+        return store.ref(picName).getDownloadURL().then((url)=>{
+          return user.updateProfile({photoURL: url});
+        });
+      })
+      .then(() =>{
         return db.collection('users').doc(cred.user.uid).update({
           "user_type":"tutor",
           "minSession": account_specific['minSession'],
