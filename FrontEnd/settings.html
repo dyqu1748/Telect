@@ -23,6 +23,8 @@
 </style>
 <link rel="stylesheet" type="text/css" href="resources/css/user_css.css">
 <link rel="stylesheet" type="text/css" href="resources/css/index.css">
+<link rel="stylesheet" type="text/css" href="resources/css/register.css">
+
 </head>
 <body>
   <div>
@@ -40,7 +42,8 @@
     </nav>
   </div>
 
-<div class="container-fluid">
+  <div class="lds-roller" id="loading_icon"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+<div class="container-fluid" id="info_area" style="display:none;">
   <h1>Account Management</h1>
 
   <div class="container-fluid">
@@ -75,6 +78,7 @@
 <script src="resources/js/fire.js"></script>
 <script src="resources/js/accountHandle.js"></script>
 <script src="resources/js/manageSettings.js"></script>
+<script src="resources/js/register_scripts.js"></script>
 <script>$("select").imagepicker()</script>
 </body>
 </html>

@@ -2,11 +2,22 @@
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
     console.log("User found");
-	console.log(user.uid);
+	user.providerData.forEach(function (profile) {
+		console.log("Sign-in provider: " + profile.providerId);
+		console.log("  Provider-specific UID: " + profile.uid);
+		console.log("  Name: " + profile.displayName);
+		console.log("  Email: " + profile.email);
+		console.log("  Photo URL: " + profile.photoURL);
+	  });
 
 	db.collection('users').doc(user.uid).onSnapshot((doc)=> {
 		console.log(doc.data());
-		displayProfile(doc.data(),user);
+		const reveal = async () => {
+			const result = await displayProfile(doc.data(),user)
+			$('#loading_icon').css('display','none');
+			$('#info_area').fadeIn();
+		  }
+		reveal();
 	});
   } else {
     console.log("No user signed in");
@@ -60,7 +71,7 @@ function displayProfile(data,user)
 			  </div>
 			  <div class="row">
 			 	<div class="col-md-3">
-				 	<p class="lead">${data.email}</p>
+				 	<p class="lead">${user.email}</p>
 				 </div>
 				 <div class="col-md-3">
 				 	<p class="lead">${data.phone}</p>
@@ -122,6 +133,8 @@ function displayProfile(data,user)
 			</div>
 				  `;
 	if (data.user_type == 'parent'){
+		var capBGCheck = data.background_check;
+		capBGCheck = capBGCheck.charAt(0).toUpperCase() + capBGCheck.slice(1);
 		html+= `
 		<div class="row">
 			<div class="col-md-3">
@@ -131,6 +144,16 @@ function displayProfile(data,user)
 		<div class="row">
 			<div class="col-md-3">
 				<p class="lead">$${data.minSession} to $${data.maxSession}</p>
+			</div> 
+		</div>
+		<div class="row">
+			<div class="col-md-3">
+				<h3>Prefer Background Checked Tutors</h3> 
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-3">
+				<p class="lead">${capBGCheck}</p>
 			</div> 
 		</div>
 		`;
@@ -264,10 +287,16 @@ function displayProfile(data,user)
 		`;
 	}
 	html += `<div class="form-group row">
-	<div class="col">
+	<div class="col-1">
 	<button class="btn btn-secondary" onclick="onEdit()">Edit Profile</button>
-	</div></div>`;
+	</div>
+	<div class="col-1">
+        <a class="btn btn-secondary" href="#">Edit Email and Password</a>
+        </div>
+	</div>`;
 	$('#display-details').html(html);
+	console.log("DONE");
+	return true;
 }
 
 function onEdit()
@@ -279,7 +308,7 @@ function onEdit()
 
 		db.collection('users').doc(user.uid).onSnapshot((doc)=> {
 			console.log(doc.data());
-			editProfile(doc.data());
+			editProfile(doc.data(), user);
 		});
 	  } else {
 	    console.log("No user signed in");
@@ -289,7 +318,7 @@ function onEdit()
 
 
 var child_counter = 0;
-function editProfile(data)
+function editProfile(data, user)
 {
 	// Display info in an editable form
 	var userInfo =  `
@@ -301,13 +330,6 @@ function editProfile(data)
 	<div class="col-md-3">
 		<label for="lname" class="control-label">Last Name</label>
 		<input type ="text" id="lname" class="form-control" value="${data.last_name}" placeholder="Last Name" required>
-	</div>
-</div>
-
-<div class="form-group row">
-	<div class="col-md-6">
-		<label for="email" class="control-label">Email</label>
-		<input type="email" id="email" class="form-control" value="${data.email}" placeholder="Email" required>
 	</div>
 </div>
 
@@ -331,7 +353,7 @@ function editProfile(data)
 <div class="form-group row">
 	<div class="col-md-3">
 		<label for="apartmentInfo">Apartment Info</label>
-		<input type = "number" id="apartmentInfo" class="form-control" value="${data.apartment_info}" placeholder="Apartment #, floor, etc.">
+		<input type = "number" id="apartment_info" class="form-control" value="${data.apartment_info}" placeholder="Apartment #, floor, etc.">
 	</div>
 	<div class="col-md-3">
 		<label for="zipCode" class="control-label">Zip Code</label>
@@ -404,33 +426,46 @@ function editProfile(data)
 				  `;
 	if (data.user_type == "parent"){
 		userInfo+= `
-		<div>
-			Session Payment Range<br>
-			<input type="number" id="minSession" class="form-control" min="0.00" value="${data.minSession}" placeholder="0.00" required> <br>
-			<input type="number" id="maxSession" class="form-control" min="${data.minSession}" value="${data.maxSession}" placeholder="0.00" required>
-		</div>
-		<div>
-			Location Preference<br>
-			<div class="btn-group btn-group-toggle" data-toggle="buttons">
-				<label class="btn btn-outline-primary active">
-				<input type="radio" name="location_pref" value="online" required> Online
-				</label>
-				<label class="btn btn-outline-primary">
-				<input type="radio" name="location_pref" value="in_person"> In-Person
-				</label>
-			</div>
-		</div>
-		<div>
-			Background Check Preference<br>
-			<div class="btn-group btn-group-toggle" data-toggle="buttons">
-				<label class="btn btn-outline-primary active">
-				<input type="radio" name="background_check" id="background_check_yes" value="yes" required> Yes
-				</label>
-				<label class="btn btn-outline-primary">
-				<input type="radio" name="background_check" id="background_check_no" value="no" > No
-				</label>
-			</div>
-		</div>`;
+
+		<h3>Minimum Session Rate</h3>
+                <div class="form-group form-inline">
+                    <label for="minSession">$</label>
+                    <div class="col-md-3">
+                        <input type="number" id="minSession" class="form-control" min="0.00"  step="0.01" placeholder="0.00" value="${data.minSession}" required>
+                    </div>
+                </div>
+
+                <h3>Maximum Session Rate</h3>
+                <div class="form-group form-inline">
+                    <label for="maxSession">$</label>
+                    <div class="col-md-3">
+                        <input type="number" id="maxSession" class="form-control" step="0.01" placeholder="0.00" min="${data.minSession}" value="${data.maxSession}" required>
+                    </div>
+                </div>
+
+                <h3>Session Location Preference</h3>
+                <div class="form-group form-inline">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label class="btn btn-outline-primary active">
+                        <input type="radio" name="location_pref" value="online" required> Online
+                        </label>
+                        <label class="btn btn-outline-primary">
+                        <input type="radio" name="location_pref" value="in_person"> In-Person
+                        </label>
+                    </div>
+                </div>
+
+                <h3>Would you like your tutors to be background checked?</h3>
+                <div class="form-group form-inline">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label class="btn btn-outline-primary active">
+                        <input type="radio" name="background_check" value="yes" required> Yes
+                        </label>
+                        <label class="btn btn-outline-primary">
+                        <input type="radio" name="background_check" value="no" > No
+                        </label>
+                    </div>
+                </div>`;
 		$('#display-details').html(userInfo);
 		$('#state').val(data.state).change();
 		$('input[name="location_pref"][value="'+data.location_pref+'"]').click();
@@ -442,10 +477,10 @@ function editProfile(data)
 					child_counter++;
 					console.log(child.grade);
 					var childInfo=`
-					<div><h3>Child ${child_counter}</h3>
+					<div id="child-form1"><h3>Child ${child_counter}</h3>
 					<h3>Add your child's full name (optional)</h3>
 					<input type ="text" id="childName" class="form-control" placeholder="Child's Full Name">
-					<h3 class="header-control">Add your child's current grade level</h3>
+					<h3>Add your child's current grade level</h3>
 				
 					<select class="selectpicker" id="grade" title="Select Grade Level" required>
 						<option value="k">Kindergarten</option>
@@ -459,7 +494,7 @@ function editProfile(data)
 						<option value="8">8th Grade</option>
 					</select>
 				
-					<h3 class="header-control">Select the subjects your child needs help with</h3>
+					<h3>Select the subjects your child needs help with</h3>
 				
 					<select class="selectpicker" id ='subjects' data-live-search="true" multiple title="Select Subjects" required>
 						<option value="math">Math</option>
@@ -475,12 +510,13 @@ function editProfile(data)
 						<option value="spanish">Spanish</option>
 					</select>
 				
-					<h3 class="header-control">Choose an avatar for your child</h3>
+					<h3>Choose an avatar for your child</h3>
 					<select id="avatar" class="image-picker show-html" required>
-						<option data-img-src="https://c-sf.smule.com/rs-s23/arr/d6/75/227c4be5-3914-427b-91be-eac339869d70_1024.jpg" value="avatar1">Avatar 1</option>
-						<option data-img-src="https://static.zerochan.net/Dango.%28CLANNAD%29.full.113867.jpg" value="avatar2">Avatar 2</option>
-						<option data-img-src="https://static.zerochan.net/Dango.%28CLANNAD%29.full.113865.jpg" value="avatar3">Avatar 3</option>
-					</select>
+							<option data-img-src="resources/img/child-avatar1.png" value="avatar1">Avatar 1</option>
+							<option data-img-src="resources/img/child-avatar2.png" value="avatar2">Avatar 2</option>
+							<option data-img-src="resources/img/child-avatar3.png" value="avatar3">Avatar 3</option>
+							<option data-img-src="resources/img/child-avatar4.png" value="avatar4">Avatar 4</option>
+						</select>
 						</div>`;
 					$('#display-details').append(childInfo);
 					$('#childName').val(child.child_name);
@@ -491,7 +527,8 @@ function editProfile(data)
 				else{
 					child_counter++;
 					childInfo =`
-					<div>Child ${child_counter}
+					<div id="child-form${child_counter}">
+					<h3>Child ${child_counter}</h3>
 								<input type ="text" id="childName${child_counter}" class="form-control" placeholder="Child's Full Name">
 						<h3>Add your child's current grade level</h3>
 
@@ -525,10 +562,12 @@ function editProfile(data)
 
 						<h3>Choose an avatar for your child</h3>
 						<select id="avatar${child_counter}" class="image-picker show-html" required>
-							<option data-img-src="https://c-sf.smule.com/rs-s23/arr/d6/75/227c4be5-3914-427b-91be-eac339869d70_1024.jpg" value="avatar1">Avatar 1</option>
-							<option data-img-src="https://static.zerochan.net/Dango.%28CLANNAD%29.full.113867.jpg" value="avatar2">Avatar 2</option>
-							<option data-img-src="https://static.zerochan.net/Dango.%28CLANNAD%29.full.113865.jpg" value="avatar3">Avatar 3</option>
-						</select>`;
+							<option data-img-src="resources/img/child-avatar1.png" value="avatar1">Avatar 1</option>
+							<option data-img-src="resources/img/child-avatar2.png" value="avatar2">Avatar 2</option>
+							<option data-img-src="resources/img/child-avatar3.png" value="avatar3">Avatar 3</option>
+							<option data-img-src="resources/img/child-avatar4.png" value="avatar4">Avatar 4</option>
+						</select>
+						</div>`;
 					$('#display-details').append(childInfo)
 					$('#childName'+child_counter).val(child.child_name);
 					$('#grade'+child_counter).val(child.grade);
@@ -537,10 +576,49 @@ function editProfile(data)
 				}
 			});
 		}
+		if (child_counter > 0){
+			var addChildButtons = `
+		<div class="form-group form-inline">
+			<div class="com-md-3">
+				<button type="button" id="add-child" class="btn btn-secondary rounded-pill d-none" onclick="showAddChild()">Add Child</button>
+			</div>
+		</div>
+		<div class="form-group form-inline">
+			<div class="col col-lg-2">
+				<button type="button" class="btn btn-secondary rounded-pill" id="addChildButton" onclick="addChildForm()">Add Child</button>
+			</div>
+			<div class="col col-lg-2">
+				<button type="button" class="btn btn-secondary rounded-pill" id="remChildButton" onclick="delChildForm()">Remove Child</button>
+			</div>
+		</div>
+		`;
+		}
+		else{
+			var addChildButtons = `
+		<div class="form-group form-inline">
+			<div class="com-md-3">
+				<button type="button" id="add-child" class="btn btn-secondary rounded-pill" onclick="showAddChild()">Add Child</button>
+			</div>
+		</div>
+		
+		<div id="child-form1"></div>
+		<div id="child-placeholder"></div>
+
+		<div class="form-group form-inline">
+			<div class="col col-lg-2">
+				<button type="button" class="btn btn-secondary rounded-pill d-none" id="addChildButton" onclick="addChildForm()">Add Child</button>
+			</div>
+			<div class="col col-lg-2">
+				<button type="button" class="btn btn-secondary rounded-pill d-none" id="remChildButton" onclick="delChildForm()">Remove Child</button>
+			</div>
+		</div>
+		`;
+		}
+		$('#display-details').append(addChildButtons);
 	}
 	else{
 		userInfo+=`
-		<h3 class="header-control">Enter the minimum pay rate you would like to receive for a session</h3>
+		<h3>Enter the minimum pay rate you would like to receive for a session</h3>
                 <div class="form-group form-inline">
                     <label for="minSession">$</label>
                     <div class="col-md-3">
@@ -548,7 +626,7 @@ function editProfile(data)
                     </div>
                 </div>
 
-                <h3 class="header-control">List the subjects you are interested in</h3>
+                <h3>List the subjects you are interested in</h3>
                 <div class="form-group row">
                     <div class="col-md-3">
                         <select class="selectpicker" id ='subjects' data-live-search="true" multiple title="Select Subjects" required>
@@ -567,7 +645,7 @@ function editProfile(data)
                     </div>
                 </div>
                 
-                <h3 class="header-control">Which grade levels are you interested in working with? (Select all that apply)</h3>
+                <h3>Which grade levels are you interested in working with? (Select all that apply)</h3>
                 <div class="form-group form-inline">
                     <div class="btn-group btn-group-toggle" data-toggle="buttons">
                         <label class="btn btn-outline-primary">
@@ -600,7 +678,7 @@ function editProfile(data)
                     </div>          
                 </div>
 
-                <h3 class="header-control">Are you comfortable with doing in-person sessions along with online sessions?</h3>
+                <h3>Are you comfortable with doing in-person sessions along with online sessions?</h3>
                     <div class="form-group form-inline">
                         <div class="btn-group btn-group-toggle" data-toggle="buttons">
                             <label class="btn btn-outline-primary active">
@@ -612,7 +690,21 @@ function editProfile(data)
                         </div>
                     </div>
 
-                <h3 class="header-control">Tell us a a little about yourself</h3>
+				<h3>Update Resume</h3>
+				<div class="form-group row">
+					<div class="col-auto">
+						<input type="file" id="resume" accept=".pdf,.doc"/>  
+					</div>
+				</div>
+
+				<h3>Update Profile Picture</h3>
+				<div class="form-group row">
+					<div class="col-auto">
+						<input type="file" id="photo" accept="image/*"/>  
+					</div>
+				</div>
+
+                <h3>About You</h3>
                 <div class="form-group">
                         <textarea id="bio" rows="5", cols="100" required></textarea>   
                 </div>
@@ -655,10 +747,8 @@ function updateaccount()
 	    var user = firebase.auth().currentUser;
 		var updateUser = db.collection('users').doc(user.uid);
 
-
 	    var fname = document.getElementById("fname").value;
 		var lname = document.getElementById("lname").value;
-		var email = document.getElementById("email").value;
 		var phone = document.getElementById("phone").value;
 		var address = document.getElementById("address").value;
 		var apartment_info = document.getElementById("apartment_info").value;
@@ -666,11 +756,12 @@ function updateaccount()
 		var state = document.getElementById("state").value;
 		var zipCode = document.getElementById("zipCode").value;
 		var min_session = document.getElementById("minSession").value;
-		
-		if ($('maxSession').length > 0){
+		$('#loading_icon').fadeIn();
+  		$('#info_area').css('filter', 'blur(1.5rem)');
+		if ($('#maxSession').length > 0){
 			var max_session = document.getElementById("maxSession").value;
 			var location_pref = $('input[name="location_pref"]:checked').val();
-
+			var background_check = $('input[name="background_check"]:checked').val();
 			// compose child array
 			var childData = []
 			for (var i=1; i <= child_counter; i++) {
@@ -695,9 +786,8 @@ function updateaccount()
 			childData.push(childItem)
 			}
 			child_counter = 0;
-
-			updateUser.update({
-			"email": email,
+			
+			return updateUser.update({
 			"first_name": fname,
 			"last_name": lname,
 			"phone": phone,
@@ -709,7 +799,22 @@ function updateaccount()
 			"minSession": min_session,
 			"maxSession": max_session,
 			"location_pref": location_pref,
+			"background_check": background_check,
 			"children":childData
+			})
+			.then(()=>{
+				return updateUser.get().then((doc) => {
+					if (doc.exists) {
+						displayProfile(doc.data(),user);
+						$('#loading_icon').css('display','none');
+						$('#info_area').css('filter', 'blur(0px)');
+					} else {
+						// doc.data() will be undefined in this case
+						console.log("No such document!");
+					}
+				}).catch((error) => {
+					console.log("Error getting document:", error);
+				});
 			});
 		}
 		else{
@@ -726,8 +831,7 @@ function updateaccount()
 			var subjects = $('#subjects').val()
 			var bio = $("#bio").val();
 
-			updateUser.update({
-				"email": email,
+			return updateUser.update({
 				"first_name": fname,
 				"last_name": lname,
 				"phone": phone,
@@ -741,28 +845,68 @@ function updateaccount()
 				"grade":grades,
 				"subjects":subjects,
 				"bio": bio
-				});
-
-		}
-		setTimeout(() => {  
-			updateUser.get().then((doc) => {
-				if (doc.exists) {
-					displayProfile(doc.data());
-				} else {
-					// doc.data() will be undefined in this case
-					console.log("No such document!");
+				})
+			.then(()=>{
+				var resumeFile = $('#resume').prop('files')[0];
+				var profilePic = $('#photo').prop('files')[0];
+				if (resumeFile != undefined || profilePic != undefined){
+					if (resumeFile != undefined){
+						return uploadResume(resumeFile, user).then(()=>{
+							if (profilePic != undefined){
+								return uploadPhoto(profilePic, user);
+							}
+						});
+					}
+					else{
+						return uploadPhoto(profilePic, user);
+					}
 				}
-			}).catch((error) => {
-				console.log("Error getting document:", error);
-			});
-			// displayProfile(updateUser);
-	}, 1000);
+			})
+			.then(()=>{
+				return updateUser.get().then((doc) => {
+					if (doc.exists) {
+						displayProfile(doc.data(),user);
+						$('#loading_icon').css('display','none');
+						$('#info_area').css('filter', 'blur(0px)');
+					} else {
+						// doc.data() will be undefined in this case
+						console.log("No such document!");
+					}
+				}).catch((error) => {
+					console.log("Error getting document:", error);
+				});
+			})
+		}
 	  } else {
 	    console.log("No user signed in");
 	  }
 	});
 	return false;
 	
+}
+
+function uploadPhoto(profilePic, user){
+	var storageRef = firebase.storage().ref();
+	var picName = 'profilePictures/'+user.uid+'.'+profilePic.name.split('.').pop(); 
+
+	var picRef = storageRef.child(picName);
+
+	return picRef.put(profilePic,profilePic.type).then((snapshot) =>{
+		console.log("Uploaded profile pic!");
+	}).then(()=>{
+		var store = firebase.storage();
+		return store.ref(picName).getDownloadURL().then((url)=>{
+			return user.updateProfile({photoURL: url});
+		});
+	});
+}
+
+function uploadResume(resumeFile, user){
+	var storageRef = firebase.storage().ref();
+	var resumeRef = storageRef.child('resumes/'+user.uid+'.'+resumeFile.name.split('.').pop());
+	return resumeRef.put(resumeFile,resumeFile.type).then((snapshot) =>{
+		console.log("Uploaded resume!");
+	});
 }
 
 // const editProfile = () -> (

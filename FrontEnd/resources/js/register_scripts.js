@@ -390,8 +390,18 @@ function addChildForm() {
 }
 
 function delChildForm() {
-  $("#child-form"+child_counter).remove();
+  if (child_counter == 1){
+    $("#child-form1").empty();
+    $("#add-child").removeClass('d-none');
+    $("#addChildButton").addClass('d-none');
+    $("#remChildButton").addClass('d-none');
+  }
+  else{
+    $("#child-form"+child_counter).remove();
+  }
+  
   child_counter--;
+  
 }
 
 function create_account(){
@@ -401,9 +411,9 @@ function create_account(){
   var account_specific= JSON.parse(sessionStorage.getItem("account_specific"));
   firebase.auth().createUserWithEmailAndPassword(basicInfo['email'], basicInfo['inputPassword']).then(cred => {
     var user = cred.user;
+    user.updateProfile({displayName: basicInfo['fname'] + ' ' + basicInfo['lname']});
     verify_email();
     db.collection('users').doc(user.uid).set({
-      'email':basicInfo['email'],
       "first_name": basicInfo['fname'],
       "last_name": basicInfo['lname'],
       "phone": basicInfo['phone'],
@@ -429,8 +439,8 @@ function create_account(){
       var resumeFile = $('#resume').prop('files')[0];
       var profilePic = $('#photo').prop('files')[0];
       var storageRef = firebase.storage().ref();
-      var picName = user.uid+'/'+'profilePic.'+profilePic.name.split('.').pop(); 
-      var resumeRef = storageRef.child(user.uid+'/'+'resume.'+resumeFile.name.split('.').pop());
+      var picName = 'profilePictures/'+user.uid+'.'+profilePic.name.split('.').pop(); 
+      var resumeRef = storageRef.child('resumes/'+user.uid+'.'+resumeFile.name.split('.').pop());
       var picRef = storageRef.child(picName);
       return resumeRef.put(resumeFile,resumeFile.type).then((snapshot) =>{
         console.log("Uploaded resume!");
