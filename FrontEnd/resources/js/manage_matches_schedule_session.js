@@ -75,8 +75,11 @@ function display_matches(data)
 		  `;
  	}
  	$('#tutors').html(html);
+<<<<<<< HEAD
 	$('#loading_icon').fadeOut("fast");
 	$('#page-container').fadeIn();
+=======
+>>>>>>> Request a session with a tutor
  }
 
 function session_details()
