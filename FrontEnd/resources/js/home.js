@@ -4,7 +4,11 @@ firebase.auth().onAuthStateChanged(function(user) {
       var user = firebase.auth().currentUser;
   
       db.collection('users').doc(user.uid).onSnapshot((doc)=> {
-          displayHome(doc.data());
+        const reveal = async () => {
+			const result = await displayHome(doc.data());
+			$('#page-container').fadeIn();
+		  }
+		reveal();
       });
     } else {
       console.log("No user signed in");
@@ -16,61 +20,61 @@ firebase.auth().onAuthStateChanged(function(user) {
 {
     if (data.user_type == 'parent') {
         var html = `
-        <a href = "find_tutors.html">
         <div id= "find_tutors">
-            <img class="img-fluid" src="resources/img/find_tutors.png"/>
-            <p>Find Tutors</p>
+            <a class="account_options" href = "find_tutors.html">
+                <img class="img-fluid" src="resources/img/find_tutors.png"/>
+                <p class="img-label">Find Tutors</p>
+            </a>
         </div>
-        </a>
         `;
 
     } else if (data.user_type == 'tutor') {
         var html = `
-        <a href = "view_requests.html">
         <div id= "view_requests">
-            <img class="img-fluid" src="resources/img/view_requests.png"/>
-            <p>View Requests</p>
+            <a class="account_options" href = "view_requests.html"> 
+                <img class="img-fluid" src="resources/img/view_requests.png"/>
+                <p class="img-label">View Requests</p>
+            </a>
         </div>
-        </a>
         `;
 
     }
 
     html += `
-    <a href = "view_schedule.html">
     <div id = "view_schedule">
-        <img class="img-fluid" src="resources/img/view_schedule.png"/>
-        <p>View Schedule</p>
+        <a class="account_options" href = "view_schedule.html">
+            <img class="img-fluid" src="resources/img/view_schedule.png"/>
+            <p class="img-label">View Schedule</p>
+        </a>
     </div>
-    </a>
 
-    <a href = "manage_matches.html">
     <div id = "manage_matches">
-        <img class="img-fluid" src="resources/img/manage_matches.png"/>
-        <p>Manage Matches</p>
+        <a class="account_options" href = "manage_matches.html">
+            <img class="img-fluid" src="resources/img/manage_matches.png"/>
+            <p class="img-label">Manage Matches</p>
+        </a>
     </div>
-    </a>
-    
-    <a href = "messages.html">
+
     <div id = "messages">
-        <img class="img-fluid" src="resources/img/messages.png"/>
-        <p>Messages</p>
+        <a class="account_options" href = "messages.html">
+            <img class="img-fluid" src="resources/img/messages.png"/>
+            <p class="img-label">Messages</p>
+        </a>
     </div>
-    </a>
 
-    <a href = "donate.html">
     <div id = "donate">
-        <img class="img-fluid" src="resources/img/donate.png"/>
-        <p>Donate</p>
+        <a class="account_options" href = "donate.html">
+            <img class="img-fluid" src="resources/img/donate.png"/>
+            <p class="img-label">Donate</p>
+        </a>
     </div>
-    </a>
 
-    <a href = "settings.html">
     <div id = "settings">
-        <img class="img-fluid" src="resources/img/settings.png"/>
-        <p>Settings</p>
+        <a class="account_options" href = "settings.html">
+            <img class="img-fluid" src="resources/img/settings.png"/>
+            <p class="img-label">Settings</p>
+        </a>
     </div>
-    </a>
     `;
     //console.log("html", html);
     document.getElementById("user_name").innerHTML += data.first_name + ".";
