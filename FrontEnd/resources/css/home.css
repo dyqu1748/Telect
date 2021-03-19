@@ -38,7 +38,7 @@ nav, .btn-primary{
     padding: 25px;
     width: 300px;
     height: 200px;
-    box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+    box-shadow: 0 20px 20px -17px rgb(84, 118, 251);
     transition: .5s;
 }
 
@@ -57,7 +57,7 @@ nav, .btn-primary{
     width: 300px;
     height: 200px;
     margin-top:50px;
-    box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+    box-shadow: 0 20px 20px -17px rgb(225, 186, 29);
     transition: .5s;
 }
 
@@ -87,11 +87,11 @@ nav, .btn-primary{
   }
   
   #content-wrap {
-    padding-bottom: 2.5rem;    /* Footer height */
+    padding-bottom: 7rem;    /* Footer height */
   }
   
 #footer {
-    position: absolute;
+    position:absolute;
     left: 0;
     bottom: 0;
     width: 100%;
@@ -99,3 +99,8 @@ nav, .btn-primary{
     padding-top: 2rem;
     padding-bottom: 4rem;
   }
+
+  html {
+    scroll-behavior: smooth;
+  }
+  

@@ -12,6 +12,31 @@
 </head>
 <body onload = "get_username_and_email()">
 
+    <div id="page-container">
+        <div id="content-wrap">
+    <div>
+      <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <a class="navbar-brand" href="#page-top">
+          <img src="resources/img/logo-without-computer-resize.png" alt="Logo" width="150" class="d-inline-block align-top"> 
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+      </button>
+    
+        <div class ="collapse navbar-collapse" id="navbarContent">
+              <ul class="navbar-nav ml-auto"> 
+                  <li class="nav-item"> 
+                    <a class="btn btn-warning rounded-pill ml-auto mr-3" href="sign_in.html">Sign In</a>
+                  </li>
+                  <li class="nav-item"> 
+                    <a class="btn btn-light rounded-pill ml-auto mr-3" href="register.html">Sign Up</a>
+                  </li>
+              </ul>
+        </div>
+     
+        
+      </nav>
+    </div>
     <div class="container-fluid">
         <div class="row justify-content-center">
             <h2>Welcome to Telect!</h2>
@@ -31,10 +56,17 @@
 
         <br>
         <div class = "row justify-content-center">
-            <button type="submit" class="btn btn-lg btn-primary" onclick="logout()">Got It!</button>
+            <a class="btn btn-lg btn-primary" href="index.html">Got It!</button>
         </div>
     </div>
-
+    </div>
+    <footer id="footer" class="bg-dark">
+        <div class="container">
+          <p class="m-0 text-center text-white">Telect is driven on making enriched tutoring accessible for all families by bringing together parents, students, and educators.</p>
+          <p class="m-0 text-center text-white">Copyright &copy; 2021 Telect</p>
+        </div>
+        </footer>
+      </div>
 
 
 <script src="https://www.gstatic.com/firebasejs/8.2.6/firebase-app.js"></script>

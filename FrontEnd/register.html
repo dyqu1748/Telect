@@ -39,8 +39,8 @@
                 </li> 
                 </li>
             </ul> 
+              </div>
         </nav>
-        </div>
     </div>
 
     <div class="lds-roller" id="loading_icon" style="display: none;"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
@@ -64,8 +64,8 @@
         </div>
     </div>
 
-    <div class="container-fluid">
-
+    <div id="page-container" class="container-fluid">
+        <div id="content-wrap">
 <div id="register_fields" class="container-fluid required" style="display: none;">
     <form onsubmit="return display_review()" oninput='pass2.setCustomValidity(pass2.value != pass1.value ? "Passwords do not match." : "")'>
     
@@ -559,6 +559,13 @@
 </div>
 
 </div>
+<footer id="footer" class="bg-dark">
+    <div class="container">
+      <p class="m-0 text-center text-white">Telect is driven on making enriched tutoring accessible for all families by bringing together parents, students, and educators.</p>
+      <p class="m-0 text-center text-white">Copyright &copy; 2021 Telect</p>
+    </div>
+    </footer>
+    </div>
 
 
 <script src="https://www.gstatic.com/firebasejs/8.2.6/firebase-app.js"></script>

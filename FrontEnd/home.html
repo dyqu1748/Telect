@@ -12,26 +12,25 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <body>
-<div>
-  <nav class="navbar navbar-expand-lg navbar-dark">
-    <a class="navbar-brand" href="home.html">
-      <img src="resources/img/logo-without-computer-resize.png" alt="Logo" width="150" class="d-inline-block align-top"> 
-    </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-  </button>
+  
+  <div>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+      <a class="navbar-brand" href="home.html">
+        <img src="resources/img/logo-without-computer-resize.png" alt="Logo" width="150" class="d-inline-block align-top"> 
+      </a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-    <div class ="collapse navbar-collapse" id="navbarContent">
-    <ul class="navbar-nav ml-auto"> 
-      <li class="nav-item logged_in">
-        <button class="btn btn-danger rounded-pill ml-auto mr-3" onclick="logout()">Log Out</button>
-      </li>
-    </ul> 
-  </nav>
+      <div class ="collapse navbar-collapse" id="navbarContent">
+        <ol id = "nav_items" class="navbar-nav mr-auto"> 
+        </ol> 
+        <span><button class="btn btn-danger rounded-pill ml-auto mr-3" onclick="logout()">Log Out</button></span>
+      </div>
+    </nav>
   </div>
-</div>
 
-<div id="page-container" style="display: none;">
+<div id="page-container" class="container-fluid" style="display: none;">
   <div id="content-wrap">
     <h2 class="text-center" id = "user_name">Hello, </h2>
 
@@ -43,7 +42,7 @@
   <footer id="footer" class="bg-dark">
   <div class="container">
     <p class="m-0 text-center text-white">Telect is driven on making enriched tutoring accessible for all families by bringing together parents, students, and educators.</p>
-    <p class="m-0 text-center text-white">&copy; 2021 Telect</p>
+    <p class="m-0 text-center text-white">Copyright &copy; 2021 Telect</p>
   </div>
   </footer>
 
@@ -66,5 +65,6 @@
 <script src="resources/js/fire.js"></script>
 <script src = "resources/js/home.js"></script>
 <script src="resources/js/accountHandle.js"></script>
+<script src="resources/js/nav.js"></script>
 </body>
 </html>

@@ -22,7 +22,7 @@
     }
 </style>
 <link rel="stylesheet" type="text/css" href="resources/css/user_css.css">
-<link rel="stylesheet" type="text/css" href="resources/css/index.css">
+<link rel="stylesheet" type="text/css" href="resources/css/home.css">
 <link rel="stylesheet" type="text/css" href="resources/css/register.css">
 
 </head>
@@ -37,36 +37,44 @@
     </button>
   
       <div class ="collapse navbar-collapse" id="navbarContent">
-        <ol id = "nav_items" class="navbar-nav mr-auto" > 
-        </ol>  
-        <span><button class="btn btn-danger rounded-pill " onclick="logout()">Log Out</button></span>  
-      
-    </nav>
+      <ol id = "nav_items" class="navbar-nav mr-auto" > 
+      </ol>  
+      <span><button class="btn btn-danger rounded-pill " onclick="logout()">Log Out</button></span>
     </div>
+  </nav>
+    
   </div>
 
   <div class="lds-roller" id="loading_icon"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-<div class="container-fluid" id="info_area" style="display:none;">
-  <h1>Account Management</h1>
+<div id="page-container" class="container-fluid" style="display:none;">
+  <div id="content-wrap">
+    <h1>Account Management</h1>
 
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col">
-        <form id="display-details" onsubmit="return updateaccount()">
-    </form>
-      </div>
-      
-    </div>
-    
-    <div class="form-group row">
-      <div class ="col">
-        <a class="btn btn-primary" href="home.html">Return Home</a>
+    <div id="general-info">
+      <div class="row">
+        <div class="col">
+          <form id="display-details" onsubmit="return updateaccount()">
+          </form>
+        </div>
+        
       </div>
     </div>
     
+      <div id="personal-info" style="display:none;">
+      </div>
+
+      <div class="form-group row">
+        <div class ="col">
+          <a class="btn btn-primary" href="home.html">Return Home</a>
+        </div>
+      </div>
   </div>
-
-  
+  <footer id="footer" class="bg-dark">
+    <div class="container">
+      <p class="m-0 text-center text-white">Telect is driven on making enriched tutoring accessible for all families by bringing together parents, students, and educators.</p>
+      <p class="m-0 text-center text-white">Copyright &copy; 2021 Telect</p>
+    </div>
+  </footer>
 </div>
 
 
@@ -82,6 +90,7 @@
 <script src="resources/js/accountHandle.js"></script>
 <script src="resources/js/manageSettings.js"></script>
 <script src="resources/js/register_scripts.js"></script>
+<script src="resources/js/nav.js"></script>
 <script>$("select").imagepicker()</script>
 </body>
 </html>

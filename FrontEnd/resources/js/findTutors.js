@@ -2,7 +2,7 @@ var uuid;
 firebase.auth().onAuthStateChanged(function(user) {
   if (user != null) {
     uuid = user.uid;
-    getMatches()
+	getMatches();
   } else {
     console.log("No user signed in");
     location.replace("index.html");
@@ -35,6 +35,7 @@ function getMatches() {
             display_matches(data);
         }
     });
+	return true;
 }
 
 function display_matches(data) {
@@ -64,6 +65,9 @@ function display_matches(data) {
           `;
     }
     $('#tutor-matches').html(html);
+	$('#loading_icon').fadeOut("fast");
+	$('#page-container').fadeIn();
+	return true;
     //          <p id="selected_tutor" style="display: none;">${i}</p>
     //          <button onclick="session_details()">Request Session</button>
     //          </div>

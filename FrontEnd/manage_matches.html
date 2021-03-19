@@ -46,6 +46,7 @@
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <link rel="stylesheet" href="resources/css/home.css">
+<link rel="stylesheet" href="resources/css/register.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -64,63 +65,70 @@
     <ol id = "nav_items" class="navbar-nav mr-auto" > 
     </ol>  
     <span><button class="btn btn-danger rounded-pill " onclick="logout()">Log Out</button></span>
-  </nav>
   </div>
+</nav>
+  
 </div>
+<div class="lds-roller" id="loading_icon"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+<div id="page-container" class="container-fluid" style="display: none;">
+  <div id="content-wrap">
+    <h2>Coming Soon...</h2>
 
-<h2>Coming Soon...</h2>
+    <!--Test Card Profiles -->
+    <style>
+      .card {
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+      max-width: 300px;
+      margin: auto;
+      text-align: center;
+    }
 
-<!--Test Card Profiles -->
-<style>
-  .card {
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  max-width: 300px;
-  margin: auto;
-  text-align: center;
-}
+    button {
+      border: none;
+      outline: 0;
+      display: inline-block;
+      padding: 8px;
+      color: white;
+      background-color: purple;
+      text-align: center;
+      cursor: pointer;
+      width: 100%;
+      font-size: 18px;
+    }
 
-button {
-  border: none;
-  outline: 0;
-  display: inline-block;
-  padding: 8px;
-  color: white;
-  background-color: purple;
-  text-align: center;
-  cursor: pointer;
-  width: 100%;
-  font-size: 18px;
-}
+    button:hover, a:hover {
+      opacity: 0.7;
+    }
+    </style>
+    <div id="tutors">
+    </div>
 
-button:hover, a:hover {
-  opacity: 0.7;
-}
-</style>
-<div id="tutors">
-</div>
+    <!-- Trigger/Open The Modal -->
+    <!-- <button id="myBtn">Schedule Session</button> -->
 
-<!-- Trigger/Open The Modal -->
-<!-- <button id="myBtn">Schedule Session</button> -->
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
 
-<!-- The Modal -->
-<div id="myModal" class="modal">
+      <!-- Modal content -->
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <form id="schedule_session">
+        </form>
+      </div>
 
-  <!-- Modal content -->
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <form id="schedule_session">
-    </form>
+    </div>
   </div>
-
-</div>
-
-
-<footer class="py-4  bg-dark">
+  <footer id="footer" class="bg-dark">
   <div class="container">
     <p class="m-0 text-center text-white">Telect is driven on making enriched tutoring accessible for all families by bringing together parents, students, and educators.</p>
-    <p class="m-0 text-center text-white">&copy; 2021 Telect</p>
+    <p class="m-0 text-center text-white">Copyright &copy; 2021 Telect</p>
   </div>
 </footer>
+</div>
+
+
+
+
 
 <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
 

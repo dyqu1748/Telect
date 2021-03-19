@@ -15,7 +15,7 @@ firebase.auth().onAuthStateChanged(function(user) {
 		const reveal = async () => {
 			const result = await displayProfile(doc.data(),user)
 			$('#loading_icon').css('display','none');
-			$('#info_area').fadeIn();
+			$('#page-container').fadeIn();
 		  }
 		reveal();
 	});
@@ -291,8 +291,11 @@ function displayProfile(data,user)
 	<button class="btn btn-secondary" onclick="onEdit()">Edit Profile</button>
 	</div>
 	<div class="col-1">
-        <a class="btn btn-secondary" href="#">Edit Email and Password</a>
+        <button class="btn btn-secondary" onclick="editPersonalInfo('email')">Edit Email</button>
         </div>
+	<div class="col-1">
+		<button class="btn btn-secondary" onclick="editPersonalInfo('password')">Edit Password</button>
+	</div>
 	</div>`;
 	$('#display-details').html(html);
 	console.log("DONE");
@@ -731,7 +734,7 @@ function editProfile(data, user)
 	}
 	var subButton = `<div class="form-group row">
 	<div class="col">
-	<button type="submit" class="btn btn-lg btn-primary">Update Profile</button>
+	<button type="submit" class="btn btn-lg btn-primary" form="display-details">Update Profile</button>
 	</div>
 	</div>`;
 	$('#display-details').append(subButton);
@@ -757,7 +760,7 @@ function updateaccount()
 		var zipCode = document.getElementById("zipCode").value;
 		var min_session = document.getElementById("minSession").value;
 		$('#loading_icon').fadeIn();
-  		$('#info_area').css('filter', 'blur(1.5rem)');
+  		$('#page-container').css('filter', 'blur(1.5rem)');
 		if ($('#maxSession').length > 0){
 			var max_session = document.getElementById("maxSession").value;
 			var location_pref = $('input[name="location_pref"]:checked').val();
@@ -807,7 +810,7 @@ function updateaccount()
 					if (doc.exists) {
 						displayProfile(doc.data(),user);
 						$('#loading_icon').css('display','none');
-						$('#info_area').css('filter', 'blur(0px)');
+						$('#page-container').css('filter', 'blur(0px)');
 					} else {
 						// doc.data() will be undefined in this case
 						console.log("No such document!");
@@ -867,7 +870,7 @@ function updateaccount()
 					if (doc.exists) {
 						displayProfile(doc.data(),user);
 						$('#loading_icon').css('display','none');
-						$('#info_area').css('filter', 'blur(0px)');
+						$('#page-container').css('filter', 'blur(0px)');
 					} else {
 						// doc.data() will be undefined in this case
 						console.log("No such document!");
@@ -909,30 +912,186 @@ function uploadResume(resumeFile, user){
 	});
 }
 
-// const editProfile = () -> (
-// 	const newName = {
-// 		newFirstName: first_name.value,
-// 		newLastName: last_name.value
-// 	};
-// 	const newEmail = email.value;
+function editPersonalInfo(infoType){
+	if (infoType == "email"){
+		var user = firebase.auth().currentUser;
+		var html = `
+		<div class="row">
+		<div class="col">
+		<form id="personal-changes" onsubmit="return updateEmail()">
+		<br>  
+			<h2>Edit Email</h2> 
+			<br>
+			<div class="form-group row">
+				<div class="col-md-3">
+					<label for="email" class="control-label">New Email Address</label>
+					<input type ="email" id="email" class="form-control" placeholder="Email" value="${user.email}" required>
+				</div> 
+			</div>
+			<div class="form-group row">
+				<div class="col-md-3">
+					<label for="password" class="control-label">Password</label>
+					<input type ="password" id="password" class="form-control" placeholder="Password" required>
+				</div> 
+			</div>
+			<div class="form-group row">
+			<div class="col-1">
+			<button type="submit" class="btn btn-primary" form="personal-changes" value="Submit">Change Email</button>
+			</div>
+			<div class="col-1">
+				<button class="btn btn-secondary" onclick="editGeneralInfo()">Edit General Info</button>
+			</div>
+			</div>
+			</form>
+			</div>
+			
+		</div>
+			`;
+	}
+	else{
+		var html = `
+		<div class="row">
+		<div class="col">
+		<form id="personal-changes" onsubmit="return updatePassword()" oninput='verPass.setCustomValidity(verPass.value != newPass.value ? "Passwords do not match." : "")'>
+		<br>  
+			<h2>Edit Password</h2> 
+			<br>
+			<div class="form-group row">
+				<div class="col-md-3">
+					<label for="email" class="control-label">Current Password</label>
+					<input type ="password" id="curPassword" class="form-control" placeholder="Current Password" required>
+				</div> 
+			</div>
+			<div class="form-group row">
+				<div class="col-md-3">
+					<label for="newPassword" class="control-label">New Password</label>
+					<input type ="password" id="newPassword" class="form-control" name="newPass" placeholder="New Password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Your password must contain at least one uppercase, one lowercase letter, and one number" required>
+				</div> 
+			</div>
+			<div class="form-group row">
+				<div class="col-md-3">
+					<label for="repNewPassword" class="control-label">Repeat New Password</label>
+					<input type ="password" id="repNewPassword" class="form-control" name="verPass" placeholder="Repeat New Password" required>
+				</div> 
+			</div>
+			<div class="form-group row">
+				<div class="col-1">
+				<button type="submit" class="btn btn-primary">Change Password</button>
+				</div>
+				<div class="col-1">
+				<button class="btn btn-secondary" onclick="editGeneralInfo()">Edit General Info</button>
+			</div>
+			</div>
+			</form>
+			</div>
+			
+		</div>
+		`;
+	}
+	$('#personal-info').html(html);
+	$('#general-info').fadeOut("fast");
+	$('#personal-info').fadeIn();
+	console.log(firebase.auth().currentUser);
+}
 
-// 	const user = firebase.auth().currentUser;
-// 	updateName(user, newName);
-// }
+function updateEmail(){
+	$('#loading_icon').fadeIn();
+	$('#page-container').css('filter', 'blur(1.5rem)');
+	var user = firebase.auth().currentUser;
+	var password = $('#password').val();
+	var credential = firebase.auth.EmailAuthProvider.credential(
+		user.email,
+		password 
+	);
+	user.reauthenticateWithCredential(credential).then(() => {
+	// User re-authenticated.
+	console.log("Reverified");
+	var newEmail = $('#email').val();
+	user.updateEmail(newEmail).then(() => {
+		// Update successful.
+		console.log("Email Updated");
+		var suc = `<div class="alert alert-success alert-dismissible">
+		<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+		<strong>Success!</strong> Your email has been changed.
+	  </div>`
+		$('#personal-info').prepend(suc);
+		$('#loading_icon').css('display','none');
+		$('#page-container').css('filter', 'blur(0px)');
+	  }).catch(()=>{
+		// An error happened.
+		console.log("Failed to update email");
+		var fail = `<div class="alert alert-danger alert-dismissible">
+		<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+		<strong>Oh no!</strong> We were unable to change your email.
+	  </div>`
+		$('#personal-info').prepend(fail);
+		$('#loading_icon').css('display','none');
+		$('#page-container').css('filter', 'blur(0px)');
+	  });
+	}).catch(() => {
+	// An error happened.
+	console.log("Invalid Credentials");
+	var fail = `<div class="alert alert-danger alert-dismissible">
+		<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+		<strong>Oh no!</strong> The current password you entered is incorrect.
+	  </div>`
+		$('#personal-info').prepend(fail);
+		$('#loading_icon').css('display','none');
+		$('#page-container').css('filter', 'blur(0px)');
+	});
+	return false;
+}
 
-// const newName = (user, newName) => {
-// 	const {newFirstName, newLastName} = newName;
-// 	user.updateProfile({
-// 		first_name: nfirst_name,
-// 		last_name: nlast_name
-// 	})
-// 	.then(() => {
-// 		console.log("Profile successfully updated");
-// 	})
-// 	.catch(error -> {
-// 		console.error(error);
-// 	})
-// }
+function updatePassword(){
+	$('#loading_icon').fadeIn();
+	$('#page-container').css('filter', 'blur(1.5rem)');
+	var user = firebase.auth().currentUser;
+	var curPassword = $('#curPassword').val();
+	var credential = firebase.auth.EmailAuthProvider.credential(
+		user.email,
+		curPassword
+	);
+	user.reauthenticateWithCredential(credential).then(() => {
+	// User re-authenticated.
+	console.log("Reverified");
+	var newPassword = $('#newPassword').val();
+	user.updatePassword(newPassword).then(() => {
+		// Update successful.
+		console.log("Password Updated");
+		var suc = `<div class="alert alert-success alert-dismissible">
+		<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+		<strong>Success!</strong> Your password has been changed.
+	  </div>`
+		$('#personal-info').prepend(suc);
+		$('#loading_icon').css('display','none');
+		$('#page-container').css('filter', 'blur(0px)');
+	  }).catch(() => {
+		// An error happened.
+		confirm.log("Failed to update password");
+		var fail = `<div class="alert alert-danger alert-dismissible">
+		<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+		<strong>Oh no!</strong> We were unable to change your password.
+	  </div>`
+		$('#personal-info').prepend(fail);
+		$('#loading_icon').css('display','none');
+		$('#page-container').css('filter', 'blur(0px)');
+	  });
+	}).catch(() => {
+	// An error happened.
+	console.log("Invalid Credentials");
+	var fail = `<div class="alert alert-danger alert-dismissible">
+		<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+		<strong>Oh no!</strong> The current password you entered is incorrect.
+	  </div>`
+		$('#personal-info').prepend(fail);
+		$('#loading_icon').css('display','none');
+		$('#page-container').css('filter', 'blur(0px)');
+	});
+	return false;
+}
 
-// editButton.addEventListener('click', editInformation);
-
+function editGeneralInfo(){
+	$("#personal-info").fadeOut();
+	$("#general-info").fadeIn();
+	$("#personal-info").empty();
+}

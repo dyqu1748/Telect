@@ -6,7 +6,7 @@ firebase.auth().onAuthStateChanged(function(user) {
       db.collection('users').doc(user.uid).onSnapshot((doc)=> {
         const reveal = async () => {
 			const result = await displayHome(doc.data());
-			$('#page-container').fadeIn();
+			$('#page-container').fadeIn("fast");
 		  }
 		reveal();
       });
