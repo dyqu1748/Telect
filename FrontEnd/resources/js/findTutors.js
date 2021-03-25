@@ -1,4 +1,6 @@
 var uuid;
+var response;
+
 firebase.auth().onAuthStateChanged(function(user) {
   if (user != null) {
     uuid = user.uid;
@@ -12,10 +14,12 @@ firebase.auth().onAuthStateChanged(function(user) {
 // Get the modal
 var scheduleModal = document.getElementById("schedule-modal");
 var resumeModal = document.getElementById("resume-modal");
+var moreInfoModal = document.getElementById("info-modal");
 
 // Get the <span> element that closes the modal
 var span1 = document.getElementById("close-schedule");
 var span2 = document.getElementById("close-resume");
+var span3 = document.getElementById("close-more-info");
 
 // When the user clicks on <span> (x), close the modal
 span1.onclick = function() {
@@ -26,6 +30,10 @@ span2.onclick = function() {
   resumeModal.style.display = "none";
 }
 
+span3.onclick = function() {
+    moreInfoModal.style.display = "none";
+}
+
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function(event) {
   if (event.target == scheduleModal) {
@@ -34,14 +42,17 @@ window.onclick = function(event) {
   if (event.target == resumeModal) {
     resumeModal.style.display = "none";
   }
+  if (event.target == moreInfoModal) {
+    moreInfoModal.style.display = "none";
+  }
 }
 
 function getMatches() {
     $.ajax({
         url: 'https://us-central1-telect-6026a.cloudfunctions.net/tutorMatches/' + uuid,
         success : function(data) {
-            console.log(data);
             display_matches(data);
+            response = data;
         }
     });
 	return true;
@@ -51,7 +62,6 @@ function display_matches(data) {
     var storage = firebase.storage().ref();
 
     var html = ``;
-    var resumeContent = ``;
     for(i = 0; i < data.length; i++) {
         var tutorData = data[i];
 
@@ -65,7 +75,7 @@ function display_matches(data) {
                         </br>
                         <button onclick="session_details()" class="btn btn-primary">Request Session</button>
                         </br>
-                        <a href="#">More Info</a>
+                        <a href="#" onclick="display_info()">More Info</a>
                     </div>
                     <div class="col">
                         <p id="selected_tutor" style="display: none;">${i}</p>
@@ -79,16 +89,9 @@ function display_matches(data) {
             </div>
           </div>
           `;
-
-        resumeContent += `
-             <div id=${"resume"+i} class="resume">
-                 <iframe src=${tutorData.resumeUrl} width="100%" height="500px">
-             <div>`;
     }
 
     $('#tutor-matches').html(html);
-    $('#temp-resume').html(resumeContent);
-
 	$('#loading_icon').fadeOut("fast");
 	$('#page-container').fadeIn();
 	return true;
@@ -98,17 +101,38 @@ function display_matches(data) {
  }
 
  function display_resume() {
-//    resumeModal.style.display = "block";
-//    var html = `<iframe src="https://www.w3schools.com" class="resume"> `;
-//    $('#temp-resume').html(html);
     var tutor_num = document.getElementById("selected_tutor").innerHTML;
-    var id = "resume" + tutor_num;
-    console.log(id);
     resumeModal.style.display = "block";
-    document.getElementById(id).style.display = "block";
-
+    var resumeContent = `<iframe src=${response[tutor_num].resumeUrl} width="100%" height="500px">`;
+    $('#temp-resume').html(resumeContent);
  }
 
+ function display_info() {
+    moreInfoModal.style.display = "block";
+    var tutor_num = document.getElementById("selected_tutor").innerHTML;
+    var tutorData = response[tutor_num];
+    var html = `
+        <h3> ${tutorData.first_name} ${tutorData.last_name} </h3>
+        <div class = "row">
+            <div class="col">
+                <img src= ${tutorData.photoUrl} class="tutor-photo-more-info">
+                </br>
+                <button onclick="session_details()" class="btn btn-primary">Request Session</button>
+            </div>
+            <div class="col">
+                <p id="selected_tutor" style="display: none;">${i}</p>
+                <p> Location: ${tutorData.city + ", "} ${tutorData.state} </p>
+                <p> Desired Hourly Rate: ${"$" + tutorData.minSession}</p>
+                <p> Subjects: ${tutorData.subjects}</p>
+                <p> About Me: ${tutorData.bio} </p>
+                <a href="#" onclick="display_resume()"> Resume </a>
+                </br>
+                <p> insert schedule here </p>
+            </div>
+        </div>
+    `;
+    $("#info-placeholder").html(html);
+ }
 
  function session_details()
  {

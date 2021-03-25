@@ -38,6 +38,13 @@
 .tutorPhoto {
     height: 150px;
     width:125px;
+    padding-bottom: 5px;
+}
+
+.tutor-photo-more-info {
+    height: 250px;
+    width:200px;
+    padding-bottom: 20px;
 }
 
 .resume {
