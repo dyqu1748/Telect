@@ -10,20 +10,29 @@ firebase.auth().onAuthStateChanged(function(user) {
 });
 
 // Get the modal
-var modal = document.getElementById("myModal");
+var scheduleModal = document.getElementById("schedule-modal");
+var resumeModal = document.getElementById("resume-modal");
 
 // Get the <span> element that closes the modal
-var span = document.getElementsByClassName("close")[0];
+var span1 = document.getElementById("close-schedule");
+var span2 = document.getElementById("close-resume");
 
 // When the user clicks on <span> (x), close the modal
-span.onclick = function() {
-  modal.style.display = "none";
+span1.onclick = function() {
+  scheduleModal.style.display = "none";
+}
+
+span2.onclick = function() {
+  resumeModal.style.display = "none";
 }
 
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function(event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
+  if (event.target == scheduleModal) {
+    scheduleModal.style.display = "none";
+  }
+  if (event.target == resumeModal) {
+    resumeModal.style.display = "none";
   }
 }
 
@@ -39,15 +48,21 @@ function getMatches() {
 }
 
 function display_matches(data) {
+    var storage = firebase.storage().ref();
+
     var html = ``;
+    var resumeContent = ``;
     for(i = 0; i < data.length; i++) {
         var tutorData = data[i];
+
         html += `
           <div class="card w-75">
             <div class="card-body">
                 <h5 class="card-title"> ${tutorData.first_name} ${tutorData.last_name}</h5>
                 <div class="row">
                     <div class="col">
+                        <img src= ${tutorData.photoUrl} class="tutorPhoto">
+                        </br>
                         <button onclick="session_details()" class="btn btn-primary">Request Session</button>
                         </br>
                         <a href="#">More Info</a>
@@ -58,13 +73,22 @@ function display_matches(data) {
                         <p class="card-text"> Desired Hourly Rate: ${"$" + tutorData.minSession}</p>
                         <p class="card-text"> Subjects: ${tutorData.subjects}</p>
                         <p class="card-text"> About Me: ${tutorData.bio} </p>
+                        <a href="#" onclick="display_resume()"> Resume </a>
                     </div>
                 </div>
             </div>
           </div>
           `;
+
+        resumeContent += `
+             <div id=${"resume"+i} class="resume">
+                 <iframe src=${tutorData.resumeUrl} width="100%" height="500px">
+             <div>`;
     }
+
     $('#tutor-matches').html(html);
+    $('#temp-resume').html(resumeContent);
+
 	$('#loading_icon').fadeOut("fast");
 	$('#page-container').fadeIn();
 	return true;
@@ -73,10 +97,22 @@ function display_matches(data) {
     //          </div>
  }
 
+ function display_resume() {
+//    resumeModal.style.display = "block";
+//    var html = `<iframe src="https://www.w3schools.com" class="resume"> `;
+//    $('#temp-resume').html(html);
+    var tutor_num = document.getElementById("selected_tutor").innerHTML;
+    var id = "resume" + tutor_num;
+    console.log(id);
+    resumeModal.style.display = "block";
+    document.getElementById(id).style.display = "block";
+
+ }
+
 
  function session_details()
  {
- 	modal.style.display = "block";
+ 	scheduleModal.style.display = "block";
 
  	var tutor_num = document.getElementById("selected_tutor").innerHTML;
 

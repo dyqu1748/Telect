@@ -439,9 +439,11 @@ function create_account(){
       var resumeFile = $('#resume').prop('files')[0];
       var profilePic = $('#photo').prop('files')[0];
       var storageRef = firebase.storage().ref();
-      var picName = 'profilePictures/'+user.uid+'.'+profilePic.name.split('.').pop(); 
-      var resumeRef = storageRef.child('resumes/'+user.uid+'.'+resumeFile.name.split('.').pop());
+      var picName = 'profilePictures/'+user.uid +'.'+profilePic.name.split('.').pop();
+      var resumeName = 'resumes/'+user.uid+'.'+resumeFile.name.split('.').pop()
+      var resumeRef = storageRef.child(resumeName);
       var picRef = storageRef.child(picName);
+      const userCollectionRef = db.collection('users').doc(cred.user.uid);
       return resumeRef.put(resumeFile,resumeFile.type).then((snapshot) =>{
         console.log("Uploaded resume!");
       })
@@ -464,6 +466,12 @@ function create_account(){
           "subjects": account_specific['subjects'],
           "bio": account_specific['bio']
         });
+      }).then(() =>{
+        return storageRef.child(picName).getDownloadURL().then((url) =>{
+            return userCollectionRef.update({"photoUrl": url})});
+      }).then(() => {
+        return storageRef.child(resumeName).getDownloadURL().then((url) => {
+            return userCollectionRef.update({"resumeUrl": url})});
       })
     }
     // ---
