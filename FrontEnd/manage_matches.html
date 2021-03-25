@@ -4,54 +4,14 @@
 <title>Telect - Manage Matches</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-/* The Modal (background) */
-.modal {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
-  left: 0;
-  top: 0;
-  width: 75%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-}
-
-/* Modal Content/Box */
-.modal-content {
-  background-color: #fefefe;
-  margin: 15% auto; /* 15% from the top and centered */
-  padding: 20px;
-  border: 1px solid #888;
-  width: 80%; /* Could be more or less, depending on screen size */
-}
-
-/* The Close Button */
-.close {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-  color: black;
-  text-decoration: none;
-  cursor: pointer;
-}
-</style>
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <link rel="stylesheet" href="resources/css/home.css">
-<link rel="stylesheet" href="resources/css/register.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
-<body onload="loadMatches()">
+<body>
 <div>
   <nav class="navbar navbar-expand-lg navbar-dark">
     <a class="navbar-brand" href="home.html">
@@ -62,115 +22,24 @@
   </button>
 
     <div class ="collapse navbar-collapse" id="navbarContent">
-    <ol id = "nav_items" class="navbar-nav mr-auto" > 
-    </ol>  
-    <span><button class="btn btn-danger rounded-pill " onclick="logout()">Log Out</button></span>
+      <ol id = "nav_items" class="navbar-nav mr-auto" > 
+      </ol>  
+      <span><button class="btn btn-danger rounded-pill " onclick="logout()">Log Out</button></span> 
   </div>
 </nav>
   
 </div>
-<div class="lds-roller" id="loading_icon"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-<div id="page-container" class="container-fluid" style="display: none;">
+
+<div id="page-container" class="container-fluid">
   <div id="content-wrap">
     <h2>Coming Soon...</h2>
-
-    <!--Test Card Profiles -->
-    <style>
-      .card {
-      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-      max-width: 300px;
-      margin: auto;
-      text-align: center;
-    }
-
-    button {
-      border: none;
-      outline: 0;
-      display: inline-block;
-      padding: 8px;
-      color: white;
-      background-color: purple;
-      text-align: center;
-      cursor: pointer;
-      width: 100%;
-      font-size: 18px;
-    }
-
-    button:hover, a:hover {
-      opacity: 0.7;
-    }
-    </style>
-    <div id="tutors">
-    </div>
-
-    <!-- Trigger/Open The Modal -->
-    <!-- <button id="myBtn">Schedule Session</button> -->
-
-<<<<<<< HEAD
-    <!-- The Modal -->
-    <div id="myModal" class="modal">
-=======
-<!--Test Card Profiles -->
-<style>
-  .card {
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  max-width: 300px;
-  margin: auto;
-  text-align: center;
-}
-
-button {
-  border: none;
-  outline: 0;
-  display: inline-block;
-  padding: 8px;
-  color: white;
-  background-color: purple;
-  text-align: center;
-  cursor: pointer;
-  width: 100%;
-  font-size: 18px;
-}
-
-button:hover, a:hover {
-  opacity: 0.7;
-}
-</style>
-<div id="tutors">
-</div>
-
-<!-- Trigger/Open The Modal -->
-<!-- <button id="myBtn">Schedule Session</button> -->
-
-<!-- The Modal -->
-<div id="myModal" class="modal">
-
-  <!-- Modal content -->
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <form id="schedule_session">
-    </form>
-  </div>
-
-</div>
-
->>>>>>> Request a session with a tutor
-
-      <!-- Modal content -->
-      <div class="modal-content">
-        <span class="close">&times;</span>
-        <form id="schedule_session">
-        </form>
-      </div>
-
-    </div>
   </div>
   <footer id="footer" class="bg-dark">
-  <div class="container">
-    <p class="m-0 text-center text-white">Telect is driven on making enriched tutoring accessible for all families by bringing together parents, students, and educators.</p>
-    <p class="m-0 text-center text-white">Copyright &copy; 2021 Telect</p>
-  </div>
-</footer>
+    <div class="container">
+      <p class="m-0 text-center text-white">Telect is driven on making enriched tutoring accessible for all families by bringing together parents, students, and educators.</p>
+      <p class="m-0 text-center text-white">Copyright &copy; 2021 Telect</p>
+    </div>
+  </footer>
 </div>
 
 
@@ -190,6 +59,5 @@ button:hover, a:hover {
 <script src="resources/js/fire.js"></script>
 <script src="resources/js/accountHandle.js"></script>
 <script src="resources/js/nav.js"></script>
-<script src="resources/js/manage_matches_schedule_session.js"></script>
 </body>
 </html>
