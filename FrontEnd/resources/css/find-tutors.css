@@ -20,6 +20,11 @@
   width: 80%; /* Could be more or less, depending on screen size */
 }
 
+.card{
+  border-radius: 25px;
+  border-color: rgba(0, 0, 0,0.25);
+}
+
 /* The Close Button */
 .close {
   color: #aaa;
@@ -49,4 +54,15 @@
 
 .resume {
     display: none;
+}
+
+.dialogIsOpen {
+
+  /* Blur and de-color */
+  -webkit-filter: blur(3px) grayscale(50%);
+
+}
+
+.more_info_text{
+  font-size: large;
 }
