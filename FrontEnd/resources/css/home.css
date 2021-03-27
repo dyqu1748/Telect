@@ -17,6 +17,14 @@ nav, .btn-primary{
     margin-top: 5px;
 }
 
+body{
+    background:url(../img/backgroundImage.jpg) no-repeat center center fixed;;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
 .wrapper {
     display: grid;
     grid-template-columns: 300px 300px 300px;

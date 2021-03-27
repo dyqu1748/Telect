@@ -4,7 +4,7 @@
   z-index: 1; /* Sit on top */
   left: 0;
   top: 0;
-  width: 75%; /* Full width */
+  width: 100%; /* Full width */
   height: 100%; /* Full height */
   overflow: auto; /* Enable scroll if needed */
   background-color: rgb(0,0,0); /* Fallback color */
@@ -20,6 +20,11 @@
   width: 80%; /* Could be more or less, depending on screen size */
 }
 
+.card{
+  border-radius: 25px;
+  border-color: rgba(0, 0, 0,0.25);
+}
+
 /* The Close Button */
 .close {
   color: #aaa;
@@ -33,4 +38,31 @@
   color: black;
   text-decoration: none;
   cursor: pointer;
+}
+
+.tutorPhoto {
+    height: 150px;
+    width:125px;
+    padding-bottom: 5px;
+}
+
+.tutor-photo-more-info {
+    height: 250px;
+    width:200px;
+    padding-bottom: 20px;
+}
+
+.resume {
+    display: none;
+}
+
+.dialogIsOpen {
+
+  /* Blur and de-color */
+  -webkit-filter: blur(3px) grayscale(50%);
+
+}
+
+.more_info_text{
+  font-size: large;
 }

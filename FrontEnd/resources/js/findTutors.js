@@ -1,4 +1,6 @@
 var uuid;
+var response;
+
 firebase.auth().onAuthStateChanged(function(user) {
   if (user != null) {
     uuid = user.uid;
@@ -9,21 +11,66 @@ firebase.auth().onAuthStateChanged(function(user) {
   }
 });
 
+var subject_keys = {'math':'Math','geometry':'Geometry','pre-algebra':'Pre-Algebra','algebra':'Algebra','science':'Science','geology':'Geology','chemistry':'Chemistry','social_studies':'Social Studies','govtHist': 'U.S. Government and History','language_arts':'Language Arts','spanish': 'Spanish'};
+
+
 // Get the modal
-var modal = document.getElementById("myModal");
+var scheduleModal = $("#schedule-modal");
+var resumeModal = $("#resume-modal");
+var moreInfoModal = $("#info-modal");
 
 // Get the <span> element that closes the modal
-var span = document.getElementsByClassName("close")[0];
+var span1 = document.getElementById("close-schedule");
+var span2 = document.getElementById("close-resume");
+var span3 = document.getElementById("close-more-info");
 
 // When the user clicks on <span> (x), close the modal
-span.onclick = function() {
-  modal.style.display = "none";
+span1.onclick = function() {
+  $("#tutor-matches").removeClass("dialogIsOpen");
+  $("#match-head").removeClass("dialogIsOpen");
+  $("#footer").removeClass("dialogIsOpen");
+  $("nav").removeClass("dialogIsOpen");
+  scheduleModal.fadeOut('fast');
+}
+
+span2.onclick = function() {
+  $("#tutor-matches").removeClass("dialogIsOpen");
+  $("#match-head").removeClass("dialogIsOpen");
+  $("#footer").removeClass("dialogIsOpen");
+  $("nav").removeClass("dialogIsOpen");
+  resumeModal.fadeOut('fast');
+}
+
+span3.onclick = function() {
+	$("#tutor-matches").removeClass("dialogIsOpen");
+	$("#match-head").removeClass("dialogIsOpen");
+	$("#footer").removeClass("dialogIsOpen");
+	$("nav").removeClass("dialogIsOpen");
+    moreInfoModal.fadeOut('fast');
 }
 
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function(event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
+  if (event.target.id == scheduleModal.attr('id')) {
+	$("#tutor-matches").removeClass("dialogIsOpen");
+	$("#match-head").removeClass("dialogIsOpen");
+	$("#footer").removeClass("dialogIsOpen");
+	$("nav").removeClass("dialogIsOpen");
+    scheduleModal.fadeOut('fast');
+  }
+  if (event.target.id == resumeModal.attr('id')) {
+	$("#tutor-matches").removeClass("dialogIsOpen");
+	$("#match-head").removeClass("dialogIsOpen");
+	$("#footer").removeClass("dialogIsOpen");
+	$("nav").removeClass("dialogIsOpen");
+    resumeModal.fadeOut('fast');
+  }
+  if (event.target.id == moreInfoModal.attr('id')) {
+	$("#tutor-matches").toggleClass("dialogIsOpen");
+	$("#match-head").toggleClass("dialogIsOpen");
+	$("#footer").toggleClass("dialogIsOpen");
+	$("nav").toggleClass("dialogIsOpen");
+    moreInfoModal.fadeOut('fast')
   }
 }
 
@@ -31,39 +78,55 @@ function getMatches() {
     $.ajax({
         url: 'https://us-central1-telect-6026a.cloudfunctions.net/tutorMatches/' + uuid,
         success : function(data) {
-            console.log(data);
             display_matches(data);
+            response = data;
         }
     });
 	return true;
 }
 
 function display_matches(data) {
+    var storage = firebase.storage().ref();
+
     var html = ``;
     for(i = 0; i < data.length; i++) {
         var tutorData = data[i];
+		var all_subjects ="";
+		tutorData.subjects.forEach(function(subject,ind){
+			all_subjects+=subject_keys[subject];
+              if (ind < tutorData.subjects.length-1){
+                all_subjects+= ', ';
+              }
+		});
+
         html += `
-          <div class="card w-75">
+		<div class="form-group row">
+          <div class="card w-75 mx-auto">
             <div class="card-body">
                 <h5 class="card-title"> ${tutorData.first_name} ${tutorData.last_name}</h5>
                 <div class="row">
                     <div class="col">
-                        <button onclick="session_details()" class="btn btn-primary">Request Session</button>
-                        </br>
-                        <a href="#">More Info</a>
+                        <img src= ${tutorData.photoUrl} class="tutorPhoto">
+                        <br>
+						<br>
+                        <button onclick="session_details(${i})" class="btn btn-primary rounded-pill">Request Session</button>
+						<button onclick="display_info(${i})" class="btn btn-secondary rounded-pill">More Info</button>
                     </div>
                     <div class="col">
-                        <p id="selected_tutor" style="display: none;">${i}</p>
+                        <p id="selected_tutor_${i}" style="display: none;">${i}</p>
                         <p class="card-text"> Location: ${tutorData.city + ", "} ${tutorData.state} </p>
                         <p class="card-text"> Desired Hourly Rate: ${"$" + tutorData.minSession}</p>
-                        <p class="card-text"> Subjects: ${tutorData.subjects}</p>
+                        <p class="card-text"> Subjects: ${all_subjects}</p>
                         <p class="card-text"> About Me: ${tutorData.bio} </p>
+                        <a href="#" onclick="display_resume(${i})"> Resume </a>
                     </div>
                 </div>
             </div>
           </div>
+		  </div>
           `;
     }
+
     $('#tutor-matches').html(html);
 	$('#loading_icon').fadeOut("fast");
 	$('#page-container').fadeIn();
@@ -73,13 +136,66 @@ function display_matches(data) {
     //          </div>
  }
 
+ function display_resume(i) {
+    var tutor_num = document.getElementById("selected_tutor_"+i).innerHTML;
+	$("#tutor-matches").addClass("dialogIsOpen");
+	$("#match-head").addClass("dialogIsOpen");
+	$("#footer").addClass("dialogIsOpen");
+	$("nav").addClass("dialogIsOpen");
+    resumeModal.fadeIn();
+    var resumeContent = `<iframe src=${response[tutor_num].resumeUrl} width="100%" height="500px">`;
+    $('#temp-resume').html(resumeContent);
+ }
 
- function session_details()
+ function display_info(i) {
+    moreInfoModal.fadeIn();
+	$("#tutor-matches").addClass("dialogIsOpen");
+	$("#match-head").addClass("dialogIsOpen");
+	$("#footer").addClass("dialogIsOpen");
+	$("nav").addClass("dialogIsOpen");
+    var tutor_num = document.getElementById("selected_tutor_"+i).innerHTML;
+    var tutorData = response[tutor_num];
+	console.log(tutorData);
+	var all_subjects ="";
+		tutorData.subjects.forEach(function(subject,ind){
+			all_subjects+=subject_keys[subject];
+              if (ind < tutorData.subjects.length-1){
+                all_subjects+= ', ';
+              }
+		});
+    var html = `
+        <h1 class="display-3"> ${tutorData.first_name} ${tutorData.last_name} </h1>
+        <div class = "row">
+            <div class="col">
+                <img src= ${tutorData.photoUrl} class="tutor-photo-more-info">
+                </br>
+				</br>
+                <button onclick="session_details(${i})" class="btn btn-primary rounded-pill">Request Session</button>
+            </div>
+            <div class="col">
+                <p id="selected_tutor_${i}" style="display: none;">${i}</p>
+                <p class="more_info_text"> Location: ${tutorData.city + ", "} ${tutorData.state} </p>
+                <p class="more_info_text"> Desired Hourly Rate: ${"$" + tutorData.minSession}</p>
+                <p class="more_info_text"> Subjects: ${all_subjects}</p>
+                <p class="more_info_text"> About Me: ${tutorData.bio} </p>
+                <a class="more_info_text" href="#" onclick="display_resume(${i})"> Resume </a>
+                </br>
+                <p> insert schedule here </p>
+            </div>
+        </div>
+    `;
+    $("#info-placeholder").html(html);
+ }
+
+ function session_details(i)
  {
- 	modal.style.display = "block";
-
- 	var tutor_num = document.getElementById("selected_tutor").innerHTML;
-
+ 	var tutor_num = document.getElementById("selected_tutor_"+i).innerHTML;
+	moreInfoModal.fadeOut('fast');
+	$('#loading_icon_modal').css("display","block");
+	$("nav").addClass("dialogIsOpen");
+	$("#footer").addClass("dialogIsOpen");
+	$("#match-head").addClass("dialogIsOpen");
+	$("#tutor-matches").addClass("dialogIsOpen");
  	var user = firebase.auth().currentUser;
  	var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
  	   getTutorMatches().then((result) => {
@@ -97,21 +213,27 @@ function display_matches(data) {
  					var user_info = doc.data();
  		           var tutor_info = data[tutor_num];
  		           var html = `
- 				           <h1>Request a Session with ${tutor_info.first_name} ${tutor_info.last_name}</h1>
- 				           <h3>Select Which Child</h3>
+ 				           <h1>Request a Session with ${tutor_info.first_name} ${tutor_info.last_name}</h1><br>
+ 				           <h3>Who is this Session For?</h3>
+							<div class="form-group row">
+							<div class="col">
+							<div class="btn-group btn-group-toggle" data-toggle="buttons">
  				           `;
 
  				    for (var i = 0; i < user_info.children.length; i++) {
  						html += `
- 						<label>
+ 						<label class="btn btn-outline-primary">
  							<input type="radio" name="child" value=${user_info.children[i].child_name} required> ${user_info.children[i].child_name}
  						</label>
  						`;
  					}
 
- 				    html += `
+ 				    html += `</div>
+					 		</div>
+							 </div>
  				           <h3>Date and Time</h3>
- 				           <h3>Location Preference</h3>
+ 				           	<h3>Location Preference</h3>
+							<div class="form-group form-inline">
  				           `;
  		           if(user_info.location_pref == "online")
  		           {
@@ -124,7 +246,8 @@ function display_matches(data) {
  										<input type="radio" name="location_pref" value="in_person"> In-Person
  										</label>
  									</div>
- 								</div>`;
+ 								</div>
+								 </div>`;
 
  		           }else{
  		           		html += `<div>
@@ -136,38 +259,56 @@ function display_matches(data) {
  									<input type="radio" name="location_pref" value="in_person" required> In-Person
  									</label>
  								</div>
- 								</div>`;
+ 								</div>
+								 </div>`;
  		           }
 
  		           html += `
  				           <h3>Price</h3>
  				           <p>Your Current Price Range: $${user_info.minSession} - $${user_info.maxSession}</p>
- 				           <p>Tutor Current Price Range: $${tutor_info.minSession} - $${tutor_info.maxSession}</p>
+ 				           <p>Tutor Minimum Session Rate: $${tutor_info.minSession}</p>
  				           <div>
- 				           <p> Please Input the Session Price</p>
+ 				           <h4> Please Input your Desired Session Rate</h4>
+							<div class="form-group form-inline">
+							<label for="final_price">$</label>
+							<div class="col">
  							<input type="number" id="final_price" class="form-control" min="${tutor_info.minSession}" value="${user_info.minSession}" placeholder="0.00" required>
+							 </div>
+							 </div>
  							</div>
- 				           <h3>Select Subject</h3>
+ 				           <h3>Select Subject(s)</h3>
  				           <div id="subjectsel">
  				           </div>
+							<div class="form-group row">
+							<div class="col">
+							<div class="btn-group-toggle" data-toggle="buttons">
  		          			 `;
 
  					for (var i = 0; i < tutor_info.subjects.length; i++) {
  						html += `
- 						<label>
- 							<input type="checkbox" value=${tutor_info.subjects[i]}> ${tutor_info.subjects[i]}
+
+						 <label class="btn btn-outline-primary">
+ 							<input type="checkbox" value=${tutor_info.subjects[i]}> ${subject_keys[tutor_info.subjects[i]]}
  						</label>
+
  						`;
  					}
 
- 					html += `
- 							</br>
- 							<button type="submit" class="btn btn-lg btn-primary">Confirm Session</button>
+ 					html += `</div>
+					 		</div>
+							 </div>
+					 		<div class="form-group row">
+							 <div class="col">
+ 							<button type="submit" class="btn btn-lg btn-primary rounded-pill">Confirm Session</button>
+							 </div>
+							 </div>
  					`;
 
  		           $('#schedule_session').html(html);
+					$('#loading_icon_modal').fadeOut("fast");
+					scheduleModal.fadeIn();
+					document.getElementById("schedule_session").scrollIntoView({behavior: "smooth", block: "center"});
  	       });
-
  	       }
  	   });
  }

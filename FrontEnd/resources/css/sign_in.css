@@ -1,3 +1,11 @@
+body{
+  background:url(../img/backgroundImage.jpg) no-repeat center center fixed;;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
 /* Styling for the card and body of signup/register page */
 :root {
   --input-padding-x: 1.5rem;

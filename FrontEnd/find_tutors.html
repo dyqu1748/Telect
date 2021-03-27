@@ -35,22 +35,36 @@
 </div>
 <div class="lds-roller" id="loading_icon"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
 <div id="page-container" class="container-fluid" style="display: none;">
+  <br>
   <div id="content-wrap">
+    <h1 class="text-center" id="match-head">Here are Your Matches</h1><br>
+    <div class="lds-roller" id="loading_icon_modal" style="z-index: 10; display: none;"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
     <div class="container" id="tutor-matches">
     </div>
 
-    <!-- The Modal -->
-    <div id="myModal" class="modal">
-
-      <!-- Modal content -->
+    <div id="info-modal" class="modal">
       <div class="modal-content">
-        <span class="close">&times;</span>
+        <span id="close-more-info" class="close">&times;</span>
+        <div id="info-placeholder"></div>
+      </div>
+    </div>
+
+    <div id="resume-modal" class="modal">
+      <div class="modal-content">
+        <span id="close-resume" class="close">&times;</span>
+        <div id="temp-resume"></div>
+      </div>
+    </div>
+
+    <div id="schedule-modal" class="modal">
+      <div class="modal-content">
+        <span id="close-schedule" class="close">&times;</span>
         <form id="schedule_session">
         </form>
       </div>
-
     </div>
   </div>
+
   <footer id="footer" class="bg-dark">
     <div class="container">
       <p class="m-0 text-center text-white">Telect is driven on making enriched tutoring accessible for all families by bringing together parents, students, and educators.</p>

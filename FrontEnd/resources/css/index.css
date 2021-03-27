@@ -1,12 +1,16 @@
 header.masthead {
   position: relative;
-  overflow: hidden;
-  padding-top: calc(7rem + 72px);
-  padding-bottom: 7rem;
   background: url("https://cms-tc.pbskids.org/parents/articles/When-to-Get-a-Math-Tutor-for-Your-Child.jpg?mtime=20181203090023") no-repeat center center;
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-attachment: scroll;
+  background-size: cover;
+  padding-top: 8rem;
+  padding-bottom: 8rem;
+}
+
+body{
+  background:url(../img/backgroundImage.jpg) no-repeat center center fixed;;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
   background-size: cover;
 }
 
