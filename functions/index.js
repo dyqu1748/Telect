@@ -172,11 +172,63 @@ exports.scheduleTest =  functions.https.onRequest(async (request, response) => {
 
     // Step 6: Create the schedule
     const s = schedule.create(tasks, resources, null, start);
+
     response.send({"schedule": s})
 });
 
+// BELOW THIS LINE IS A TEST FOR PASSING THE RAW SCHEDULE JSON TO THE SCHEDULER
 
+const json_workItems = [
+    {
+        name: '2 hours geometry session',
+        length: 2,                      // lengths specified in hours
+        minSchedule: 2,                 // have to schedule all 2 hours at once
+        assignedTo: ['Student', 'Tutor'],    // both Bob and Sara are needed
+        availability: {schedules: [
+            {dw: [1], h: [10,11,12,13,14,15,16,17,18,17,18]},
+            {dw: [2], h: [10,11,12,13,14,15,16,17,18,17,18]},
+            {dw: [3], h: [10,11,12,13,14,15,16,17,18,17,18]},
+            {dw: [4], h: [10,11,12,13,14,15,16,17,18,17,18]},
+            {dw: [5], h: [10,11,12,13,14,15,16,17,18,17,18]},
+            {dw: [6], h: [10,11,12,13,14,15,16,17,18,17,18]},
+            {dw: [0], h: [10,11,12,13,14,15,16,17,18,17,18]},
+        ]}
+        //availability: 'after 10:00am and before 9:00pm'
+        //can only complete when paint store is open
+    }
+];
 
+const json_t = schedule.tasks()
+    .id(function (d) {
+        return d.name;
+    })
+    // our length is in hours, convert to minutes
+    .duration(function (d) {
+        return d.length * 60;
+    })
+    // use later.parse.text to parse text into a usable schedule
+    .available(function (d) {
+        return d.availability;
+    })
+    // convert minSchedule to minutes
+    .minSchedule(function (d) {
+        return d.minSchedule ? d.minSchedule * 60 : undefined;
+    })
+    // resources are the people the tasks have been assigned to
+    .resources(function (d) {
+        return d.assignedTo;
+    });
+
+const json_tasks = json_t(json_workItems);
+
+exports.scheduleJsonTest =  functions.https.onRequest(async (request, response) => {
+    response.setHeader('Content-Type', 'application/json')
+
+    // Step 6: Create the schedule
+    const s = schedule.create(json_tasks, resources, null, start);
+
+    response.send({"schedule": s})
+});
 
 
 
