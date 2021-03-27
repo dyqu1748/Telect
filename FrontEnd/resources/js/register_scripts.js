@@ -219,6 +219,8 @@ function display_review(){
         var apartmentInfo = document.getElementById("apartmentInfo").value;
         var state = document.getElementById("state").value;
         var zipCode = document.getElementById("zipCode").value;
+        var schedule = getScheduleDays();
+        console.log("Schedule", schedule);
         var basicInfo = {
           'email':userEmail,
           'inputPassword': userPass,
@@ -229,7 +231,8 @@ function display_review(){
           'apartmentInfo':apartmentInfo,
           'city':city,
           'state':state,
-          'zipCode':zipCode
+          'zipCode':zipCode,
+          'schedule': schedule
         };
         if (account_type == "parent"){
           var minSession = document.getElementById("minSession").value;
@@ -410,7 +413,8 @@ function create_account(){
       "apartment_info": basicInfo['apartmentInfo'],
       "city": basicInfo['city'],
       "state": basicInfo['state'],
-      "zipCode": basicInfo['zipCode']
+      "zipCode": basicInfo['zipCode'],
+      "schedule": basicInfo['schedule']
     })
 
     if (account_specific['accountType'] == 'parent'){
