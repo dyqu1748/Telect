@@ -32,7 +32,6 @@ function getMatches(user) {
 }
 
 function display_matches(data) {
-    console.log(data)
     if (data.user_type == 'tutor'){
         if (data.conversations !== undefined){
             var convRef = db.collection('conversations');
@@ -47,11 +46,13 @@ function display_matches(data) {
                     }
                     db.collection('users').doc(otherUserID).get().then((doc)=>{
                     var html = `
-                    <div class="card mx-auto" style="width: 20rem;">
-                        <div class="card-body">
+                    <div class="col mb-4">
+                    <div class="card mx-auto border-secondary" style="width:22rem">
+                        <div class="card-body text-center">
                             <h5 class="card-title">${doc.data().first_name} ${doc.data().last_name}</h5>
-                            <button onclick="display_messages('tutor','${conv}')" class="btn btn-primary rounded-pill" >Send Message</button>
+                            <a href='#' onclick="display_messages('tutor','${conv}')" class="btn btn-primary rounded-pill" >Send Message</a>
                         </div>
+                    </div>
                     </div>
                     `;
                     $('#matched_users').append(html);
@@ -67,12 +68,14 @@ function display_matches(data) {
         for(i = 0; i < data.length; i++) {
             var tutorData = data[i];
             var html = `
-            <div class="card mx-auto" style="width: 20rem;">
-                <img class="card-img-top" src="${tutorData.photoUrl}">
-                <div class="card-body">
+            <div class="col mb-4">
+            <div class="card mx-auto border-secondary" style="width:22rem">
+                <img class="card-img-top" src="${tutorData.photoUrl}" alt="tutor-pic">
+                <div class="card-body text-center">
                     <h5 class="card-title">${tutorData.first_name} ${tutorData.last_name}</h5>
-                    <button onclick="display_messages('parent',${i})" class="btn btn-primary rounded-pill" >Send Message</button>
+                    <a href='#' onclick="display_messages('parent',${i})" class="btn btn-primary rounded-pill" >Send Message</a>
                 </div>
+            </div>
             </div>
             `;
             $('#matched_users').append(html);
@@ -80,7 +83,6 @@ function display_matches(data) {
     }
 	$('#loading_icon').fadeOut("fast");
 	$('#matched_users').fadeIn();
-    console.log("L");
 	return true;
     //          <p id="selected_tutor" style="display: none;">${i}</p>
     //          <button onclick="session_details()">Request Session</button>
@@ -96,6 +98,23 @@ function display_matches(data) {
       </div>
     `;
     $('#message_area').prepend(setup);
+    var messageHTML = `
+        <div>
+        <form id="message_form" onsubmit="return send_message('${userType}','${i}')">
+        <div class="container form-group">
+            <textarea class="form-control" id="message_body" rows="1" placeholder="Message" required></textarea>
+            </div>
+            <div class="form-group row justify-content-center">
+            <div class="col-1">
+                <button type="submit" class="btn btn-primary rounded-pill">Send Message</button>
+            </div>
+            <div class="col-1">
+                <button class="btn btn-secondary rounded-pill" onclick="returnToMatches()">Go Back</button>
+        </div>
+        </form>
+        </div>
+        `;
+    $('#message_area').append(messageHTML);
     if (userType == 'parent'){
         var selected_tutor = response[i];
         var dispName = `<h2 class="text-left">${selected_tutor.first_name} ${selected_tutor.last_name}</h2>`;
@@ -106,12 +125,10 @@ function display_matches(data) {
 
             if (curUserConv !== undefined){
                 //Fill and display past messages
-                console.log("Getting there");
-                // arr1.some(item => arr2.includes(item))
 
                 var usersRef = db.collection("users");
                 //Change this later to reference the user's email; right now not all users have their email written to the db
-                usersRef.where("first_name", "==", selected_tutor.first_name, "AND", "last_name", '==', selected_tutor.last_name)
+                usersRef.where("email", "==", selected_tutor.email)
                 .get()
                 .then((querySnapshot) => {
                     querySnapshot.forEach((otherUserDoc) => {
@@ -135,17 +152,11 @@ function display_matches(data) {
                         }
                     });
                 })
-                .then(()=>{
-                    $('#message_area').fadeIn();
-                })
                 .catch((error) => {
                     console.log("Error getting documents: ", error);
                 });
             }
         });
-        var messageHTML = `
-        <div>
-        <form id="message_form" onsubmit="return send_message('${userType}',${i})">`;
     }
     else{
         db.collection('conversations').doc(i)
@@ -156,58 +167,74 @@ function display_matches(data) {
               }
             reveal();
         })
-        var messageHTML = `
-        <div>
-        <form id="message_form" onsubmit="return send_message('${userType}','${i}')">`;
     }
-    
-    messageHTML += `
-    <div class="form-group">
-      <textarea class="form-control" id="message_body" rows="1" placeholder="Message" required></textarea>
-    </div>
-    <div class="form-group row">
-    <div class="col-1">
-        <button type="submit" class="btn btn-primary rounded-pill">Send Message</button>
-    </div>
-    <div class="col-1">
-        <button class="btn btn-secondary rounded-pill" onclick="returnToMatches()">Go Back</button>
-  </div>
-  </form>
-  </div>
-    `;
-    $('#message_area').append(messageHTML);
-    // $('#message_area').fadeIn();
  }
 
 function write_messages_to_page(messageData){
-    var messages = ``;
-    messageData.messages.forEach(function(messageData){
-        if (messageData.userId == uuid){
-            console.log("ME");
-            //Display message to the right
-            messages+=`
-            <div class="row">
-                <div class ="col text-right">
-                <p>${messageData.message}</p>
-                </div>
-            </div>
-            `; 
+    if (messageData.users[0] == uuid){
+        var otherUserID = messageData.users[1];
+    }
+    else{
+        var otherUserID= messageData.users[0]
+    }
+    db.collection('users').doc(otherUserID).get().then((otherUserDoc)=>{
+        if (otherUserDoc.data().user_type == 'tutor'){
+            var otherUserType = 'tutor';
+            var curUserType = 'parent';
+            var tutorPic = otherUserDoc.data().photoUrl;
         }
         else{
-            console.log(uuid,messageData.userId);
-            //Display message to the left
-            messages+=`
-            <div class="row">
-                <div class ="col text-left">
-                <p>${messageData.message}</p>
-                </div>
-            </div>
-            `;
-
+            var otherUserType = 'parent';
+            var curUserType = 'tutor';
+            var tutorPic = firebase.auth().currentUser.photoUrl;
         }
-        messageInd++;
+        var messages = ``;
+        messageData.messages.forEach(function(messageData){
+            if (messageData.userId == uuid){
+                //Display message to the right
+                messages+=`
+                <div class="container chatbox darker ${curUserType}">
+                    <p>${messageData.message}</p>
+                </div>
+                `; 
+            }
+            else{
+                //Display message to the left
+                messages+=`
+                <div class="container chatbox ${otherUserType}">
+                    <p>${messageData.message}</p>
+                </div>
+                `;
+
+            }
+            messageInd++;
+        })
+        $('#disp_messages').html(messages);
+        if (curUserType == 'tutor'){
+            var addTutorAvatar = `<img src="${tutorPic}" class="right" alt="tutor-pic">`;
+            var addParentAvatar = `<div class="circle">
+                                    <span class="initials">${otherUserDoc.data().first_name[0]}${otherUserDoc.data().last_name[0]}</span>
+                                    </div>`;
+            $("div[class$='parent']").prepend(addParentAvatar);
+            $("div[class$='parent']").addClass('avatar-added');
+        }
+        else{
+            var addTutorAvatar = `<img src="${tutorPic}" alt="tutor-pic">`;
+            db.collection('users').doc(uuid).get().then((curUserDoc)=>{
+                var addParentAvatar = `<div class="circle right">
+                <span class="initials">${curUserDoc.data().first_name[0]}${curUserDoc.data().last_name[0]}</span>
+                </div>`;
+                $("div[class$='parent']").prepend(addParentAvatar);
+                $("div[class$='parent']").addClass('avatar-added');
+            })
+        }
+        $("div[class$='tutor']").prepend(addTutorAvatar);
+        $("div[class$='tutor']").addClass('avatar-added');
+        
+        
     })
-    $('#disp_messages').html(messages);
+    
+    
 }
 
 
@@ -220,10 +247,10 @@ function write_messages_to_page(messageData){
     };
     $('#message_body').val("");
      if (userType == 'parent'){
-        var selected_tutor = response[i];
+        var selected_tutor = response[parseInt(i)];
         var usersRef = db.collection("users");
         var currentUser = usersRef.doc(uuid);
-        usersRef.where("first_name", "==", selected_tutor.first_name, "AND", "last_name", '==', selected_tutor.last_name)
+        usersRef.where("email", "==", selected_tutor.email)
         .get()
         .then((querySnapshot) => {
             querySnapshot.forEach((otherUserDoc) => {
