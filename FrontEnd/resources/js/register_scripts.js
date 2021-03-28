@@ -416,6 +416,7 @@ function create_account(){
     db.collection('users').doc(user.uid).set({
       "first_name": basicInfo['fname'],
       "last_name": basicInfo['lname'],
+      "email": basicInfo['email'],
       "phone": basicInfo['phone'],
       "address": basicInfo['address'],
       "apartment_info": basicInfo['apartmentInfo'],
@@ -500,13 +501,19 @@ function get_username_and_email() {
       console.log("User found");
       var user = firebase.auth().currentUser;
       console.log(user.uid);
+      if (user.emailVerified){
+        console.log('email verified');
+        firebase.auth().signOut();
+        location.replace('index.html');
+      }
   
     db.collection('users').doc(user.uid).onSnapshot((doc)=> {
       data = doc.data();
       console.log("all data", data);
       console.log("first_name", data.first_name);
-      document.getElementById("thanks_name").innerHTML += data.first_name + "."
-      document.getElementById("verify_email").innerHTML += user.email + "."
+      document.getElementById("thanks_name").innerHTML += data.first_name + ".";
+      document.getElementById("verify_email").innerHTML += user.email + ".";
+      firebase.auth().signOut();
     });
     } else {
       console.log("No user signed in");
