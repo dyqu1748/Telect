@@ -5,3 +5,10 @@
 [class $='not_logged_in']{
     display: block;
 }
+
+.error{
+    padding: .8em 1.5em .6em 1.5em;
+    background-color: rgba(195,47,45,.2);
+    color: #c32f2d;
+    border-radius: 10px;
+}

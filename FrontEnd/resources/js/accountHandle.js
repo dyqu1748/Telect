@@ -2,7 +2,7 @@ firebase.auth().onAuthStateChanged(function(user) {
   if (user != null) {
     // User is signed in. Show appropiate elements for signed in user and vice-versa.
     console.log("USER SIGNED IN");
-    var notLoggedInPages = ['Telect - Sign In','Telect - Welcome','Telect - Reset Password', 'Telect - Register'];
+    var notLoggedInPages = ['Telect - Sign In','Telect - Welcome','Telect - Reset Password', 'Telect - Account Register'];
     var pageName = document.title;
     if (notLoggedInPages.includes(pageName)){
       location.replace("home.html");
@@ -22,6 +22,8 @@ function login(){
 
   var userEmail = document.getElementById("inputEmail").value;
   var userPass = document.getElementById("inputPassword").value;
+  $('#error-message').empty();
+  $('#error-row').css('display', 'none');
 
   firebase.auth().signInWithEmailAndPassword(userEmail, userPass).then(function() {
 	  location.replace("home.html");
@@ -31,7 +33,9 @@ function login(){
     var errorCode = error.code;
     var errorMessage = error.message;
 
-    window.alert("Error : " + errorMessage);
+    // window.alert("Error : " + errorMessage);
+    $('#error-message').html(errorMessage);
+    $('#error-row').fadeIn();
 
     // ...
   });
