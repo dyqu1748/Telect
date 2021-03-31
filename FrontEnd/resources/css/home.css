@@ -12,6 +12,10 @@ nav, .btn-primary{
     background-color: #2f59ff;
 }
 
+.btn-primary::after{
+    background-color: #2f59ff;
+}
+
 .img-label{
     text-align: center;
     margin-top: 5px;

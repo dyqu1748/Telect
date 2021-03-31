@@ -55,28 +55,18 @@ function displayProfile(data,user)
 					<div class ="col-md-3">
 						<h3>Name</h3>
 					</div>
+					<div class="col-md-3">
+						<h3>Phone Number</h3>
+					</div>
 			  	</div>
 				<div class ="row">
 					<div class="col-md-3">
 						<p class="lead">${data.first_name} ${data.last_name}</p>
 					</div>
+					<div class="col-md-3">
+						<p class="lead">${data.phone}</p>
+					</div> 
 				</div>
-			  <div class="row">
-			  	<div class="col-md-3">
-			  		<h3>Email</h3>
-				</div>
-				<div class="col-md-3">
-					<h3>Phone Number</h3>
-				</div>
-			  </div>
-			  <div class="row">
-			 	<div class="col-md-3">
-				 	<p class="lead">${user.email}</p>
-				 </div>
-				 <div class="col-md-3">
-				 	<p class="lead">${data.phone}</p>
-				 </div> 
-			  </div>
 			  <br>
 				<h2><u>Location Information</u></h2>
 				<br>
@@ -120,32 +110,27 @@ function displayProfile(data,user)
 			  </div>
 			  <br>
 			<h2><u>Session Preferences</u></h2>
-			<br>
-			  <div class="row">
-				<div class ="col-md-3">
-					<h3>Location Preference</h3> 
-				</div>
-			</div>
-			<div class="row">
-				<div class="col">
-					<p class="lead">${all_loc}</p>
-				</div> 
-			</div>
-				  `;
+			<br>`;
 	if (data.user_type == 'parent'){
 		var capBGCheck = data.background_check;
 		capBGCheck = capBGCheck.charAt(0).toUpperCase() + capBGCheck.slice(1);
 		html+= `
 		<div class="row">
-			<div class="col-md-3">
+				<div class ="col-md-3">
+					<h3>Location Preference</h3> 
+				</div>
+				<div class="col-md-4">
 				<h3>Session Payment Range</h3> 
+				</div>
 			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-3">
+			<div class="row">
+				<div class="col-md-3">
+					<p class="lead">${all_loc}</p>
+				</div> 
+				<div class="col-md-4">
 				<p class="lead">$${data.minSession} to $${data.maxSession}</p>
 			</div> 
-		</div>
+			</div>
 		<div class="row">
 			<div class="col-md-3">
 				<h3>Prefer Background Checked Tutors</h3> 
@@ -170,32 +155,28 @@ function displayProfile(data,user)
                 allChildInfo += `
                 <div class="row">
                 <div class="col-md-3">
-                    <h2><u>Child ${index+1}</u></h3> 
+                    <h3>Child ${index+1}</h3> 
                 </div>
                 </div>
                 <div class="row">
                 <div class="col-md-3">
-                    <h3>Child Name</h3> 
+                    <h4>Child Name</h4> 
+                </div>
+				<div class ="col-md-3">
+                    <h4>Grade Level</h4> 
                 </div>
                 </div>
                 <div class="row">
                     <div class="col-md-3">
                         <p class="lead">${child.child_name}</p>
-                    </div> 
-                </div>
-                <div class="row">
-                <div class ="col-md-3">
-                    <h3>Grade Level</h3> 
-                </div>
-                </div>
-                <div class="row">
-                    <div class="col">
+                    </div>
+					<div class="col">
                         <p class="lead">${grade_keys[child.grade]}</p>
                 </div> 
                 </div>
                 <div class="row">
                 <div class ="col-md-3">
-                    <h3>Subjects</h3> 
+                    <h4>Subjects</h4> 
                 </div>
                 </div>
                 <div class="row">
@@ -205,7 +186,7 @@ function displayProfile(data,user)
                 </div>
                 <div class="row">
                 <div class ="col-md-3">
-                    <h3>Selected Avatar</h3> 
+                    <h4>Selected Avatar</h4> 
                 </div>
                 </div>
                 <div class="row">
@@ -235,15 +216,21 @@ function displayProfile(data,user)
 		})
 		html+= `
 		<div class="row">
-			<div class="col-md-3">
-				<h3>Minimum Session Rate</h3> 
+				<div class ="col-md-3">
+					<h3>Location Preference</h3> 
+				</div>
+				<div class="col-md-3">
+					<h3>Minimum Session Rate</h3> 
+				</div>
 			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-3">
-				<p class="lead">$${data.minSession}</p>
-			</div> 
-		</div>
+			<div class="row">
+				<div class="col-md-3">
+					<p class="lead">${all_loc}</p>
+				</div>
+				<div class="col-md-3">
+					<p class="lead">$${data.minSession}</p>
+				</div> 
+			</div>
 		<div class="row">
 			<div class="col-md-3">
 				<h3>Grade Levels</h3> 
@@ -287,14 +274,14 @@ function displayProfile(data,user)
 		`;
 	}
 	html += `<div class="form-group row">
-	<div class="col-1">
-	<button class="btn btn-secondary" onclick="onEdit()">Edit Profile</button>
+	<div class="col-md-2">
+	<button class="btn btn-secondary rounded-pill" onclick="onEdit()">Edit Profile</button>
 	</div>
-	<div class="col-1">
-        <button class="btn btn-secondary" onclick="editPersonalInfo('email')">Edit Email</button>
+	<div class="col-md-2">
+        <button class="btn btn-secondary rounded-pill" onclick="editPersonalInfo('email')">Edit Email</button>
         </div>
-	<div class="col-1">
-		<button class="btn btn-secondary" onclick="editPersonalInfo('password')">Edit Password</button>
+	<div class="col-md-2">
+		<button class="btn btn-secondary rounded-pill" onclick="editPersonalInfo('password')">Edit Password</button>
 	</div>
 	</div>`;
 	$('#display-details').html(html);
@@ -310,7 +297,6 @@ function onEdit()
 	    var user = firebase.auth().currentUser;
 
 		db.collection('users').doc(user.uid).onSnapshot((doc)=> {
-			console.log(doc.data());
 			editProfile(doc.data(), user);
 		});
 	  } else {
@@ -325,6 +311,9 @@ function editProfile(data, user)
 {
 	// Display info in an editable form
 	var userInfo =  `
+	<br>
+	<h2><u>Personal Information</u></h2>
+	<br>
 	<div class="form-group row">
 	<div class="col-md-3">
 		<label for="fname" class="control-label">First Name</label>
@@ -344,8 +333,9 @@ function editProfile(data, user)
 	</div>
 </div>
 
-<h2>Location Information</h2>
-
+<br>
+<h2><u>Location Information</u></h2>
+<br>
 <div class="form-group row">
 	<div class="col-md-6">
 		<label for="address" class="control-label">Address</label>
@@ -426,11 +416,14 @@ function editProfile(data, user)
 		</select>
 	</div>
 </div>
+<br>
+<h2><u>Session Preferences</u></h2>
+<br>
 				  `;
 	if (data.user_type == "parent"){
 		userInfo+= `
 
-		<h3>Minimum Session Rate</h3>
+		<h4>Minimum Session Rate</h4>
                 <div class="form-group form-inline">
                     <label for="minSession">$</label>
                     <div class="col-md-3">
@@ -438,15 +431,15 @@ function editProfile(data, user)
                     </div>
                 </div>
 
-                <h3>Maximum Session Rate</h3>
+                <h4>Maximum Session Rate</h4>
                 <div class="form-group form-inline">
                     <label for="maxSession">$</label>
                     <div class="col-md-3">
-                        <input type="number" id="maxSession" class="form-control" step="0.01" placeholder="0.00" min="${data.minSession}" value="${data.maxSession}" required>
+                        <input type="number" id="maxSession" class="form-control" step="0.01" placeholder="0.00" value="${data.maxSession}" title="Max session rate must be greater than or equal to your min session rate." required>
                     </div>
                 </div>
 
-                <h3>Session Location Preference</h3>
+                <h4>Session Location Preference</h4>
                 <div class="form-group form-inline">
                     <div class="btn-group btn-group-toggle" data-toggle="buttons">
                         <label class="btn btn-outline-primary active">
@@ -458,7 +451,7 @@ function editProfile(data, user)
                     </div>
                 </div>
 
-                <h3>Would you like your tutors to be background checked?</h3>
+                <h4>Would you like your tutors to be background checked?</h4>
                 <div class="form-group form-inline">
                     <div class="btn-group btn-group-toggle" data-toggle="buttons">
                         <label class="btn btn-outline-primary active">
@@ -470,21 +463,31 @@ function editProfile(data, user)
                     </div>
                 </div>`;
 		$('#display-details').html(userInfo);
-		$('#state').val(data.state).change();
+		$('#state').val(data.state);
 		$('input[name="location_pref"][value="'+data.location_pref+'"]').click();
 		$('input[name="background_check"][value="'+data.background_check+'"]').click();
 
 		if (data.children.length > 0){
+			console.log(child_counter);
 			data.children.forEach(function(child){
 				if (child_counter == 0){
 					child_counter++;
 					console.log(child.grade);
 					var childInfo=`
-					<div id="child-form1"><h3>Child ${child_counter}</h3>
-					<h3>Add your child's full name (optional)</h3>
-					<input type ="text" id="childName" class="form-control" placeholder="Child's Full Name">
-					<h3>Add your child's current grade level</h3>
+					<br>
+					<h2 id="child-info-head"><u>Children Information</u></h2>
+					<div id="child-form1"><br>
+					<h3 id="child-form-header">Child 1</h3>
+					<h4>Add your child's full name (optional)</h4>
+							<div class="form-group row">
+								<div class="col-md-4">
+									<input type ="text" id="childName" class="form-control" placeholder="Child's Full Name">
+								</div>
+							</div>
+					<h4>Add your child's current grade level</h4>
 				
+					<div class="form-group row">
+					<div class="col-md-3">
 					<select class="selectpicker" id="grade" title="Select Grade Level" required>
 						<option value="k">Kindergarten</option>
 						<option value="1">1st Grade</option>
@@ -496,82 +499,49 @@ function editProfile(data, user)
 						<option value="7">7th Grade</option>
 						<option value="8">8th Grade</option>
 					</select>
+					</div>
+					</div>
 				
-					<h3>Select the subjects your child needs help with</h3>
+					<h4>Select the subjects your child needs help with</h4>
 				
-					<select class="selectpicker" id ='subjects' data-live-search="true" multiple title="Select Subjects" required>
-						<option value="math">Math</option>
-						<option value="geometry">Geometry</option>
-						<option value="pre-algebra">Pre-algebra</option>
-						<option value="algebra">Algebra</option>
-						<option value="science">Science</option>
-						<option value="geology">Geology</option>
-						<option value="chemistry">Chemistry</option>
-						<option value="social_studies">Social Studies</option>
-						<option value="govtHist">U.S. Government and History</option>
-						<option value="language_arts">Language Arts</option>
-						<option value="spanish">Spanish</option>
-					</select>
-				
-					<h3>Choose an avatar for your child</h3>
-					<select id="avatar" class="image-picker show-html" required>
-							<option data-img-src="resources/img/child-avatar1.png" value="avatar1">Avatar 1</option>
-							<option data-img-src="resources/img/child-avatar2.png" value="avatar2">Avatar 2</option>
-							<option data-img-src="resources/img/child-avatar3.png" value="avatar3">Avatar 3</option>
-							<option data-img-src="resources/img/child-avatar4.png" value="avatar4">Avatar 4</option>
+					<div class="form-group row">
+						<div class="col-md-3">
+							<select class="selectpicker" id ='subjects' data-live-search="true" multiple title="Select Subjects" required>
+								<option value="math">Math</option>
+								<option value="geometry">Geometry</option>
+								<option value="pre-algebra">Pre-algebra</option>
+								<option value="algebra">Algebra</option>
+								<option value="science">Science</option>
+								<option value="geology">Geology</option>
+								<option value="chemistry">Chemistry</option>
+								<option value="social_studies">Social Studies</option>
+								<option value="govtHist">U.S. Government and History</option>
+								<option value="language_arts">Language Arts</option>
+								<option value="spanish">Spanish</option>
+							</select>
+						</div>
+					</div>
+					<h4>Choose an avatar for your child</h4>
+					<div class="form-group row">
+						<div class="col">
+						<select id="avatar" class="image-picker show-html" required>
+								<option data-img-src="resources/img/child-avatar1.png" value="avatar1">Avatar 1</option>
+								<option data-img-src="resources/img/child-avatar2.png" value="avatar2">Avatar 2</option>
+								<option data-img-src="resources/img/child-avatar3.png" value="avatar3">Avatar 3</option>
+								<option data-img-src="resources/img/child-avatar4.png" value="avatar4">Avatar 4</option>
 						</select>
-						</div>`;
+					</div>
+					</div>
+					</div>
+					<div id="child-placeholder"></div>`;
 					$('#display-details').append(childInfo);
 					$('#childName').val(child.child_name);
 					$('#subjects').val(child.subjects);
 					$('#avatar').val(child.avatar);
-					$('#grade').val(child.grade);
+					$('#grade').val(child.grade).change();
 				}
 				else{
-					child_counter++;
-					childInfo =`
-					<div id="child-form${child_counter}">
-					<h3>Child ${child_counter}</h3>
-								<input type ="text" id="childName${child_counter}" class="form-control" placeholder="Child's Full Name">
-						<h3>Add your child's current grade level</h3>
-
-						<select class="selectpicker" id="grade${child_counter}" title="Select Grade Level" required>
-							<option value="k">Kindergarten</option>
-							<option value="1">1st Grade</option>
-							<option value="2">2nd Grade</option>
-							<option value="3">3rd Grade</option>
-							<option value="4">4th Grade</option>
-							<option value="5">5th Grade</option>
-							<option value="6">6th Grade</option>
-							<option value="7">7th Grade</option>
-							<option value="8">8th Grade</option>
-						</select>
-
-						<h3>Select the subjects your child needs help with</h3>
-
-						<select class="selectpicker" id ='subjects${child_counter}' data-live-search="true" multiple title="Select Subjects"  required>
-							<option value="math">Math</option>
-							<option value="geometry">Geometry</option>
-							<option value="pre-algebra">Pre-algebra</option>
-							<option value="algebra">Algebra</option>
-							<option value="science">Science</option>
-							<option value="geology">Geology</option>
-							<option value="chemistry">Chemistry</option>
-							<option value="social_studies">Social Studies</option>
-							<option value="govtHist">U.S. Government and History</option>
-							<option value="language_arts">Language Arts</option>
-							<option value="spanish">Spanish</option>
-						</select>
-
-						<h3>Choose an avatar for your child</h3>
-						<select id="avatar${child_counter}" class="image-picker show-html" required>
-							<option data-img-src="resources/img/child-avatar1.png" value="avatar1">Avatar 1</option>
-							<option data-img-src="resources/img/child-avatar2.png" value="avatar2">Avatar 2</option>
-							<option data-img-src="resources/img/child-avatar3.png" value="avatar3">Avatar 3</option>
-							<option data-img-src="resources/img/child-avatar4.png" value="avatar4">Avatar 4</option>
-						</select>
-						</div>`;
-					$('#display-details').append(childInfo)
+					addChildForm();
 					$('#childName'+child_counter).val(child.child_name);
 					$('#grade'+child_counter).val(child.grade);
 					$('#subjects'+child_counter).val(child.subjects);
@@ -581,16 +551,16 @@ function editProfile(data, user)
 		}
 		if (child_counter > 0){
 			var addChildButtons = `
-		<div class="form-group form-inline">
-			<div class="com-md-3">
+		<div class="form-group row">
+			<div class="col-md-3">
 				<button type="button" id="add-child" class="btn btn-secondary rounded-pill d-none" onclick="showAddChild()">Add Child</button>
 			</div>
 		</div>
-		<div class="form-group form-inline">
-			<div class="col col-lg-2">
+		<div class="form-group row">
+			<div class="col col-md-2">
 				<button type="button" class="btn btn-secondary rounded-pill" id="addChildButton" onclick="addChildForm()">Add Child</button>
 			</div>
-			<div class="col col-lg-2">
+			<div class="col col-md-2">
 				<button type="button" class="btn btn-secondary rounded-pill" id="remChildButton" onclick="delChildForm()">Remove Child</button>
 			</div>
 		</div>
@@ -598,20 +568,24 @@ function editProfile(data, user)
 		}
 		else{
 			var addChildButtons = `
-		<div class="form-group form-inline">
-			<div class="com-md-3">
-				<button type="button" id="add-child" class="btn btn-secondary rounded-pill" onclick="showAddChild()">Add Child</button>
-			</div>
-		</div>
-		
-		<div id="child-form1"></div>
-		<div id="child-placeholder"></div>
+			<br>
+			<h2 id="child-info-head" class="d-none"><u>Children Information</u></h2>
+			<div id="child-form1"></div>
+			<div id="child-placeholder"></div>
 
-		<div class="form-group form-inline">
-			<div class="col col-lg-2">
+			<div class="form-group row">
+				<div class="col-md-3">
+					<button type="button" id="add-child" class="btn btn-secondary rounded-pill" onclick="showAddChild()">Add Child</button>
+				</div>
+			</div>
+		
+		
+
+		<div class="form-group row">
+			<div class="col col-md-2">
 				<button type="button" class="btn btn-secondary rounded-pill d-none" id="addChildButton" onclick="addChildForm()">Add Child</button>
 			</div>
-			<div class="col col-lg-2">
+			<div class="col col-md-2">
 				<button type="button" class="btn btn-secondary rounded-pill d-none" id="remChildButton" onclick="delChildForm()">Remove Child</button>
 			</div>
 		</div>
@@ -733,14 +707,24 @@ function editProfile(data, user)
 		}
 	}
 	var subButton = `<div class="form-group row">
-	<div class="col">
-	<button type="submit" class="btn btn-lg btn-primary" form="display-details">Update Profile</button>
+	<div class="col-lg-3">
+	<button type="submit" class="btn btn-lg btn-primary rounded-pill" form="display-details">Update Profile</button>
 	</div>
 	</div>`;
 	$('#display-details').append(subButton);
 	$(".image-picker").imagepicker('refresh');
-	$('.selectpicker').selectpicker('refresh');
+	$(".selectpicker").selectpicker("refresh");
+	$('#minSession').change(function(){
+		var newMin = parseFloat($('#minSession').val());
+		$('#maxSession').attr('min', newMin);
+	  });
+	  $('#maxSession').tooltip({
+		placement: "right",
+		trigger: "focus"
+   });
+   return;
 }
+
 
 function updateaccount()
 {
@@ -788,7 +772,7 @@ function updateaccount()
 			}
 			childData.push(childItem)
 			}
-			child_counter = 0;
+			console.log(child_counter);
 			
 			return updateUser.update({
 			"first_name": fname,
@@ -809,6 +793,7 @@ function updateaccount()
 				return updateUser.get().then((doc) => {
 					if (doc.exists) {
 						displayProfile(doc.data(),user);
+						child_counter = 0;
 						$('#loading_icon').css('display','none');
 						$('#page-container').css('filter', 'blur(0px)');
 					} else {
@@ -891,9 +876,8 @@ function updateaccount()
 function uploadPhoto(profilePic, user){
 	var storageRef = firebase.storage().ref();
 	var picName = 'profilePictures/'+user.uid+'.'+profilePic.name.split('.').pop(); 
-
 	var picRef = storageRef.child(picName);
-
+	const userCollectionRef = db.collection('users').doc(user.uid);
 	return picRef.put(profilePic,profilePic.type).then((snapshot) =>{
 		console.log("Uploaded profile pic!");
 	}).then(()=>{
@@ -901,15 +885,24 @@ function uploadPhoto(profilePic, user){
 		return store.ref(picName).getDownloadURL().then((url)=>{
 			return user.updateProfile({photoURL: url});
 		});
-	});
+	})
+	.then(() =>{
+        return storageRef.child(picName).getDownloadURL().then((url) =>{
+            return userCollectionRef.update({"photoUrl": url})});
+    });
 }
 
 function uploadResume(resumeFile, user){
 	var storageRef = firebase.storage().ref();
-	var resumeRef = storageRef.child('resumes/'+user.uid+'.'+resumeFile.name.split('.').pop());
+	var resumeName = 'resumes/'+user.uid+'.'+resumeFile.name.split('.').pop();
+	var resumeRef = storageRef.child(resumeName);
+	const userCollectionRef = db.collection('users').doc(user.uid);
 	return resumeRef.put(resumeFile,resumeFile.type).then((snapshot) =>{
 		console.log("Uploaded resume!");
-	});
+	}).then(() => {
+        return storageRef.child(resumeName).getDownloadURL().then((url) => {
+            return userCollectionRef.update({"resumeUrl": url})});
+      });
 }
 
 function editPersonalInfo(infoType){
@@ -925,7 +918,7 @@ function editPersonalInfo(infoType){
 			<div class="form-group row">
 				<div class="col-md-3">
 					<label for="email" class="control-label">New Email Address</label>
-					<input type ="email" id="email" class="form-control" placeholder="Email" value="${user.email}" required>
+					<input type ="email" id="email" class="form-control" placeholder="Email" required>
 				</div> 
 			</div>
 			<div class="form-group row">
@@ -935,11 +928,11 @@ function editPersonalInfo(infoType){
 				</div> 
 			</div>
 			<div class="form-group row">
-			<div class="col-1">
-			<button type="submit" class="btn btn-primary" form="personal-changes" value="Submit">Change Email</button>
+			<div class="col-md-2">
+			<button type="submit" class="btn btn-primary rounded-pill" form="personal-changes" value="Submit">Change Email</button>
 			</div>
-			<div class="col-1">
-				<button class="btn btn-secondary" onclick="editGeneralInfo()">Edit General Info</button>
+			<div class="col-md-2">
+				<button class="btn btn-secondary rounded-pill" onclick="editGeneralInfo()">Edit General Info</button>
 			</div>
 			</div>
 			</form>
@@ -975,11 +968,11 @@ function editPersonalInfo(infoType){
 				</div> 
 			</div>
 			<div class="form-group row">
-				<div class="col-1">
-				<button type="submit" class="btn btn-primary">Change Password</button>
+				<div class="col-md-3">
+				<button type="submit" class="btn btn-primary rounded-pill">Change Password</button>
 				</div>
-				<div class="col-1">
-				<button class="btn btn-secondary" onclick="editGeneralInfo()">Edit General Info</button>
+				<div class="col-md-3">
+				<button class="btn btn-secondary rounded-pill" onclick="editGeneralInfo()">Edit General Info</button>
 			</div>
 			</div>
 			</form>

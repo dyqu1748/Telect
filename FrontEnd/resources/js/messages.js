@@ -47,7 +47,7 @@ function display_matches(data) {
                     db.collection('users').doc(otherUserID).get().then((doc)=>{
                     var html = `
                     <div class="col mb-4">
-                    <div class="card mx-auto border-secondary" style="width:22rem">
+                    <div class="card mx-auto" style="width:22rem">
                         <div class="card-body text-center">
                             <h5 class="card-title">${doc.data().first_name} ${doc.data().last_name}</h5>
                             <a href='#' onclick="display_messages('tutor','${conv}')" class="btn btn-primary rounded-pill" >Send Message</a>
@@ -69,7 +69,7 @@ function display_matches(data) {
             var tutorData = data[i];
             var html = `
             <div class="col mb-4">
-            <div class="card mx-auto border-secondary" style="width:22rem">
+            <div class="card mx-auto" style="width:22rem">
                 <img class="card-img-top" src="${tutorData.photoUrl}" alt="tutor-pic">
                 <div class="card-body text-center">
                     <h5 class="card-title">${tutorData.first_name} ${tutorData.last_name}</h5>
@@ -98,23 +98,6 @@ function display_matches(data) {
       </div>
     `;
     $('#message_area').prepend(setup);
-    var messageHTML = `
-        <div>
-        <form id="message_form" onsubmit="return send_message('${userType}','${i}')">
-        <div class="container form-group">
-            <textarea class="form-control" id="message_body" rows="1" placeholder="Message" required></textarea>
-            </div>
-            <div class="form-group row justify-content-center">
-            <div class="col-1">
-                <button type="submit" class="btn btn-primary rounded-pill">Send Message</button>
-            </div>
-            <div class="col-1">
-                <button class="btn btn-secondary rounded-pill" onclick="returnToMatches()">Go Back</button>
-        </div>
-        </form>
-        </div>
-        `;
-    $('#message_area').append(messageHTML);
     if (userType == 'parent'){
         var selected_tutor = response[i];
         var dispName = `<h2 class="text-left">${selected_tutor.first_name} ${selected_tutor.last_name}</h2>`;
@@ -143,14 +126,33 @@ function display_matches(data) {
                                 .onSnapshot((doc)=>{
                                     const reveal = async () => {
                                         const result = await write_messages_to_page(doc.data());
-                                        $('#message_area').fadeIn('slow');
                                       }
                                     reveal();
                                 })
                             
                             }
                         }
-                    });
+                    })
+                })
+                .then(()=>{
+                    var messageHTML = `
+                    <div>
+                    <form id="message_form" onsubmit="return send_message('${userType}','${i}')">
+                    <div class="container form-group">
+                        <textarea class="form-control" id="message_body" rows="1" placeholder="Message" required></textarea>
+                        </div>
+                        <div class="form-group row justify-content-center">
+                        <div class="col-1">
+                            <button type="submit" class="btn btn-primary rounded-pill">Send Message</button>
+                        </div>
+                        <div class="col-1">
+                            <button class="btn btn-secondary rounded-pill" onclick="returnToMatches()">Go Back</button>
+                    </div>
+                    </form>
+                    </div>
+                    `;
+                $('#message_area').append(messageHTML);
+                $('#message_area').fadeIn('slow');
                 })
                 .catch((error) => {
                     console.log("Error getting documents: ", error);
@@ -159,6 +161,23 @@ function display_matches(data) {
         });
     }
     else{
+        var messageHTML = `
+        <div>
+        <form id="message_form" onsubmit="return send_message('${userType}','${i}')">
+        <div class="container form-group">
+            <textarea class="form-control" id="message_body" rows="1" placeholder="Message" required></textarea>
+            </div>
+            <div class="form-group row justify-content-center">
+            <div class="col-1">
+                <button type="submit" class="btn btn-primary rounded-pill">Send Message</button>
+            </div>
+            <div class="col-1">
+                <button class="btn btn-secondary rounded-pill" onclick="returnToMatches()">Go Back</button>
+        </div>
+        </form>
+        </div>
+        `;
+    $('#message_area').append(messageHTML);
         db.collection('conversations').doc(i)
         .onSnapshot((doc)=>{
             const reveal = async () => {
@@ -167,6 +186,7 @@ function display_matches(data) {
               }
             reveal();
         })
+        $('#message_area').fadeIn('slow');
     }
  }
 
@@ -194,7 +214,7 @@ function write_messages_to_page(messageData){
                 //Display message to the right
                 messages+=`
                 <div class="container chatbox darker ${curUserType}">
-                    <p>${messageData.message}</p>
+                    <p class="message-content">${messageData.message}</p>
                 </div>
                 `; 
             }
@@ -202,7 +222,7 @@ function write_messages_to_page(messageData){
                 //Display message to the left
                 messages+=`
                 <div class="container chatbox ${otherUserType}">
-                    <p>${messageData.message}</p>
+                    <p class="message-content">${messageData.message}</p>
                 </div>
                 `;
 

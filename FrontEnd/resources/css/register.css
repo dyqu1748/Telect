@@ -7,8 +7,9 @@ body{
 }
 
 .thumbnails li img{
-    width: 300px;
+    width: 15rem;
 }
+
 .container-fluid.required .control-label:after, .header-control::after{
     content:" *";
     color: red;

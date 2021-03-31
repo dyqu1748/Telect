@@ -66,10 +66,10 @@
 
     <div id="page-container" class="container-fluid">
         <div id="content-wrap">
-<div id="register_fields" class="container-fluid required" style="display: none;">
+<div id="register_fields" class="container required" style="display: none;">
     <form onsubmit="return display_review()" oninput='pass2.setCustomValidity(pass2.value != pass1.value ? "Passwords do not match." : "")'>
         <br>
-        <h1>We just need a few things before you can get started</h1>        
+        <h1>We just need a few things before you can get started</h1><br>        
         <h3>Setup your account</h3>
             <div class="form-group row">
                 <div class="col-md-3">
@@ -109,7 +109,7 @@
                     <input type="password" id="inputConfirmPassword" name="pass2" class="form-control" placeholder="Confirm Password">    
                 </div>
             </div>
-
+            <br>
             <h2>Add your current address</h2>
 
             <div class="form-group row">
@@ -192,9 +192,11 @@
                     </select>
                 </div>
             </div>
+            <br>
+            <h2>Session Preferences</h2>
 
             <div id="parentFields">
-                <h3 class="header-control">Enter the minimum amount you would like to pay for a session</h3>
+                <h4 class="header-control">Enter the minimum amount you would like to pay for a session</h4>
                 <div class="form-group form-inline">
                     <label for="minSession">$</label>
                     <div class="col-md-3">
@@ -202,7 +204,7 @@
                     </div>
                 </div>
 
-                <h3 class="header-control">Enter the maximum amount you would like to pay for a session</h3>
+                <h4 class="header-control">Enter the maximum amount you would like to pay for a session</h4>
                 <div class="form-group form-inline">
                     <label for="maxSession">$</label>
                     <div class="col-md-3">
@@ -210,7 +212,7 @@
                     </div>
                 </div>
 
-                <h3 class="header-control">Select your location preference for sessions</h3>
+                <h4 class="header-control">Select your location preference for sessions</h4>
                 <div class="form-group form-inline">
                     <div class="btn-group btn-group-toggle" data-toggle="buttons">
                         <label class="btn btn-outline-primary active">
@@ -222,7 +224,7 @@
                     </div>
                 </div>
 
-                <h3 class="header-control">Would you like your tutors to be background checked?</h3>
+                <h4 class="header-control">Would you like your tutors to be background checked?</h4>
                 <div class="form-group form-inline">
                     <div class="btn-group btn-group-toggle" data-toggle="buttons">
                         <label class="btn btn-outline-primary active">
@@ -234,22 +236,24 @@
                     </div>
                 </div>
 
-                <div class="form-group form-inline">
-                    <div class="com-md-3">
+                <div class="form-group row">
+                    <div class="col-md-3">
                         <button type="button" id="add-child" class="btn btn-secondary rounded-pill" onclick="showAddChild()">Add Child</button>
                     </div>
                 </div>
+
+				<h2 id="child-info-head" class="d-none">Children Information</h2>
                 
                 <div id="child-form1"></div>
                 <div id="child-placeholder"></div>
 
         
 
-                <div class="form-group form-inline">
-                    <div class="col col-lg-2">
+                <div class="form-group row">
+                    <div class="col col-md-2">
                         <button type="button" class="btn btn-secondary rounded-pill d-none" id="addChildButton" onclick="addChildForm()">Add Child</button>
                     </div>
-                    <div class="col col-lg-2">
+                    <div class="col col-md-2">
                         <button type="button" class="btn btn-secondary rounded-pill d-none" id="remChildButton" onclick="delChildForm()">Remove Child</button>
                     </div>
                 </div>
@@ -357,7 +361,7 @@
     </form>
 
 </div>
-<div id="review_div" class="container-fluid" style="display: none;">
+<div id="review_div" class="container" style="display: none;">
     <br>
         <h1>Review your account information, and then get started!</h1>  
         <br>  
