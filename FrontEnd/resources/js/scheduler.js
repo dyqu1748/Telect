@@ -1,3 +1,4 @@
+
 function addItem(id) {
     console.log(id);
     if(document.getElementById(id).className == "scheduler_item") {
@@ -38,60 +39,56 @@ function getScheduleDays() {
 
 function prepScheduleJSON(schedule) {
     //{"Monday":["1400","1430","1500"],"Tuesday":[],"Wednesday":[],"Thursday":[],"Friday":[],"Saturday":[],"Sunday":[]}
-    var jsonSchedule ={schedules: [
-            {dw: [1], h: []},
-            {dw: [2], h: []},
-            {dw: [3], h: []},
-            {dw: [4], h: []},
-            {dw: [5], h: []},
-            {dw: [6], h: []},
-            {dw: [7], h: []},
-        ]};
 
-    var dw1, dw2, dw3, dw4, dw5, dw6, dw7;
-
+    let dw = "";
+    let d;
+    console.log(schedule)
     Object.keys(schedule).forEach(function(key) {
         switch (key) {
             case "Monday":
-                if (size_dict(schedule[key]) > 0) {
-                    dw1 = "{dw: [1], h: []},"
-                }
-                break;
+                d=1
+                break
             case "Tuesday":
-                if (size_dict(schedule[key]) > 0) {
-                    dw2 = "{dw: [2], h: []},"
-                }
-                break;
+                d=2
+                break
             case "Wednesday":
-                if (size_dict(schedule[key]) > 0) {
-                    dw3 = "{dw: [3], h: []},"
-                }
-                break;
+                d=3
+                break
             case "Thursday":
-                if (size_dict(schedule[key]) > 0) {
-                    dw4 = "{dw: [4], h: []},"
-                }
-                break;
+                d=4
+                break
             case "Friday":
-                if (size_dict(schedule[key]) > 0) {
-                    dw5 = "{dw: [5], h: []},"
-                }
-                break;
+                d=5
+                break
             case "Saturday":
-                if (size_dict(schedule[key]) > 0) {
-                    dw6 = "{dw: [6], h: []},"
-                }
-                break;
+                d=6
+                break
             case "Sunday":
-                if (size_dict(schedule[key]) > 0) {
-                    dw7 = "{dw: [7], h: []},"
-                }
-                break;
-
+                d=7
+                break
         }
+        dw = dw + build_avail(d,schedule[key])
     })
-    console.log(dw1 + dw2 + dw3 + dw4 + dw5 + dw6 + dw7)
+    let strJSON = '{"schedules":[' + dw.substring(0, dw.length - 1) + ']}'
+    console.log(strJSON)
 
+    let scheduleJSON = JSON.parse(strJSON);
+    console.log(scheduleJSON)
+}
+
+function build_avail(dw,t)
+{
+    let a = "";
+    if (size_dict(t) > 0) {
+        t.forEach((value, index) => {
+            if (value.substr(2, 2) != '00') {
+                minutes = value.substr(2, 2)
+            }
+            else { minutes = '0'}
+            a = a + '{"dw":[' + dw + '],"h":[' + value.substr(0, 2) + '],"m":[' + minutes + ']},'
+        });
+    }
+    return a
 }
 
 function size_dict(d){c=0; for (i in d) ++c; return c}

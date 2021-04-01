@@ -185,7 +185,7 @@ const json_workItems = [
         minSchedule: 2,                 // have to schedule all 2 hours at once
         assignedTo: ['Student', 'Tutor'],    // both Bob and Sara are needed
         availability: {schedules: [
-            {dw: [1], h: [10,11,12,13,14,15,16,17,18,17,18]},
+            {dw: [1], h:[10], m:[15,30]},
             {dw: [2], h: [10,11,12,13,14,15,16,17,18,17,18]},
             {dw: [3], h: [10,11,12,13,14,15,16,17,18,17,18]},
             {dw: [4], h: [10,11,12,13,14,15,16,17,18,17,18]},
@@ -219,7 +219,7 @@ const json_t = schedule.tasks()
         return d.assignedTo;
     });
 
-const json_tasks = json_t(json_workItems);
+// const json_tasks = json_t(json_workItems);
 
 exports.scheduleJsonTest =  functions.https.onRequest(async (request, response) => {
     response.setHeader('Content-Type', 'application/json')
