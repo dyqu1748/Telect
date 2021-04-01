@@ -36,7 +36,7 @@ firebase.auth().onAuthStateChanged(function(user) {
     <li class="nav-item" value = "3">
     <a class="nav-link" href = "manage_matches.html" > Manage Matches </a>
     </li>
-    <li class="nav-item" value = "4">
+    <li class="nav-item" value = "4" id="message-nav">
     <a class="nav-link" href = "messages.html" > Messages </a>
     </li>
     <li class="nav-item" value = "5">
@@ -54,6 +54,11 @@ firebase.auth().onAuthStateChanged(function(user) {
     for (i = 0; i < navClass.length; i++) {
     if (path.includes(navClass[i].href)) {
         navClass[i].classList.add("active");
+    }
+  }
+  if (data.notifications !== undefined){
+    if (data.notifications.messages.length>0){
+        $('#message-nav').append('<span class="dotNav"></span>');
     }
   }
 

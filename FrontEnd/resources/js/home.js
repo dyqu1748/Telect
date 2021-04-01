@@ -77,7 +77,8 @@ firebase.auth().onAuthStateChanged(function(user) {
     </div>
     `;
     //console.log("html", html);
-    document.getElementById("user_name").innerHTML += data.first_name + ".";
+
+    document.getElementById("user_name").innerHTML ="Hello, " + data.first_name + ".";
     document.getElementById("dashboard").innerHTML = html;
     if (data.notifications !== undefined ){
         if (data.notifications.messages.length > 0){
