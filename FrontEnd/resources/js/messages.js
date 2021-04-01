@@ -56,7 +56,8 @@ function display_matches(data) {
                     </div>
                     `;
                     $('#matched_users').append(html);
-                    if (data.notifications.messages[ind] === conv){
+                    console.log(data.notifications.messages);
+                    if (jQuery.inArray(conv,data.notifications.messages) !== -1){
                             $('#'+conv).append('<span id="notif'+conv+'" class="dot"></span>');
                         }
                     })
