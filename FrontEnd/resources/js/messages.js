@@ -35,7 +35,7 @@ function display_matches(data) {
     if (data.user_type == 'tutor'){
         if (data.conversations !== undefined){
             var convRef = db.collection('conversations');
-            data.conversations.forEach(function(conv){
+            data.conversations.forEach(function(conv ,ind){
                 var curConv = convRef.doc(conv);
                 curConv.get().then((doc)=>{
                     if (doc.data().users[0] == uuid){
@@ -47,7 +47,7 @@ function display_matches(data) {
                     db.collection('users').doc(otherUserID).get().then((doc)=>{
                     var html = `
                     <div class="col mb-4">
-                    <div class="card mx-auto" style="width:22rem">
+                    <div class="card mx-auto" id="${conv}" style="width:22rem">
                         <div class="card-body text-center">
                             <h5 class="card-title">${doc.data().first_name} ${doc.data().last_name}</h5>
                             <a href='#' onclick="display_messages('tutor','${conv}')" class="btn btn-primary rounded-pill" >Send Message</a>
@@ -56,20 +56,34 @@ function display_matches(data) {
                     </div>
                     `;
                     $('#matched_users').append(html);
-                    });
-                })
+                    if (data.notifications.messages[ind] === conv){
+                            $('#'+conv).append('<span id="notif'+conv+'" class="dot"></span>');
+                        }
+                    })
+                });
             })
+            //Listen for new messages; notify user if new message comes
+            db.collection('users').doc(uuid).onSnapshot((doc)=>{
+                var curUserData = doc.data();
+                //Add notifiaction dot to conversations with new messages
+                curUserData.notifications.messages.forEach(function(conv){
+                    console.log(conv);
+                    $('#'+conv).append('<span id="notif'+conv+'" class="dot"></span>');
+                })
+            })    
         }
         else{
-            html+=`<h1>No New Messages</h1>`;
+            var html =`<h1 class='text-center'>No New Messages</h1>`;
+            $('#matched_users').append(html);
         }
     }
     else{
+        
         for(i = 0; i < data.length; i++) {
             var tutorData = data[i];
             var html = `
             <div class="col mb-4">
-            <div class="card mx-auto" style="width:22rem">
+            <div class="card mx-auto" id="${i}" style="width:22rem">
                 <img class="card-img-top" src="${tutorData.photoUrl}" alt="tutor-pic">
                 <div class="card-body text-center">
                     <h5 class="card-title">${tutorData.first_name} ${tutorData.last_name}</h5>
@@ -79,14 +93,24 @@ function display_matches(data) {
             </div>
             `;
             $('#matched_users').append(html);
+            
         }
+        db.collection('users').doc(uuid).onSnapshot((doc)=>{
+            var curUserData = doc.data();
+            //Add notifiaction dot to conversations with new messages
+            data.forEach(function(tutorData,i){
+                if (tutorData.conversations !== undefined && curUserData.notifications !== undefined){
+                    if (tutorData.conversations.filter(value => curUserData.notifications.messages.includes(value)).length > 0){
+                        $('#'+i).append('<span id="notif'+i+'" class="dot"></span>');
+                    }
+                }
+            })
+            
+        })
     }
 	$('#loading_icon').fadeOut("fast");
 	$('#matched_users').fadeIn();
 	return true;
-    //          <p id="selected_tutor" style="display: none;">${i}</p>
-    //          <button onclick="session_details()">Request Session</button>
-    //          </div>
  }
 
  function display_messages(userType, i){
@@ -98,20 +122,54 @@ function display_matches(data) {
       </div>
     `;
     $('#message_area').prepend(setup);
+    var messageHTML = `
+        <div>
+        <form id="message_form" onsubmit="return send_message('${userType}','${i}')">
+        <div class="container form-group">
+            <input class="form-control" id="message_body" placeholder="Message" autocomplete="off" required>
+            </div>
+            <div class="form-group row justify-content-center">
+            <div class="col-1">
+                <button type="submit" class="btn btn-primary rounded-pill">Send Message</button>
+            </div>
+            <div class="col-1">
+                <button class="btn btn-secondary rounded-pill" onclick="returnToMatches()">Go Back</button>
+        </div>
+        </form>
+        </div>
+        `;
+    $('#message_area').append(messageHTML);
+    var user = firebase.auth().currentUser;
+    var userRef = db.collection('users').doc(user.uid);
+
     if (userType == 'parent'){
         var selected_tutor = response[i];
         var dispName = `<h2 class="text-left">${selected_tutor.first_name} ${selected_tutor.last_name}</h2>`;
         $('#message_area').prepend(dispName);
-        var user = firebase.auth().currentUser;
-        db.collection('users').doc(user.uid).onSnapshot((doc)=> {
-            var curUserConv = doc.data().conversations;
+        userRef.get().then((doc)=>{
+            if ($('#notif'+i).length > 0){
+                //Delete notification for current conversation
+                if (doc.data().notifications !== undefined){
+                    if (doc.data().notifications.messages !== undefined){
+                        userRef.update({
+                            notifications: {
+                                messages: firebase.firestore.FieldValue.arrayRemove()
+                            }
+                        })
+                        $('#notif'+i).remove();
+                    }
+                }
+            }
+        })        
+        userRef.onSnapshot((doc)=> {
+            var curUserData = doc.data()
+            var curUserConv = curUserData.conversations;
 
             if (curUserConv !== undefined){
                 //Fill and display past messages
 
-                var usersRef = db.collection("users");
-                //Change this later to reference the user's email; right now not all users have their email written to the db
-                usersRef.where("email", "==", selected_tutor.email)
+                var otherUserRef = db.collection("users");
+                otherUserRef.where("email", "==", selected_tutor.email)
                 .get()
                 .then((querySnapshot) => {
                     querySnapshot.forEach((otherUserDoc) => {
@@ -126,6 +184,7 @@ function display_matches(data) {
                                 .onSnapshot((doc)=>{
                                     const reveal = async () => {
                                         const result = await write_messages_to_page(doc.data());
+                                        $('#message_area').fadeIn('slow');
                                       }
                                     reveal();
                                 })
@@ -134,26 +193,6 @@ function display_matches(data) {
                         }
                     })
                 })
-                .then(()=>{
-                    var messageHTML = `
-                    <div>
-                    <form id="message_form" onsubmit="return send_message('${userType}','${i}')">
-                    <div class="container form-group">
-                        <textarea class="form-control" id="message_body" rows="1" placeholder="Message" required></textarea>
-                        </div>
-                        <div class="form-group row justify-content-center">
-                        <div class="col-1">
-                            <button type="submit" class="btn btn-primary rounded-pill">Send Message</button>
-                        </div>
-                        <div class="col-1">
-                            <button class="btn btn-secondary rounded-pill" onclick="returnToMatches()">Go Back</button>
-                    </div>
-                    </form>
-                    </div>
-                    `;
-                $('#message_area').append(messageHTML);
-                $('#message_area').fadeIn('slow');
-                })
                 .catch((error) => {
                     console.log("Error getting documents: ", error);
                 });
@@ -161,23 +200,20 @@ function display_matches(data) {
         });
     }
     else{
-        var messageHTML = `
-        <div>
-        <form id="message_form" onsubmit="return send_message('${userType}','${i}')">
-        <div class="container form-group">
-            <textarea class="form-control" id="message_body" rows="1" placeholder="Message" required></textarea>
-            </div>
-            <div class="form-group row justify-content-center">
-            <div class="col-1">
-                <button type="submit" class="btn btn-primary rounded-pill">Send Message</button>
-            </div>
-            <div class="col-1">
-                <button class="btn btn-secondary rounded-pill" onclick="returnToMatches()">Go Back</button>
-        </div>
-        </form>
-        </div>
-        `;
-    $('#message_area').append(messageHTML);
+        userRef.get().then((doc)=>{
+            var curUserData = doc.data();
+            //Delete notification for current conversation
+            if (curUserData.notifications !== undefined){
+                if (curUserData.notifications.messages !== undefined){
+                    userRef.update({
+                        notifications: {
+                            messages: firebase.firestore.FieldValue.arrayRemove()
+                        }
+                    })
+                    $('#notif'+i).remove();
+                }
+            }
+        })
         db.collection('conversations').doc(i)
         .onSnapshot((doc)=>{
             const reveal = async () => {
@@ -188,6 +224,7 @@ function display_matches(data) {
         })
         $('#message_area').fadeIn('slow');
     }
+    $('#message_area').fadeIn('slow');
  }
 
 function write_messages_to_page(messageData){

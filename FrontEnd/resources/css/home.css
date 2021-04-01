@@ -54,6 +54,17 @@ body{
     transition: .5s;
 }
 
+.dot {
+    background-color: red;
+    height: 2rem;
+    width: 7rem;
+    background-color: red;
+    border-radius: 50%;
+    position:relative;
+    top: -30px;
+    right: -30px;
+    /* top: -24px !important; */
+  }
 #view_requests:hover, #find_tutors:hover, #view_schedule:hover, #manage_matches:hover, #messages:hover, #donate:hover, #settings:hover {
     -webkit-transform: scale(1.1);
     -ms-transform: scale(1.1);
@@ -116,3 +127,13 @@ body{
     scroll-behavior: smooth;
   }
   
+  .dotNav{
+    height: 10px;
+    width: 10px;
+    background-color: red;
+    border-radius: 50%;
+    top: -30px !important;
+    position: relative;
+    right: -75px;
+    display:list-item;
+  }

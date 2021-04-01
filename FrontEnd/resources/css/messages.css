@@ -66,3 +66,15 @@
     color: #fff;
     font-weight: bold;
   }
+
+  .dot {
+    background-color: red;
+    height: 2rem;
+    width: 2rem;
+    background-color: red;
+    border-radius: 50%;
+    position:absolute;
+    top: -15px;
+    right: -15px;
+    /* top: -24px !important; */
+  }
