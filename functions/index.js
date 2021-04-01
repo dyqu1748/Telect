@@ -96,6 +96,32 @@ exports.tutorMatches =  functions.https.onRequest( async(request, response) => {
     }
 });
 
+exports.notifyNewMessage = functions.firestore
+    .document('conversations/{convId}')
+    .onWrite((change, context) => {
+        const newValue = change.after.exists ? change.after.data() : null;
+        const allUsers = newValue.users;
+        const conv = context.params.convId;
+        const newMessageUser = newValue.messages[newValue.messages.length-1].userId;
+        console.log(conv,newMessageUser);
+        if (newMessageUser === allUsers[0]){
+            const notifyUser = allUsers[1];
+            return firestore.doc('users/'+notifyUser).update({
+                notifications : {
+                    messages: admin.firestore.FieldValue.arrayUnion(conv)
+                }
+            });
+        }
+        else{
+            const notifyUser = allUsers[0];
+            return firestore.doc('users/'+notifyUser).update({
+                notifications : {
+                    messages: admin.firestore.FieldValue.arrayUnion(conv)
+                }
+            });
+        }
+      });
+
 // To make schedules easier to read, we'll be using the text parser from later,
 // if you manually specify the later schedules, you don't need to require it here
 

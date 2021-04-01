@@ -98,70 +98,7 @@ function display_matches(data) {
       </div>
     `;
     $('#message_area').prepend(setup);
-    if (userType == 'parent'){
-        var selected_tutor = response[i];
-        var dispName = `<h2 class="text-left">${selected_tutor.first_name} ${selected_tutor.last_name}</h2>`;
-        $('#message_area').prepend(dispName);
-        var user = firebase.auth().currentUser;
-        db.collection('users').doc(user.uid).onSnapshot((doc)=> {
-            var curUserConv = doc.data().conversations;
-
-            if (curUserConv !== undefined){
-                //Fill and display past messages
-
-                var usersRef = db.collection("users");
-                //Change this later to reference the user's email; right now not all users have their email written to the db
-                usersRef.where("email", "==", selected_tutor.email)
-                .get()
-                .then((querySnapshot) => {
-                    querySnapshot.forEach((otherUserDoc) => {
-                        var otherUserConv = otherUserDoc.data().conversations;
-                        if (otherUserConv !== undefined){
-                            //If conversation exists between two users
-
-                            if (curUserConv.some(item => otherUserConv.includes(item))){
-                                convID = curUserConv.filter(value => otherUserConv.includes(value))[0];
-                                console.log(convID);
-                                db.collection('conversations').doc(convID)
-                                .onSnapshot((doc)=>{
-                                    const reveal = async () => {
-                                        const result = await write_messages_to_page(doc.data());
-                                      }
-                                    reveal();
-                                })
-                            
-                            }
-                        }
-                    })
-                })
-                .then(()=>{
-                    var messageHTML = `
-                    <div>
-                    <form id="message_form" onsubmit="return send_message('${userType}','${i}')">
-                    <div class="container form-group">
-                        <textarea class="form-control" id="message_body" rows="1" placeholder="Message" required></textarea>
-                        </div>
-                        <div class="form-group row justify-content-center">
-                        <div class="col-1">
-                            <button type="submit" class="btn btn-primary rounded-pill">Send Message</button>
-                        </div>
-                        <div class="col-1">
-                            <button class="btn btn-secondary rounded-pill" onclick="returnToMatches()">Go Back</button>
-                    </div>
-                    </form>
-                    </div>
-                    `;
-                $('#message_area').append(messageHTML);
-                $('#message_area').fadeIn('slow');
-                })
-                .catch((error) => {
-                    console.log("Error getting documents: ", error);
-                });
-            }
-        });
-    }
-    else{
-        var messageHTML = `
+    var messageHTML = `
         <div>
         <form id="message_form" onsubmit="return send_message('${userType}','${i}')">
         <div class="container form-group">
@@ -178,6 +115,75 @@ function display_matches(data) {
         </div>
         `;
     $('#message_area').append(messageHTML);
+    var user = firebase.auth().currentUser;
+    var userRef = db.collection('users').doc(user.uid);
+
+    if (userType == 'parent'){
+        var selected_tutor = response[i];
+        var dispName = `<h2 class="text-left">${selected_tutor.first_name} ${selected_tutor.last_name}</h2>`;
+        $('#message_area').prepend(dispName);        
+        userRef.onSnapshot((doc)=> {
+            var curUserData = doc.data()
+            var curUserConv = curUserData.conversations;
+
+            if (curUserConv !== undefined){
+                //Fill and display past messages
+
+                var otherUserRef = db.collection("users");
+                otherUserRef.where("email", "==", selected_tutor.email)
+                .get()
+                .then((querySnapshot) => {
+                    querySnapshot.forEach((otherUserDoc) => {
+                        var otherUserConv = otherUserDoc.data().conversations;
+                        if (otherUserConv !== undefined){
+                            //If conversation exists between two users
+
+                            if (curUserConv.some(item => otherUserConv.includes(item))){
+                                convID = curUserConv.filter(value => otherUserConv.includes(value))[0];
+                                console.log(convID);
+                                //Delete notification for current conversation
+                                if (curUserData.notifications !== undefined){
+                                    if (curUserData.notifications.messages !== undefined){
+                                        userRef.update({
+                                            notifications: {
+                                                messages: firebase.firestore.FieldValue.arrayRemove()
+                                            }
+                                        })
+                                    }
+                                }
+                                db.collection('conversations').doc(convID)
+                                .onSnapshot((doc)=>{
+                                    const reveal = async () => {
+                                        const result = await write_messages_to_page(doc.data());
+                                        $('#message_area').fadeIn('slow');
+                                      }
+                                    reveal();
+                                })
+                            
+                            }
+                        }
+                    })
+                })
+                .catch((error) => {
+                    console.log("Error getting documents: ", error);
+                });
+            }
+        });
+    }
+    else{
+        userRef.onSnapshot((doc)=>{
+            var curUserData = doc.data();
+            //Delete notification for current conversation
+            if (curUserData.notifications !== undefined){
+                if (curUserData.notifications.messages !== undefined){
+                    userRef.update({
+                        notifications: {
+                            messages: firebase.firestore.FieldValue.arrayRemove()
+                        }
+                    })
+                }
+            }
+        })
         db.collection('conversations').doc(i)
         .onSnapshot((doc)=>{
             const reveal = async () => {
@@ -188,6 +194,7 @@ function display_matches(data) {
         })
         $('#message_area').fadeIn('slow');
     }
+    $('#message_area').fadeIn('slow');
  }
 
 function write_messages_to_page(messageData){
