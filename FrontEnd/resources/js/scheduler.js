@@ -33,8 +33,25 @@ function getScheduleDays() {
         schedule[day].push(time); 
      }
      var scheduleJSON = JSON.stringify(schedule);
-     prepScheduleJSON(schedule)
-     return scheduleJSON;
+     scheduleJSON = prepScheduleJSON(schedule)
+
+     //post the schedule as their availability to firebase
+
+
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    var raw = JSON.stringify({"docid":"TEST","availability": scheduleJSON});
+    var requestOptions = {
+        mode: 'no-cors',
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
+    };
+    fetch("http://localhost:5001/telect-6026a/us-central1/updateAvailability", requestOptions)
+        .then(response => response.text())
+        .then(result => console.log(result))
+        .catch(error => console.log('error', error));
 }
 
 function prepScheduleJSON(schedule) {
@@ -72,8 +89,13 @@ function prepScheduleJSON(schedule) {
     let strJSON = '{"schedules":[' + dw.substring(0, dw.length - 1) + ']}'
     console.log(strJSON)
 
+    // make sure it si good JSON, can remove later
     let scheduleJSON = JSON.parse(strJSON);
     console.log(scheduleJSON)
+
+    return scheduleJSON;
+
+    //console.log(scheduleJSON)
 }
 
 function build_avail(dw,t)

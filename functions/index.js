@@ -219,7 +219,7 @@ const json_t = schedule.tasks()
         return d.assignedTo;
     });
 
-// const json_tasks = json_t(json_workItems);
+const json_tasks = json_t(json_workItems);
 
 exports.scheduleJsonTest =  functions.https.onRequest(async (request, response) => {
     response.setHeader('Content-Type', 'application/json')
@@ -228,6 +228,35 @@ exports.scheduleJsonTest =  functions.https.onRequest(async (request, response) 
     const s = schedule.create(json_tasks, resources, null, start);
 
     response.send({"schedule": s})
+});
+
+exports.updateAvailability =  functions.https.onRequest(async (request, response) => {
+    response.setHeader('Content-Type', 'application/json')
+    avail = JSON.parse(request.body)
+    console.log("body: " + request.body)
+    console.log("docid: " + avail.docid)
+    console.log("availability: " + avail.availability);
+
+    const usersRef = firestore.collection('users');
+    let doc = await usersRef.doc(docid).get();
+    if (!doc.exists) {
+        response.send({"success": false});
+    } else {
+        //update the availability
+        await db.collection("users").doc(userid.set({
+            availability: avail.availability,
+        }))
+        .then(() => {
+            cors()(request, response, () => {
+                response.send({"success": true});
+            });
+         })
+        .catch((error) => {
+            cors()(request, response, () => {
+                response.send("Error getting documents: " + error);
+            });
+        });
+    }
 });
 
 
