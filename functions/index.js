@@ -305,7 +305,6 @@ exports.updateAvailability =  functions.https.onRequest(async (request, response
         //update the availability
         await firestore.collection("users").doc(avail.docid).set({
             availability: availability_json,
-            grid_select: avail.grid_select,
         })
         .then(() => {
             cors()(request, response, () => {
