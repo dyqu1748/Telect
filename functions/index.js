@@ -20,6 +20,67 @@ const cors = require('cors');
  admin.initializeApp(firebaseConfig)
  const firestore = admin.firestore()
 
+function prepScheduleJSON(schedule) {
+    //{"Monday":["1400","1430","1500"],"Tuesday":[],"Wednesday":[],"Thursday":[],"Friday":[],"Saturday":[],"Sunday":[]}
+
+    let dw = "";
+    let d;
+    console.log(schedule)
+    Object.keys(schedule).forEach(function(key) {
+        switch (key) {
+            case "Monday":
+                d=1
+                break
+            case "Tuesday":
+                d=2
+                break
+            case "Wednesday":
+                d=3
+                break
+            case "Thursday":
+                d=4
+                break
+            case "Friday":
+                d=5
+                break
+            case "Saturday":
+                d=6
+                break
+            case "Sunday":
+                d=7
+                break
+        }
+        dw = dw + build_avail(d,schedule[key])
+    })
+    let strJSON = '{"schedules":[' + dw.substring(0, dw.length - 1) + ']}'
+    console.log(strJSON)
+
+    // make sure it si good JSON, can remove later
+    let scheduleJSON = JSON.parse(strJSON);
+    console.log(scheduleJSON)
+
+    return scheduleJSON;
+
+    //console.log(scheduleJSON)
+}
+
+function build_avail(dw,t)
+{
+    let a = "";
+    if (size_dict(t) > 0) {
+        t.forEach((value, index) => {
+            if (value.substr(2, 2) != '00') {
+                minutes = value.substr(2, 2)
+            }
+            else { minutes = '0'}
+            a = a + '{"dw":[' + dw + '],"h":[' + value.substr(0, 2) + '],"m":[' + minutes + ']},'
+        });
+    }
+    return a
+}
+
+function size_dict(d){c=0; for (i in d) ++c; return c}
+
 exports.helloWorld = functions.https.onRequest((request, response) => {
   functions.logger.info("Hello logs!", {structuredData: true});
   response.send("Hello from Firebase!");
@@ -234,6 +295,8 @@ exports.updateAvailability =  functions.https.onRequest(async (request, response
     response.setHeader('Content-Type', 'application/json')
     avail = JSON.parse(request.body)
 
+    availability_json = prepScheduleJSON(avail.grid_json)
+
     const usersRef = firestore.collection('users');
     let doc = await usersRef.doc(avail.docid).get();
     if (!doc.exists) {
@@ -241,7 +304,7 @@ exports.updateAvailability =  functions.https.onRequest(async (request, response
     } else {
         //update the availability
         await firestore.collection("users").doc(avail.docid).set({
-            availability: avail.availability,
+            availability: availability_json,
             grid_select: avail.grid_select,
         })
         .then(() => {
