@@ -47,7 +47,7 @@ function getScheduleDays() {
         body: raw,
         redirect: 'follow'
     };
-    fetch("http://localhost:5001/telect-6026a/us-central1/updateAvailability", requestOptions)
+    fetch("https://us-central1-telect-6026a.cloudfunctions.net/updateAvailability", requestOptions)
         .then(response => response.text())
         .then(result => console.log(result))
         .catch(error => console.log('error', error));
