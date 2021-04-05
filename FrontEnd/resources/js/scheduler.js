@@ -10,6 +10,7 @@ function addItem(id) {
 
 function getScheduleDays() {
     var divs = document.getElementsByTagName("div");
+    var docId = document.getElementById("docId").value;
     var days = []; 
     var schedule = {
         "Monday": [],
@@ -40,7 +41,7 @@ function getScheduleDays() {
 
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    var raw = JSON.stringify({"docid":"TEST","availability": scheduleJSON});
+    var raw = JSON.stringify({"docid":docId,"availability": scheduleJSON, "grid_select": schedule});
     var requestOptions = {
         mode: 'no-cors',
         method: 'POST',

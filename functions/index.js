@@ -233,19 +233,17 @@ exports.scheduleJsonTest =  functions.https.onRequest(async (request, response) 
 exports.updateAvailability =  functions.https.onRequest(async (request, response) => {
     response.setHeader('Content-Type', 'application/json')
     avail = JSON.parse(request.body)
-    console.log("body: " + request.body)
-    console.log("docid: " + avail.docid)
-    console.log("availability: " + avail.availability);
 
     const usersRef = firestore.collection('users');
-    let doc = await usersRef.doc(docid).get();
+    let doc = await usersRef.doc(avail.docid).get();
     if (!doc.exists) {
         response.send({"success": false});
     } else {
         //update the availability
-        await db.collection("users").doc(userid.set({
+        await firestore.collection("users").doc(avail.docid).set({
             availability: avail.availability,
-        }))
+            grid_select: avail.grid_select,
+        })
         .then(() => {
             cors()(request, response, () => {
                 response.send({"success": true});
