@@ -220,6 +220,7 @@ function display_review(){
         var state = document.getElementById("state").value;
         var zipCode = document.getElementById("zipCode").value;
         var schedule = getScheduleDays();
+        displayScheduleReview(schedule);
         console.log("Schedule", schedule);
         var basicInfo = {
           'email':userEmail,

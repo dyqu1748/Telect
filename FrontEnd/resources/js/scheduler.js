@@ -34,3 +34,22 @@ function getScheduleDays() {
      var scheduleJSON = JSON.stringify(schedule);
      return scheduleJSON;
 }
+
+function displayScheduleReview(schedule) {
+    // console.log("in display schedule review");
+    // console.log("schedule", schedule);
+    schedule_dict = JSON.parse(schedule);
+    console.log("schedule dict: ", schedule_dict);
+    for(var day in schedule_dict) { 
+        if(schedule_dict[day].length != 0) {
+            for(var time in schedule_dict[day]) {
+                //console.log("splitting day and time", day, schedule_dict[day][time]);
+                var id = day + "_" + schedule_dict[day][time];
+                console.log(id);
+                document.getElementById(id).style.backgroundColor = "#A7FBBB";
+            }
+        }
+
+    }
+
+}
