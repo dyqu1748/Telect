@@ -39,7 +39,7 @@ function getScheduleDays() {
 
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    var raw = JSON.stringify({"docid":docId,"grid_json": schedule, "grid_select": schedule});
+    var raw = JSON.stringify({"docid":docId,"grid_json": schedule});
     var requestOptions = {
         mode: 'no-cors',
         method: 'POST',
