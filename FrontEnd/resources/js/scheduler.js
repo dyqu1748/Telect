@@ -44,10 +44,10 @@ function displayScheduleReview(schedule) {
         if(schedule_dict[day].length != 0) {
             for(var time in schedule_dict[day]) {
                 //console.log("splitting day and time", day, schedule_dict[day][time]);
-                var id = day + "_" + schedule_dict[day][time];
+                var id = day + "_" + schedule_dict[day][time] + "_review";
                 console.log(id);
                 if(document.getElementById(id).className == "scheduler_item_review"){
-                    print("blah")
+                    print("blah");
                     document.getElementById(id).className = "scheduler_item_review_selected";
                 }
             }
