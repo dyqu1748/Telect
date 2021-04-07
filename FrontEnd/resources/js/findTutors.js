@@ -1,28 +1,18 @@
 var uuid;
 var tutor_num;
-var docid_arr = [];
+var tid;
+
 firebase.auth().onAuthStateChanged(function(user) {
   if (user != null) {
     uuid = user.uid;
-	   getMatches();
+    db.collection('users').doc(uuid).get().then((doc) => {
+      getMatches(doc.data());
+    })
   } else {
     console.log("No user signed in");
     location.replace("index.html");
   }
 });
-
-String.prototype.hashCode = function(){
-    var hash = 0, i, chr;
-    if (this.length === 0) return hash;
-    for (i = 0; i < this.length; i++) {
-      chr   = this.charCodeAt(i);
-      hash  = ((hash << 5) - hash) + chr;
-      hash |= 0; // Convert to 32bit integer
-    }
-    hash = Math.abs(hash);
-    return String(hash);
-};
-
 
 // Get the modal
 var modal = document.getElementById("myModal");
@@ -42,7 +32,7 @@ window.onclick = function(event) {
   }
 }
 
-function getMatches() {
+function getMatches(user) {
     $.ajax({
         url: 'https://us-central1-telect-6026a.cloudfunctions.net/tutorMatches/' + uuid,
         success : function(data) {
@@ -55,71 +45,38 @@ function getMatches() {
 
 function display_matches(data) {
     var html = ``;
-    var i;
-    // var docid_arr = [];
+    console.log(data);
+    
     for(i = 0; i < data.length; i++) {
         var tutorData = data[i];
         var user = firebase.auth().currentUser;
-        var docid = (user.uid + tutorData.first_name + tutorData.last_name + tutorData.phone).hashCode();
-        docid_arr.push(docid);
+
         html += `
-          <div class="card w-75">
-            <div class="card-body">
-                <h5 class="card-title"> ${tutorData.first_name} ${tutorData.last_name}</h5>
-                <div class="row">
-                    <div class="col">
-        `;
+            <div class="card w-75">
+              <div class="card-body">
+                  <h5 class="card-title"> ${tutorData.first_name} ${tutorData.last_name}</h5>
+                  <div class="row">
+                      <div class="col">
+          `;
 
-        var tutor_num_btn = String("request_btn" + i);
-        html += `<button id="${tutor_num_btn}" onclick="session_details(${i})" class="btn btn-primary">Request Session</button>`;
+          var tutor_num_btn = String("request_btn" + i);
+          html += `<button id="${tutor_num_btn}" onclick="session_details(${i})" class="btn btn-primary">Request Session</button>`;
 
-        html += ` </br>
-                    <a href="#">More Info</a>
-                    </div>
-                    <div class="col">
-                        <p class="card-text"> Location: ${tutorData.city + ", "} ${tutorData.state} </p>
-                        <p class="card-text"> Desired Hourly Rate: ${"$" + tutorData.minSession}</p>
-                        <p class="card-text"> Subjects: ${tutorData.subjects}</p>
-                        <p class="card-text"> About Me: ${tutorData.bio} </p>
-                    </div>
-                </div>
+          html += ` </br>
+                      <a href="#">More Info</a>
+                      </div>
+                      <div class="col">
+                          <p class="card-text"> Location: ${tutorData.city + ", "} ${tutorData.state} </p>
+                          <p class="card-text"> Desired Hourly Rate: ${"$" + tutorData.minSession}</p>
+                          <p class="card-text"> Subjects: ${tutorData.subjects}</p>
+                          <p class="card-text"> About Me: ${tutorData.bio} </p>
+                      </div>
+                  </div>
+              </div>
             </div>
-          </div>
-        `; 
-    }
+          `; 
+      }
 
-    // sessionRef = db.collection('sessions');
-    // getDocs = sessionRef.get()
-    // .then(querySnapshot => {
-    //     if (querySnapshot.empty) {
-    //       console.log("No documents");
-    //     }else{
-    //       var j;
-    //       var docSnapshots = querySnapshot.doc;
-    //       for (j in docSnapshots) {
-    //           const doc = docSnapshots[i].data();
-    //           if(doc.uid == docid_arr[j] && doc.requested_session)
-    //           {
-    //             var tutor_num_btn = String("request_btn" + j);
-    //             document.getElementById(tutor_num_btn).innerHTML = "Request Pending";
-    //             document.getElementById(tutor_num_btn).disabled = true;
-    //           }
-    //       } 
-    //     }
-    //   });
-
-    
-    // var currDoc = db.collection('sessions').doc(docid).get();
-    // currDoc.get().then(function(doc) {
-    //   if (doc.exists) {
-    //     console.log("Document data:", doc.data());
-        
-    //   } else {
-    //     console.log("No such document!");
-    //   }
-    // }).catch(function(error) {
-    //   console.log("Error getting document:", error);
-    // });
     $('#loading_icon').fadeOut("fast");
     $('#page-container').fadeIn();
     $('#tutor-matches').html(html);
@@ -256,34 +213,45 @@ function session_details(selected_tutor)
                 console.log(doc.data());
                 var user_info = doc.data();
                 var tutor_info = data[tutor_num];
+                const snapshot = db.collection('users').where("first_name", "==", tutor_info.first_name).where(
+                  "last_name", "==", tutor_info.last_name).where("phone", "==", tutor_info.phone).get();
+                snapshot.then((doc) =>
+                {
+                  doc.forEach(tdoc => {
+                    tid = tdoc.id;
+                    console.log(tdoc.id);
 
-                var docid = (user.uid + tutor_info.first_name + tutor_info.last_name + tutor_info.phone).hashCode();
-                console.log(docid);
-                db.collection('sessions').doc(docid).set({
-                  requested_session : true,
-                  accepted_session : false,
-                  completed_session : false,
-                  user_id : user.uid,
-                  tutor_fname : tutor_info.first_name,
-                  tutor_lname : tutor_info.last_name,
-                  tutor_phone : tutor_info.phone,
-                  selected_child : document.getElementById("child").value,
-                  session_cost : document.getElementById("final_price").value,
-                  session_loc : document.getElementById("location_pref").value,
-                  session_subject : document.getElementById("subject").value
-                });
+                    //var docid = (user.uid + tutor_info.first_name + tutor_info.last_name + tutor_info.phone).hashCode();
+                    //console.log(docid);
+                    db.collection('sessions').add({
+                      user_id : user.uid,
+                      tutor_id : tid,
+                      requested_session : true,
+                      accepted_session : false,
+                      completed_session : false,
+                      selected_child : document.getElementById("child").value,
+                      session_cost : document.getElementById("final_price").value,
+                      session_loc : document.getElementById("location_pref").value,
+                      session_subject : document.getElementById("subject").value,
+                    });
 
-                // Display the success message
-                var html = `
-                      <h1> Session Request Sent </h1>
-                `;
-                $('#schedule_session').html(html);
+                    // Display the success message
+                    var html = `
+                          <h1> Session Request Sent </h1>
+                    `;
+                    $('#schedule_session').html(html);
 
-                var tutor_num_btn = String("request_btn" + tutor_num);
-                document.getElementById(tutor_num_btn).innerHTML = "Request Pending";
-                document.getElementById(tutor_num_btn).disabled = true;
+                    var tutor_num_btn = String("request_btn" + tutor_num);
+                    document.getElementById(tutor_num_btn).innerHTML = "Request Pending";
+                    document.getElementById(tutor_num_btn).disabled = true;
+                  })
+                })
             });
         }
     });
     return true;
  }
+
+
+
+
