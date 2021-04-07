@@ -189,8 +189,9 @@ function reviewInfo(){
         alert("Telect does not currently serve the area that you are currently in. However, you may still make an account and we will inform you when Telect has begun supporting your current area.");
       }
     }
-    
+
     request(url);
+    //displayScheduleReview(basicInfo['schedule']);
 }
 
 function show_form(){
@@ -220,8 +221,8 @@ function display_review(){
         var state = document.getElementById("state").value;
         var zipCode = document.getElementById("zipCode").value;
         var schedule = getScheduleDays();
-        displayScheduleReview(schedule);
-        console.log("Schedule", schedule);
+        //displayScheduleReview(schedule);
+        //console.log("Schedule", schedule);
         var basicInfo = {
           'email':userEmail,
           'inputPassword': userPass,
@@ -303,6 +304,7 @@ function display_review(){
         sessionStorage.setItem("basicInfo", JSON.stringify(basicInfo));
         sessionStorage.setItem("account_specific", JSON.stringify(account_specific));
         // location.replace('register_review.html');
+        displayScheduleReview(schedule);
         reviewInfo();
         $('#register_fields').css('display','none');
         $('#review_div').fadeIn();

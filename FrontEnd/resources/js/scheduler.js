@@ -1,5 +1,5 @@
 function addItem(id) {
-    console.log(id);
+    //console.log(id);
     if(document.getElementById(id).className == "scheduler_item") {
         document.getElementById(id).className = "scheduler_item_selected";
     } else if (document.getElementById(id).className == "scheduler_item_selected") {
@@ -36,8 +36,8 @@ function getScheduleDays() {
 }
 
 function displayScheduleReview(schedule) {
-    // console.log("in display schedule review");
-    // console.log("schedule", schedule);
+    //console.log("in display schedule review");
+    //console.log("schedule", schedule);
     schedule_dict = JSON.parse(schedule);
     console.log("schedule dict: ", schedule_dict);
     for(var day in schedule_dict) { 
@@ -46,10 +46,11 @@ function displayScheduleReview(schedule) {
                 //console.log("splitting day and time", day, schedule_dict[day][time]);
                 var id = day + "_" + schedule_dict[day][time];
                 console.log(id);
-                document.getElementById(id).style.backgroundColor = "#A7FBBB";
+                if(document.getElementById(id).className == "scheduler_item_review"){
+                    print("blah")
+                    document.getElementById(id).className = "scheduler_item_review_selected";
+                }
             }
         }
-
     }
-
 }
