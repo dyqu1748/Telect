@@ -71,7 +71,7 @@
     <form onsubmit="return display_review()" oninput='pass2.setCustomValidity(pass2.value != pass1.value ? "Passwords do not match." : "")'>
         <br>
         <h1>We just need a few things before you can get started</h1><br>        
-        <h3>Setup your account</h3>
+        <h2>Setup your account</h2>
             <div class="form-group row">
                 <div class="col-md-3">
                     <label for="fname" class="control-label">First Name</label>
@@ -195,10 +195,11 @@
             </div>
             <br>
             <h2>Session Preferences</h2>
+            <br>
 
-            <h2>Fill Out Your Availability</h2>
+            <h4 class="header-control">Fill Out Your Availability</h4>
 
-            <div class = "scheduler">
+            <div class = "scheduler" id='scheduler'>
                 <div class = "free_space">     </div>
                 <div class = "days">Monday</div>
                 <div class = "days">Tuesday</div>
@@ -409,6 +410,7 @@
                 <div class = "scheduler_item" id = "Sunday_2000" onclick="addItem(this.id)">     </div>
     
             </div>
+            <br>
 
             <div id="parentFields">
                 <h4 class="header-control">Enter the minimum amount you would like to pay for a session</h4>
@@ -914,40 +916,36 @@
                 <div class="row">
                 <div class="col-md-3">
                     <h3>Minimum Session Rate</h3>
+                </div>
+                <div class="col-md-3">
+                    <h3>Session Location Preference</h3> 
                 </div> 
                 </div>
                 <div class="row">
                 <div class="col-md-3">
                 <p class="lead" id="minSessionTutor"></p>
                 </div>
-                </div>
-                <div class="row">
-                <div class="col-md-3">
-                    <h3>Session Location Preference</h3> 
-                </div>
-                </div>
-                <div class="row">
                 <div class="col-md-3">
                     <p class="lead" id="session_prefTutor"></p>
                 </div> 
                 </div>
                 <div class="row">
-                <div class="col-md-3">
+                <div class="col-md">
                     <h3>Grade Level(s)</h3> 
                 </div>
                 </div>
                 <div class="row">
-                <div class="col-md-3">
+                <div class="col-md">
                     <p class="lead" id="gradesTutor"></p>
                 </div> 
                 </div>
                 <div class="row">
-                <div class="col-md-3">
+                <div class="col-md">
                     <h3>Subject(s)</h3> 
                 </div>
                 </div>
                 <div class="row">
-                <div class="col-md-3">
+                <div class="col-md">
                     <p class="lead" id="subjectsTutor"></p>
                 </div> 
                 </div>

@@ -2,7 +2,7 @@ firebase.auth().onAuthStateChanged(function(user) {
   if (user != null) {
     // User is signed in. Show appropiate elements for signed in user and vice-versa.
     console.log("USER SIGNED IN");
-    var notLoggedInPages = ['Telect - Sign In','Telect - Welcome','Telect - Reset Password', 'Telect - Account Register'];
+    var notLoggedInPages = ['Telect - Sign In','Telect - Welcome','Telect - Reset Password'];
     var pageName = document.title;
     if (notLoggedInPages.includes(pageName)){
       location.replace("home.html");

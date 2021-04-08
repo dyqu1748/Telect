@@ -32,7 +32,7 @@ function getScheduleDays() {
         schedule[day].push(time); 
      }
      var scheduleJSON = JSON.stringify(schedule);
-     return scheduleJSON;
+     return [scheduleJSON,schedule];
 }
 
 function displayScheduleReview(schedule) {
@@ -47,10 +47,19 @@ function displayScheduleReview(schedule) {
                 var id = day + "_" + schedule_dict[day][time] + "_review";
                 console.log(id);
                 if(document.getElementById(id).className == "scheduler_item_review"){
-                    print("blah");
                     document.getElementById(id).className = "scheduler_item_review_selected";
                 }
             }
         }
     }
 }
+
+function checkScheduleReq(schedule){
+    var availFill = false;
+    Object.keys(schedule).forEach(function(day){
+      if (schedule[day].length > 0){
+        availFill=true;
+      }
+    })
+    return availFill;
+  }

@@ -30,14 +30,16 @@ function reviewInfo(){
     var basicInfo = JSON.parse(sessionStorage.getItem("basicInfo"));
     var account_specific= JSON.parse(sessionStorage.getItem("account_specific"));
     // console.log(account_specific);
-
+    console.log(basicInfo);
     for (let id in basicInfo){
+      if (id != 'schedule'){
         if (basicInfo[id] == ""){
             $('#'+id+"Review").text("N/A");
         }
         else{
             $('#'+id+"Review").text(basicInfo[id]);
         }
+      }
     }
     if (account_specific.accountType == "parent"){
         for (let id in account_specific){
@@ -226,6 +228,13 @@ function display_review(){
         var state = document.getElementById("state").value;
         var zipCode = document.getElementById("zipCode").value;
         var schedule = getScheduleDays();
+        if (checkScheduleReq(schedule[1]) == false){
+          $([document.documentElement, document.body]).animate({
+            scrollTop: $("#scheduler").offset().top-150
+        }, 1000);
+        window.alert("Please choose at least one slot for you availability.");  
+          return false;
+        }
         //displayScheduleReview(schedule);
         //console.log("Schedule", schedule);
         var basicInfo = {
@@ -239,7 +248,7 @@ function display_review(){
           'city':city,
           'state':state,
           'zipCode':zipCode,
-          'schedule': schedule
+          'schedule': schedule[1]
         };
         if (account_type == "parent"){
           var minSession = document.getElementById("minSession").value;
@@ -309,7 +318,7 @@ function display_review(){
         sessionStorage.setItem("basicInfo", JSON.stringify(basicInfo));
         sessionStorage.setItem("account_specific", JSON.stringify(account_specific));
         // location.replace('register_review.html');
-        displayScheduleReview(schedule);
+        displayScheduleReview(schedule[0]);
         reviewInfo();
         $('#register_fields').css('display','none');
         $('#review_div').fadeIn();
@@ -441,6 +450,7 @@ function delChildForm() {
 function create_account(){
   $('#loading_icon').fadeIn();
   $('#review_div').css('filter', 'blur(1.5rem)');
+  $('#footer').css('filter', 'blur(1.5rem)');
   var basicInfo = JSON.parse(sessionStorage.getItem("basicInfo"));
   var account_specific= JSON.parse(sessionStorage.getItem("account_specific"));
   firebase.auth().createUserWithEmailAndPassword(basicInfo['email'], basicInfo['inputPassword']).then(cred => {

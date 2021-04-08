@@ -10,7 +10,7 @@ body{
     width: 15rem;
 }
 
-.container-fluid.required .control-label:after, .header-control::after{
+.control-label::after, .header-control::after{
     content:" *";
     color: red;
 }
