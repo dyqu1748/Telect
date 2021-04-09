@@ -10,7 +10,6 @@ function addItem(id) {
 
 function getScheduleDays() {
     var divs = document.getElementsByTagName("div");
-    var docId = document.getElementById("docId").value;
     var days = []; 
     var schedule = {
         "Monday": [],
@@ -35,11 +34,12 @@ function getScheduleDays() {
      }
 
      //post the schedule as their availability to firebase
-
+    console.log(schedule);
 
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    var raw = JSON.stringify({"docid":docId,"grid_json": schedule});
+    docId = "tvbcla7ePNHSqbiBuUp4"
+    var raw = JSON.stringify({"docid":docId,"availability": schedule});
     var requestOptions = {
         mode: 'no-cors',
         method: 'POST',
@@ -47,7 +47,7 @@ function getScheduleDays() {
         body: raw,
         redirect: 'follow'
     };
-    fetch("https://us-central1-telect-6026a.cloudfunctions.net/updateAvailability", requestOptions)
+    fetch("http://localhost:5001/telect-6026a/us-central1/updateAvailability", requestOptions)
         .then(response => response.text())
         .then(result => console.log(result))
         .catch(error => console.log('error', error));

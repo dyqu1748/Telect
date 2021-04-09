@@ -8,7 +8,6 @@ function prepScheduleJSON(schedule) {
 
     let dw = "";
     let d;
-    console.log(schedule)
     Object.keys(schedule).forEach(function(key) {
         switch (key) {
             case "Monday":
@@ -36,11 +35,9 @@ function prepScheduleJSON(schedule) {
         dw = dw + build_avail(d,schedule[key])
     })
     let strJSON = '{"schedules":[' + dw.substring(0, dw.length - 1) + ']}'
-    console.log(strJSON)
 
     // make sure it si good JSON, can remove later
     let scheduleJSON = JSON.parse(strJSON);
-    console.log(scheduleJSON)
 
     return scheduleJSON;
 
@@ -63,17 +60,19 @@ function build_avail(dw,t) {
 
 function size_dict(d){let c=0; for (let i in d) ++c; return c}
 
-export function match (personA, personB, hours) {
-    response.setHeader('Content-Type', 'application/json')
+
+
+function Match (personA, personB, hours) {
+
+    const p = later.parse.text;
 
     function session(hours, docId1, docId2) {
         return [
             {
-                name: hours + 'hours session',
+                name: 'tutoring session',
                 length: hours,                      // lengths specified in hours
                 minSchedule: hours,                 // have to schedule all X hours at once
                 assignedTo: ['' + docId1 + '', '' + docId2 + ''],    // both personA and personB are needed
-                availability: 'after 10:00am and before 9:00pm'
                 //can only complete during the hours of the scheduling grid
             }
         ];
@@ -82,19 +81,19 @@ export function match (personA, personB, hours) {
     function people(personA, personB) {
         return [
             {
-                name: personA.data().docId,
+                name: personA.id,
                 // Student likes to sleep in a bit on the weekends
                 availability: prepScheduleJSON(personA.data().availability)
+                //availability: 'every weekend after 10:00am and before 6:00pm'
             },
             {
-                name: personB.data().docId,
+                name: personB.id,
                 // Tutor gets up earlier but has plans Saturday afternoon so we note that in her availability
                 availability: prepScheduleJSON(personB.data().availability)
+                //availability: 'every weekend after 10:00am and before 6:00pm'
             }
         ];
     }
-
-    const parse = later.parse.text;
 
     const task = schedule.tasks()
     .id(function (d) {
@@ -105,7 +104,7 @@ export function match (personA, personB, hours) {
         return d.length * 60;
     })
     .available(function (d) {
-         return d.availability ? parse(d.availability) : undefined;
+         return d.availability;
     })
     // convert minSchedule to minutes
     .minSchedule(function (d) {
@@ -116,14 +115,22 @@ export function match (personA, personB, hours) {
         return d.assignedTo;
     });
 
+    const resources = schedule.resources()
+          .id(function(d) { return d.name; })
+          .available(function(d) { return d.availability; });
 
-    let wi = session(hours,personA.data().docId,personB.data().docId) // Step 1: Define the work items
 
-    let p = people(personA,personB) // Step 2: Define the people
+    let wi = session(hours,personA.id,personB.id) // Step 1: Define the work items
+    console.log("WI: " + JSON.stringify(wi))
+
+    let pe = people(personA,personB) // Step 2: Define the people
+    console.log("PEOPLE: " + JSON.stringify(pe))
 
     let t = task(wi)// Step 3: Format the tasks
+    console.log("TASK: " + JSON.stringify(t))
 
-    let r = resources(p);  // Step 4: Format the resources
+    let r = resources(pe);  // Step 4: Format the resources
+    console.log("RESOURCES: " + JSON.stringify(r))
 
     // Step 5: Set the start date and ime zone
     let currentDate = new Date();
@@ -136,8 +143,11 @@ export function match (personA, personB, hours) {
     // Step 6: Create the schedule
     const s = schedule.create(t, r, null, st);
 
+    console.log("THE SCHEDULE: " + JSON.stringify(s))
+
     return s;
 
 }
 
+module.exports = Match;
 

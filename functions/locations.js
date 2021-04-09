@@ -1,4 +1,5 @@
 
+const cors = require('cors');
 
 exports.handler = function(request, response, database) {
     cors()(request, response, () => {

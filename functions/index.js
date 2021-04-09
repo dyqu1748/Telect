@@ -2,6 +2,7 @@ const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const matches = require('./matches');
 const locations = require('./locations');
+const cors = require('cors');
 
 // Set the configuration for your app
 var firebaseConfig = {
@@ -27,6 +28,31 @@ exports.tutorMatches =  functions.https.onRequest( async(request, response) => {
     await matches.handler(request,response,firestore);
 });
 
+exports.updateAvailability =  functions.https.onRequest(async (request, response) => {
+    response.setHeader('Content-Type', 'application/json')
+    avail = JSON.parse(request.body)
+
+    const usersRef = firestore.collection('users');
+    let doc = await usersRef.doc(avail.docid).get();
+    if (!doc.exists) {
+        response.send({"success": false});
+    } else {
+        //update the availability
+        await firestore.collection("users").doc(avail.docid).set({
+            availability: avail.availability,
+        })
+        .then(() => {
+            cors()(request, response, () => {
+                response.send({"success": true});
+            });
+         })
+        .catch((error) => {
+            cors()(request, response, () => {
+                response.send("Error getting documents: " + error);
+            });
+        });
+    }
+});
 
 
 
