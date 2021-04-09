@@ -18,7 +18,9 @@ exports.handler =  async function( request, response, database) {
         .then((tutorSnapshot) => {
             tutorSnapshot.forEach((tutorDoc) => {
                 console.log(tutorDoc.id, ' => ', tutorDoc.data());
-                console.log(schedule.match(parentDoc.data(),tutorDoc.data(),1));
+                let s = schedule.match(parentDoc.data(),tutorDoc.data(),1)
+                console.log(s);
+                tutorDoc.data().availabilityMatch = s;
             });
             cors()(request, response, () => {
                 response.send(tutorSnapshot.docs.map(doc => doc.data()))

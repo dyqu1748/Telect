@@ -63,88 +63,6 @@ function build_avail(dw,t) {
 
 function size_dict(d){let c=0; for (let i in d) ++c; return c}
 
-// To make schedules easier to read, we'll be using the text parser from later,
-// if you manually specify the later schedules, you don't need to require it here
-
-p = later.parse.text;
-
-
-// Step 3: Tasks aren't in the right format, need to create a generator
-const t = schedule.tasks()
-    .id(function (d) {
-        return d.name;
-    })
-    // our length is in hours, convert to minutes
-    .duration(function (d) {
-        return d.length * 60;
-    })
-    // use later.parse.text to parse text into a usable schedule
-    .available(function (d) {
-        return d.availability ? p(d.availability) : undefined;
-    })
-    // convert minSchedule to minutes
-    .minSchedule(function (d) {
-        return d.minSchedule ? d.minSchedule * 60 : undefined;
-    })
-    // resources are the people the tasks have been assigned to
-    .resources(function (d) {
-        return d.assignedTo;
-    });
-
-const tasks = t(workItems);
-
-// Step 4: Resources aren't in the right format either, need to create a generator
-const r = schedule.resources()
-    .id(function (d) {
-        return d.name;
-    })
-    .available(function (d) {
-        return d.availability ? p(d.availability) : undefined;
-    });
-
-const resources = r(people);
-
-// Step 5: Pick a start date for the schedule and set correct timezone
-const start = new Date(2021, 3, 11);
-schedule.date.localTime();
-
-exports.scheduleTest =  functions.https.onRequest(async (request, response) => {
-    response.setHeader('Content-Type', 'application/json')
-
-    // Step 6: Create the schedule
-    const s = schedule.create(tasks, resources, null, start);
-
-    response.send({"schedule": s})
-});
-
-// BELOW THIS LINE IS A TEST FOR PASSING THE RAW SCHEDULE JSON TO THE SCHEDULER
-
-
-
-
-const json_t = schedule.tasks()
-    .id(function (d) {
-        return d.name;
-    })
-    // our length is in hours, convert to minutes
-    .duration(function (d) {
-        return d.length * 60;
-    })
-    // use later.parse.text to parse text into a usable schedule
-    .available(function (d) {
-        return d.availability;
-    })
-    // convert minSchedule to minutes
-    .minSchedule(function (d) {
-        return d.minSchedule ? d.minSchedule * 60 : undefined;
-    })
-    // resources are the people the tasks have been assigned to
-    .resources(function (d) {
-        return d.assignedTo;
-    });
-
-const json_tasks = json_t(json_workItems);
-
 export function match (personA, personB, hours) {
     response.setHeader('Content-Type', 'application/json')
 
@@ -153,8 +71,8 @@ export function match (personA, personB, hours) {
             {
                 name: hours + 'hours session',
                 length: hours,                      // lengths specified in hours
-                minSchedule: hours,                 // have to schedule all 2 hours at once
-                assignedTo: ['' + docId + '', '' + docId2 + ''],    // both Bob and Sara are needed
+                minSchedule: hours,                 // have to schedule all X hours at once
+                assignedTo: ['' + docId1 + '', '' + docId2 + ''],    // both personA and personB are needed
                 availability: 'after 10:00am and before 9:00pm'
                 //can only complete during the hours of the scheduling grid
             }
@@ -176,18 +94,50 @@ export function match (personA, personB, hours) {
         ];
     }
 
-    // Step 1: Define the work items
-    let wi = session(hours,personA.data().docId,personB.data().docId)
+    const parse = later.parse.text;
 
-    // Step 2: Define the people
-    let p = people(personA,personB)
-    // Step 3: Format the tasks
-    // Step 4: Format the resources
+    const task = schedule.tasks()
+    .id(function (d) {
+        return d.name;
+    })
+    // our length is in hours, convert to minutes
+    .duration(function (d) {
+        return d.length * 60;
+    })
+    .available(function (d) {
+         return d.availability ? parse(d.availability) : undefined;
+    })
+    // convert minSchedule to minutes
+    .minSchedule(function (d) {
+        return d.minSchedule ? d.minSchedule * 60 : undefined;
+    })
+    // resources are the people the tasks have been assigned to
+    .resources(function (d) {
+        return d.assignedTo;
+    });
+
+
+    let wi = session(hours,personA.data().docId,personB.data().docId) // Step 1: Define the work items
+
+    let p = people(personA,personB) // Step 2: Define the people
+
+    let t = task(wi)// Step 3: Format the tasks
+
+    let r = resources(p);  // Step 4: Format the resources
+
     // Step 5: Set the start date and ime zone
-    // Step 6: Create the schedule
-    const s = schedule.create(json_tasks, resources, null, start);
+    let currentDate = new Date();
+    let cDay = currentDate.getDate()
+    let cMonth = currentDate.getMonth() + 1
+    let cYear = currentDate.getFullYear()
+    const st = new Date(cYear, cMonth, cDay);
+    schedule.date.localTime();
 
-    response.send({"schedule": s})
-};
+    // Step 6: Create the schedule
+    const s = schedule.create(t, r, null, st);
+
+    return s;
+
+}
 
 
