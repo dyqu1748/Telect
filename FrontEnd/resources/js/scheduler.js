@@ -38,7 +38,7 @@ function getScheduleDays() {
 
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    docId = "tvbcla7ePNHSqbiBuUp4"
+    docId = "WuREBBmV6IhrMKlPEp2a"
     var raw = JSON.stringify({"docid":docId,"availability": schedule});
     var requestOptions = {
         mode: 'no-cors',

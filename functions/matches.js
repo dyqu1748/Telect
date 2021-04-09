@@ -1,5 +1,4 @@
 
-const Match = require('./schedule');
 const cors = require('cors');
 
 exports.handler =  async function( request, response, database) {
@@ -16,8 +15,18 @@ exports.handler =  async function( request, response, database) {
             parentDoc.data().minSession).where("minSession", '<=', parentDoc.data().maxSession).get()
         .then((tutorSnapshot) => {
             tutorSnapshot.forEach((tutorDoc) => {
-                let s = Match(parentDoc,tutorDoc,1)
-                tutorDoc.data().availabilityMatch = s;
+                // look for two consecutive time matches
+                parentAvail = parentDoc.data().availability
+                Object.keys(parentAvail).forEach(key => {
+                    parentDay = key
+                    times = parentAvail[key]
+                    Object.keys(times).forEach(key => {
+                        console.log(times[key])
+                        parentTime = times[key]
+                        // Check for this combination in the tutor set
+
+                    });
+                });
             });
             cors()(request, response, () => {
                 response.send(tutorSnapshot.docs.map(doc => doc.data()))
