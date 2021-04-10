@@ -40,7 +40,7 @@ exports.updateAvailability =  functions.https.onRequest(async (request, response
         //update the availability
         await firestore.collection("users").doc(avail.docid).set({
             availability: avail.availability,
-        })
+        }, {merge:true})
         .then(() => {
             cors()(request, response, () => {
                 response.send({"success": true});

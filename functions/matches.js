@@ -18,8 +18,8 @@ exports.handler =  async function( request, response, database) {
             tutorSnapshot.forEach((tutorDoc) => {
                 // look for two consecutive time matches
                 i = 0
-                parentAvail = parentDoc.data().availability
-                tutorAvail = tutorDoc.data().availability
+                parentAvail = parentDoc.data().schedule
+                tutorAvail = tutorDoc.data().schedule
                 matchingTimes = []
                 Object.keys(parentAvail).forEach(key => {
                     parentDay = key
@@ -49,7 +49,7 @@ exports.handler =  async function( request, response, database) {
                     response.send(matchingTutors)
                 }
                 else {
-                    response.set ("{No matching tutors found.}")
+                    response.send ("{No matching tutors found.}")
                 }
             });
          })
