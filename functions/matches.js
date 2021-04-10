@@ -14,22 +14,43 @@ exports.handler =  async function( request, response, database) {
         await usersRef.where("user_type","==","tutor").where("minSession", '>=',
             parentDoc.data().minSession).where("minSession", '<=', parentDoc.data().maxSession).get()
         .then((tutorSnapshot) => {
+            matchingTutors = [];
             tutorSnapshot.forEach((tutorDoc) => {
                 // look for two consecutive time matches
+                i = 0
                 parentAvail = parentDoc.data().availability
+                tutorAvail = tutorDoc.data().availability
+                matchingTimes = []
                 Object.keys(parentAvail).forEach(key => {
                     parentDay = key
-                    times = parentAvail[key]
-                    Object.keys(times).forEach(key => {
-                        console.log(times[key])
-                        parentTime = times[key]
-                        // Check for this combination in the tutor set
-
-                    });
+                    if (tutorAvail.hasOwnProperty(parentDay)) {
+                        parentTimes = parentAvail[parentDay]
+                        tutorTimes = tutorAvail[parentDay]
+                        Object.keys(parentTimes).forEach(key => {
+                            parentTime = parentTimes[key]
+                            Object.keys(tutorTimes).forEach(key => {
+                                if (parentTime == tutorTimes[key]) {
+                                    console.log(parentDay + "_" + parentTime)
+                                    matchingTimes.push(parentDay + "_" + parentTime)
+                                }
+                            });
+                        });
+                    }
                 });
+                if (matchingTimes.length > 0) {
+                    let tutor = tutorDoc.data()
+                    tutor['matchingtimes'] = matchingTimes
+                    matchingTutors.push(tutor)
+                }
+                i++
             });
             cors()(request, response, () => {
-                response.send(tutorSnapshot.docs.map(doc => doc.data()))
+                if (matchingTutors.length > 0 ) {
+                    response.send(matchingTutors)
+                }
+                else {
+                    response.set ("{No matching tutors found.}")
+                }
             });
          })
         .catch((error) => {
