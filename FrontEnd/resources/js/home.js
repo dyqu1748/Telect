@@ -18,6 +18,7 @@ firebase.auth().onAuthStateChanged(function(user) {
 
   function displayHome(data)
 {
+    var user = firebase.auth().currentUser;
     if (data.user_type == 'parent') {
         var html = `
         <div id= "find_tutors">
@@ -37,6 +38,13 @@ firebase.auth().onAuthStateChanged(function(user) {
             </a>
         </div>
         `;
+        db.collection('sessions').where("tutor_id", "==", user.uid).where("requested_session", "==", true).get().then((doc) => 
+        {
+            doc.forEach(req =>
+            {
+                $('#view_requests').append('<span class="dot"></span>');
+            })
+        })
 
     }
 
@@ -81,9 +89,31 @@ firebase.auth().onAuthStateChanged(function(user) {
     document.getElementById("user_name").innerHTML ="Hello, " + data.first_name + ".";
     document.getElementById("dashboard").innerHTML = html;
     if (data.notifications !== undefined ){
-        if (data.notifications.messages.length > 0){
+        if (data.notifications.messages != undefined){
             $('#messages').append('<span class="dot"></span>');
         } 
     }
+    if(data.user_type == 'parent')
+    {
+     db.collection('sessions').where("user_id", "==", user.uid).where("accepted_session", "==", true).get().then((doc) => 
+      {
+          doc.forEach(req =>
+          {
+            $('#manage_matches').append('<span class="dot"></span>');
+          })
+      }) 
+    }else if(data.user_type == 'tutor')
+    {
+      db.collection('sessions').where("tutor_id", "==", user.uid).where("accepted_session", "==", true).get().then((doc) => 
+      {
+          doc.forEach(req =>
+          {
+              $('#manage_matches').append('<span class="dot"></span>');
+          })
+      })
+    }
+    
+
+
 	
 }

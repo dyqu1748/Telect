@@ -35,10 +35,12 @@ window.onclick = function(event) {
 // Load the requests based on the tutor's id
 function display_requests(data) {
     var html = ``;
-    db.collection('sessions').where("tutor_id", "==", uuid).get().then((doc) =>
+    var hasSessions = false;
+    db.collection('sessions').where("tutor_id", "==", uuid).where("requested_session", "==", true).get().then((doc) =>
     {
       doc.forEach(req =>
       {
+        hasSessions = true;
         console.log(req.id);
         var req_info = req.data();
         db.collection('users').doc(req_info.user_id).get().then((parent) =>
@@ -71,11 +73,16 @@ function display_requests(data) {
               </div>
             </div>
           `; 
-        
+          
           $('#requests').html(html);
         });
       });
-    }); 
+    });
+
+    if(!hasSessions){
+      html += `<h3>No Session Requests</h3>`;
+    } 
+    $('#requests').html(html);
 
     $('#loading_icon').fadeOut("fast");
     $('#page-container').fadeIn();

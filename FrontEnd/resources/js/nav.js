@@ -14,6 +14,7 @@ firebase.auth().onAuthStateChanged(function(user) {
 
   function displayNav(data) 
   {
+    var user = firebase.auth().currentUser;
     if (data.user_type == 'parent') {
       var html = `
       <li class="nav-item">
@@ -23,17 +24,25 @@ firebase.auth().onAuthStateChanged(function(user) {
 
     } else if (data.user_type == 'tutor') {
         var html = `
-        <li class="nav-item" value = "1">
+        <li class="nav-item" id="view_requests_nav" value = "1">
         <a class="nav-link" href = "view_requests.html"> View Requests </a>
         </li>
         `;
+
+        db.collection('sessions').where("tutor_id", "==", user.uid).where("requested_session", "==", true).get().then((doc) => 
+        {
+            doc.forEach(req =>
+            {
+                $('#view_requests_nav').append('<span class="dotNav"></span>');
+            })
+        })
     }
 
     html += `
     <li class="nav-item" value = "2">
     <a class="nav-link" href = "view_schedule.html"> View Schedule </a>
     </li>
-    <li class="nav-item" value = "3">
+    <li class="nav-item" value = "3" id="manage_matches_nav">
     <a class="nav-link" href = "manage_matches.html" > Manage Matches </a>
     </li>
     <li class="nav-item" value = "4" id="message-nav">
@@ -57,9 +66,29 @@ firebase.auth().onAuthStateChanged(function(user) {
     }
   }
   if (data.notifications !== undefined){
-    if (data.notifications.messages.length>0){
+    if (data.notifications.messages != undefined){
         $('#message-nav').append('<span class="dotNav"></span>');
     }
+  }
+
+  if(data.user_type == 'parent')
+  {
+     db.collection('sessions').where("user_id", "==", user.uid).where("accepted_session", "==", true).get().then((doc) => 
+      {
+          doc.forEach(req =>
+          {
+            $('#manage_matches_nav').append('<span class="dotNav"></span>');
+          })
+      }) 
+  }else if(data.user_type == 'tutor')
+  {
+      db.collection('sessions').where("tutor_id", "==", user.uid).where("accepted_session", "==", true).get().then((doc) => 
+      {
+          doc.forEach(req =>
+          {
+              $('#manage_matches_nav').append('<span class="dotNav"></span>');
+          })
+      })
   }
 
   }
