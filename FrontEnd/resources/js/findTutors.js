@@ -215,6 +215,7 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
         console.log(doc.data());
         var user_info = doc.data();
              var tutor_info = data[tutor_num];
+             console.log(tutor_info.schedule);
              var html = `
                  <h1>Request a Session with ${tutor_info.first_name} ${tutor_info.last_name}</h1><br>
                  <h3>Who is this Session For?</h3>
@@ -235,7 +236,20 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
             </div>
              </div>
                  <h3>Date and Time</h3>
-                  <h3>Location Preference</h3>
+                 <select class="selectpicker form-control" name="sessionTime" id="sessionTime">`
+
+          for (var day in tutor_info.schedule) {
+            for (var i = 0; i < tutor_info.schedule[day].length; i++) {
+                // make time look better
+                printedTime = tutor_info.schedule[day][i].slice(0,2) + ":" + tutor_info.schedule[day][i].slice(2,4);
+                html += `<option value=${day}${tutor_info.schedule[day][i]}> ${day} ${printedTime}</option>`;
+            }
+          }
+
+
+          html +=  `
+            </select>
+            <h3>Location Preference</h3>
             <div class="form-group form-inline">
                  `;
              if(user_info.location_pref == "online")
@@ -309,6 +323,7 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
         $('#loading_icon_modal').fadeOut("fast");
         scheduleModal.fadeIn();
         document.getElementById("schedule_session").scrollIntoView({behavior: "smooth", block: "center"});
+        console.log(document.getElementById("sessionTime").value);
        });
        }
    });
@@ -363,6 +378,7 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
                     session_cost : document.getElementById("final_price").value,
                     session_loc : document.getElementById("location-pref").value,
                     session_subject : document.getElementById("subject").value,
+                    session_time: document.getElementById("sessionTime").value
                   });
 
                   // Display the success message
