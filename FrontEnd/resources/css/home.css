@@ -134,6 +134,6 @@ body{
     border-radius: 50%;
     top: -30px !important;
     position: relative;
-    right: -75px;
+    float: right;
     display:list-item;
   }
