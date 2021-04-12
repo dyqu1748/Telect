@@ -142,7 +142,7 @@ function display_matches(data) {
     $('#message_area').append(messageHTML);
     var user = firebase.auth().currentUser;
     var userRef = db.collection('users').doc(user.uid);
-
+    var otherUserRef = db.collection("users");
     if (userType == 'parent'){
         var selected_tutor = response[i];
         var dispName = `<h2 class="text-left">${selected_tutor.first_name} ${selected_tutor.last_name}</h2>`;
@@ -150,14 +150,28 @@ function display_matches(data) {
         userRef.get().then((doc)=>{
             if ($('#notif'+i).length > 0){
                 //Delete notification for current conversation
-                if (doc.data().notifications !== undefined){
-                    if (doc.data().notifications.messages !== undefined){
-                        userRef.update({
-                            notifications: {
-                                messages: firebase.firestore.FieldValue.arrayRemove()
-                            }
+                var curUserData = doc.data();
+                var curUserConv = curUserData.conversations;
+                if (curUserData.notifications !== undefined){
+                    if (curUserData.notifications.messages !== undefined){
+                        otherUserRef.where("email", "==", selected_tutor.email)
+                        .get()
+                        .then((querySnapshot)=>{
+                            querySnapshot.forEach((otherUserDoc)=>{
+                                var otherUserConv = otherUserDoc.data().conversations;
+                                if (otherUserConv !== undefined){
+                                    if (curUserConv.some(item => otherUserConv.includes(item))){
+                                        convID = curUserConv.filter(value => otherUserConv.includes(value))[0];
+                                        console.log(convID);
+                                        userRef.update({
+                                            "notifications.messages": firebase.firestore.FieldValue.arrayRemove(convID)
+                                        })
+                                        $('#notif'+i).remove();
+                                    }
+                                }
+                            })
                         })
-                        $('#notif'+i).remove();
+                        
                     }
                 }
             }
@@ -168,8 +182,6 @@ function display_matches(data) {
 
             if (curUserConv !== undefined){
                 //Fill and display past messages
-
-                var otherUserRef = db.collection("users");
                 otherUserRef.where("email", "==", selected_tutor.email)
                 .get()
                 .then((querySnapshot) => {
@@ -207,9 +219,7 @@ function display_matches(data) {
             if (curUserData.notifications !== undefined){
                 if (curUserData.notifications.messages !== undefined){
                     userRef.update({
-                        notifications: {
-                            messages: firebase.firestore.FieldValue.arrayRemove()
-                        }
+                        "notifications.messages": firebase.firestore.FieldValue.arrayRemove(i)
                     })
                     $('#notif'+i).remove();
                 }
@@ -244,7 +254,6 @@ function write_messages_to_page(messageData){
         else{
             var otherUserType = 'parent';
             var curUserType = 'tutor';
-            var tutorPic = firebase.auth().currentUser.photoUrl;
         }
         var messages = ``;
         messageData.messages.forEach(function(messageData){
@@ -269,12 +278,18 @@ function write_messages_to_page(messageData){
         })
         $('#disp_messages').html(messages);
         if (curUserType == 'tutor'){
-            var addTutorAvatar = `<img src="${tutorPic}" class="right" alt="tutor-pic">`;
-            var addParentAvatar = `<div class="circle">
-                                    <span class="initials">${otherUserDoc.data().first_name[0]}${otherUserDoc.data().last_name[0]}</span>
-                                    </div>`;
-            $("div[class$='parent']").prepend(addParentAvatar);
-            $("div[class$='parent']").addClass('avatar-added');
+            db.collection('users').doc(uuid).get().then((doc)=>{
+                var tutorPic = doc.data().photoUrl;
+                console.log(tutorPic);
+                var addTutorAvatar = `<img src="${tutorPic}" class="right" alt="tutor-pic">`;
+                var addParentAvatar = `<div class="circle">
+                                        <span class="initials">${otherUserDoc.data().first_name[0]}${otherUserDoc.data().last_name[0]}</span>
+                                        </div>`;
+                $("div[class$='parent']").prepend(addParentAvatar);
+                $("div[class$='parent']").addClass('avatar-added');
+                $("div[class$='tutor']").prepend(addTutorAvatar);
+                $("div[class$='tutor']").addClass('avatar-added');
+            })
         }
         else{
             var addTutorAvatar = `<img src="${tutorPic}" alt="tutor-pic">`;
@@ -284,11 +299,10 @@ function write_messages_to_page(messageData){
                 </div>`;
                 $("div[class$='parent']").prepend(addParentAvatar);
                 $("div[class$='parent']").addClass('avatar-added');
+                $("div[class$='tutor']").prepend(addTutorAvatar);
+                $("div[class$='tutor']").addClass('avatar-added');
             })
         }
-        $("div[class$='tutor']").prepend(addTutorAvatar);
-        $("div[class$='tutor']").addClass('avatar-added');
-        
         
     })
     

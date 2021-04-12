@@ -24,7 +24,7 @@ firebase.auth().onAuthStateChanged(function(user) {
 
     } else if (data.user_type == 'tutor') {
         var html = `
-        <li class="nav-item" id="view_requests_nav" value = "1">
+        <li class="nav-item" value = "1" id="view_requests-nav">
         <a class="nav-link" href = "view_requests.html"> View Requests </a>
         </li>
         `;
@@ -65,11 +65,19 @@ firebase.auth().onAuthStateChanged(function(user) {
         navClass[i].classList.add("active");
     }
   }
-  if (data.notifications !== undefined){
-    if (data.notifications.messages != undefined){
-        $('#message-nav').append('<span class="dotNav"></span>');
+  if (data.notifications !== undefined ){
+    if (data.notifications.messages !== undefined){
+        if (data.notifications.messages.length > 0){
+            $('#message-nav').append('<span class="dotNav"></span>');
+        } 
     }
-  }
+    if (data.notifications.sessions !== undefined){
+        if (data.notifications.sessions.length > 0){
+            console.log("BOOP");
+            $('#view_requests-nav').append('<span class="dotNav"></span>');
+        } 
+    }
+}
 
   if(data.user_type == 'parent')
   {

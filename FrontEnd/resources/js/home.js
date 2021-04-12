@@ -89,9 +89,16 @@ firebase.auth().onAuthStateChanged(function(user) {
     document.getElementById("user_name").innerHTML ="Hello, " + data.first_name + ".";
     document.getElementById("dashboard").innerHTML = html;
     if (data.notifications !== undefined ){
-        if (data.notifications.messages != undefined){
-            $('#messages').append('<span class="dot"></span>');
-        } 
+        if (data.notifications.messages !== undefined){
+            if (data.notifications.messages.length > 0){
+                $('#messages').append('<span class="dot"></span>');
+            } 
+        }
+        if (data.notifications.sessions !== undefined){
+            if (data.notifications.sessions.length > 0){
+                $('#view_requests').append('<span class="dot"></span>');
+            } 
+        }
     }
     if(data.user_type == 'parent')
     {

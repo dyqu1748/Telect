@@ -112,8 +112,8 @@ function display_matches(data) {
                         <img src= ${tutorData.photoUrl} class="tutorPhoto">
                         <br>
 						<br>
-                        <button onclick="session_details(${i})" class="btn btn-primary rounded-pill">Request Session</button>
-						    <button onclick="display_info(${i})" class="btn btn-secondary rounded-pill">More Info</button>
+                        <button onclick="session_details(${i})" class="btn btn-primary rounded-pill request_btn${i}">Request Session</button>
+						<button onclick="display_info(${i})" class="btn btn-secondary rounded-pill">More Info</button>
                     </div>
                     <div class="col">
                         <p id="selected_tutor_${i}" style="display: none;">${i}</p>
@@ -131,8 +131,11 @@ function display_matches(data) {
     }
 
     $('#tutor-matches').html(html);
+    data.forEach(function(tutorData, ind){
+      disableRequest(ind,tutorData);
+    });
   $('#loading_icon').fadeOut("fast");
-  $('#page-container').fadeIn();
+  $('#page-container').fadeIn("slow");
   return true;
     //          <p id="selected_tutor" style="display: none;">${i}</p>
     //          <button onclick="session_details()">Request Session</button>
@@ -173,7 +176,7 @@ function display_matches(data) {
                 <img src= ${tutorData.photoUrl} class="tutor-photo-more-info">
                 </br>
 				</br>
-                <button onclick="session_details(${i})" class="btn btn-primary rounded-pill">Request Session</button>
+                <button onclick="session_details(${i})" class="btn btn-primary rounded-pill request_btn${i}">Request Session</button>
             </div>
             <div class="col">
                 <p id="selected_tutor_${i}" style="display: none;">${i}</p>
@@ -188,6 +191,7 @@ function display_matches(data) {
         </div>
     `;
     $("#info-placeholder").html(html);
+    disableRequest(i,tutorData);
  }
 
 function session_details(i)
@@ -218,7 +222,7 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
              console.log(tutor_info.schedule);
              var html = `
                  <h1>Request a Session with ${tutor_info.first_name} ${tutor_info.last_name}</h1><br>
-                 <h3>Who is this Session For?</h3>
+                 <h3 class="header-control">Who is this Session For?</h3>
             <div class="form-group row">
             <div class="col">
             <div class="btn-group btn-group-toggle" data-toggle="buttons">
@@ -227,7 +231,7 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
           for (var i = 0; i < user_info.children.length; i++) {
           html += `
           <label class="btn btn-outline-primary">
-            <input type="radio" id="child" value=${user_info.children[i].child_name} required> ${user_info.children[i].child_name}
+            <input type="radio" name="child" value="${user_info.children[i].child_name}" required> ${user_info.children[i].child_name}
           </label>
           `;
         }
@@ -235,7 +239,7 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
           html += `</div>
             </div>
              </div>
-                 <h3>Date and Time</h3>
+                 <h3 class="header-control">Date and Time</h3>
                  <select class="selectpicker form-control" name="sessionTime" id="sessionTime">`
 
           for (var day in tutor_info.schedule) {
@@ -249,43 +253,24 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
 
           html +=  `
             </select>
-            <h3>Location Preference</h3>
+            <h3 class="header-control">Location Preference</h3>
             <div class="form-group form-inline">
-                 `;
-             if(user_info.location_pref == "online")
-             {
-                html += `<div>
-                <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                  <label class="btn btn-outline-primary active">
-                  <input type="radio" id="location-pref" value="online" required> Online
-                  </label>
-                  <label class="btn btn-outline-primary">
-                  <input type="radio" id="location-pref" value="in_person"> In-Person
-                  </label>
-                </div>
-              </div>
-               </div>`;
-
-             }else{
-                html += `<div>
-              <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                <label class="btn btn-outline-primary active">
-                <input type="radio" id="location-pref" value="online" > Online
-                </label>
-                <label class="btn btn-outline-primary">
-                <input type="radio" id="location-pref" value="in_person" required> In-Person
-                </label>
-              </div>
-              </div>
-               </div>`;
-             }
-
-             html += `
+            <div>
+            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+              <label class="btn btn-outline-primary active">
+              <input type="radio" name="location_pref" value="online" required> Online
+              </label>
+              <label class="btn btn-outline-primary">
+              <input type="radio" name="location_pref" value="in_person"> In-Person
+              </label>
+            </div>
+          </div>
+           </div>
                  <h3>Price</h3>
                  <p>Your Current Price Range: $${user_info.minSession} - $${user_info.maxSession}</p>
                  <p>Tutor Minimum Session Rate: $${tutor_info.minSession}</p>
                  <div>
-                 <h4> Please Input your Desired Session Rate</h4>
+                 <h4 class="header-control"> Please Input your Desired Session Rate</h4>
             <div class="form-group form-inline">
             <label for="final_price">$</label>
             <div class="col">
@@ -293,7 +278,7 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
              </div>
              </div>
             </div>
-                 <h3>Select Subject(s)</h3>
+                 <h3 class="header-control">Select Subject(s)</h3>
                  <div id="subjectsel">
                  </div>
             <div class="form-group row">
@@ -304,7 +289,7 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
         for (var i = 0; i < tutor_info.subjects.length; i++) {
           html += `
            <label class="btn btn-outline-primary">
-            <input id="subject" type="checkbox" value=${tutor_info.subjects[i]}> ${subject_keys[tutor_info.subjects[i]]}
+            <input type="checkbox" name="subjects" value=${tutor_info.subjects[i]}> ${subject_keys[tutor_info.subjects[i]]}
           </label>
           `;
         }
@@ -320,6 +305,7 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
         `;
 
              $('#schedule_session').html(html);
+             $('input[name="location_pref"][value="'+user_info.location_pref+'"]').click();
         $('#loading_icon_modal').fadeOut("fast");
         scheduleModal.fadeIn();
         document.getElementById("schedule_session").scrollIntoView({behavior: "smooth", block: "center"});
@@ -333,7 +319,7 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
   checked = $("input[type=checkbox]:checked").length;
 
    if(!checked) {
-     alert("You must check at least one checkbox.");
+     alert("Please select at least one subject you would like you session to focus on.");
      return false;
    }else{
    	schedule_session();
@@ -346,6 +332,10 @@ function schedule_session()
 
 var html = ``;
 var user = firebase.auth().currentUser;
+var subjects = [];
+$('input[name="subjects"]:checked').each(function() { 
+  subjects.push(this.value); 
+});
 var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
    getTutorMatches().then((result) => {
        // Read result of the Cloud Function.
@@ -374,10 +364,10 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
                     requested_session : true,
                     accepted_session : false,
                     completed_session : false,
-                    selected_child : document.getElementById("child").value,
+                    selected_child : $('input[name="child"]:checked').val(),
                     session_cost : document.getElementById("final_price").value,
-                    session_loc : document.getElementById("location-pref").value,
-                    session_subject : document.getElementById("subject").value,
+                    session_loc : $('input[name="location_pref"]:checked').val(),
+                    session_subject : subjects,
                     session_time: document.getElementById("sessionTime").value
                   });
 
@@ -388,8 +378,9 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
                   $('#schedule_session').html(html);
 
                   var tutor_num_btn = String("request_btn" + tutor_num);
-                  document.getElementById(tutor_num_btn).innerHTML = "Request Pending";
-                  document.getElementById(tutor_num_btn).disabled = true;
+                  // document.getElementsByClassName(tutor_num_btn).innerHTML = "Request Pending";
+                  $('.'+tutor_num_btn).html("Request Pending");
+                  $('.'+tutor_num_btn).prop('disabled',true);
                 })
               })
           });
@@ -399,5 +390,30 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
 }
 
 
-
+function disableRequest(i,tutorData){
+  var userRef = db.collection('users');
+    userRef.doc(uuid).get().then((doc)=>{
+      var curUserData = doc.data();
+      userRef.where("email", "==", tutorData.email)
+    .get()
+    .then((querySnapshot)=>{
+      querySnapshot.forEach((tutorDoc) =>{
+        var tutorId = tutorDoc.id;
+        db.collection('sessions').where("tutor_id","==",tutorId).where("user_id","==", uuid)
+        .get()
+        .then((sessSnap)=>{
+          sessSnap.forEach((sess)=>{
+            if (sess.exists){
+                var tutor_num_btn = String("request_btn" + i);
+                //Disable request button; request already made
+                $('.'+tutor_num_btn).html("Request Pending");
+                  $('.'+tutor_num_btn).prop('disabled',true);
+              }
+          })
+          
+        })
+      })
+    }) 
+    }) 
+}
 
