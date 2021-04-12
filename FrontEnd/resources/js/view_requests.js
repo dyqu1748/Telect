@@ -35,21 +35,18 @@ window.onclick = function(event) {
 // Load the requests based on the tutor's id
 function display_requests(data) {
     var html = ``;
-    db.collection('sessions').where("tutor_id", "==", uuid).where("requested_session", "==", true).
-    where("accepted_session", "==", false).get().then((doc) =>
+    db.collection('sessions').where("tutor_id", "==", uuid).where("requested_session", "==", true).get().then((doc) =>
     {
-      // if(doc.size > 0)
-      // {
-      //   html += `<h3>No Session Requests</h3>`;
-      //   $('#requests').html(html);
-      //   return true;
-      // }
       doc.forEach(req =>
       {
         console.log(req.id);
         var req_info = req.data();
         db.collection('users').doc(req_info.user_id).get().then((parent) =>
         {
+          if(req_info.accepted_session == true)
+          {
+            return true;
+          }
           console.log(parent.data());
           html += `
             <br>
@@ -63,17 +60,27 @@ function display_requests(data) {
           {
             html += `<button onclick="accept_session('${req.id}')" class="btn btn-primary">Accept Request</button> <br><br>`;
             html += `<button onclick="decline_session()" class="btn btn-primary">Decline Request</button>`;
-          }else{
-            html += `<button class="btn btn-primary">Join Session</button>`;
+          }
+
+          var printTime;
+          for(var c = 0; c < req_info.session_time.length; c++)
+          {
+            if(req_info.session_time[c] >= '0' && req_info.session_time[c] <= '9')
+            {
+              printTime = req_info.session_time.substr(0, c) + " " + req_info.session_time.substr(c+1, req_info.session_time.length);
+              break;
+            }
           }
 
           html += ` </br>
                       </div>
                       <div class="col">
+                          <p class="card-text"> Child: ${req_info.selected_child} </p>
+                          <p class="card-text"> Session Date: ${printTime}</p>
                           <p class="card-text"> Location: ${req_info.session_loc.charAt(0).toUpperCase() +req_info.session_loc.slice(1)} </p>
                           <p class="card-text"> Session Cost: ${"$" + req_info.session_cost}</p>
                           <p class="card-text"> Subjects: ${req_info.session_subject.charAt(0).toUpperCase() +req_info.session_subject.slice(1)}</p>
-                          <p class="card-text"> Child: ${req_info.selected_child} </p>
+                          
                       </div>
                   </div>
               </div>
