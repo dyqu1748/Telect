@@ -62,14 +62,15 @@ function display_matches(data) {
                   var printedTime = time.slice(0,2) + ":" + time.slice(2,4);
                   var formattedDateTime = req_info.session_time.slice(0, req_info.session_time.length - 4) + " " + printedTime;
 
-                  var all_subjects = subject_keys[req_info.session_subject];
-//                  req_info.session_subject.forEach(function(subject,ind) {
-//                    all_subjects+=subject_keys[subject];
-//                    if (ind < tutorData.subjects.length-1){
-//                      all_subjects+= ', ';
-//                    }
-//                  });
-                  console.log(all_subjects);
+                  var all_subjects = "";
+                  req_info.session_subject.forEach(function(subject,ind) {
+                    all_subjects+=subject_keys[subject];
+                    if (ind < req_info.session_subject.length-1){
+                      all_subjects+= ', ';
+                    }
+                  });
+                  console.log(req_info);
+                  console.log(req_info.session_subject);
 
                   if (data.user_type == "parent") {
                     html += `<img src= ${match.data().photoUrl} class="tutorPhoto">`

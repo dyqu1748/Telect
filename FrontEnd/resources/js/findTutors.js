@@ -399,7 +399,7 @@ function disableRequest(i,tutorData){
     .then((querySnapshot)=>{
       querySnapshot.forEach((tutorDoc) =>{
         var tutorId = tutorDoc.id;
-        db.collection('sessions').where("tutor_id","==",tutorId).where("user_id","==", uuid)
+        db.collection('sessions').where("tutor_id","==",tutorId).where("user_id","==", uuid).where("accepted_session", "==", false)
         .get()
         .then((sessSnap)=>{
           sessSnap.forEach((sess)=>{
