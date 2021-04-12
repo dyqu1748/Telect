@@ -4,7 +4,7 @@
 <title>Telect - Account Settings</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
+<link rel="icon" href="resources/img/icon.png" type="image/png">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
@@ -16,14 +16,10 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
-<style type="text/css">
-    .thumbnails li img{
-        width: 300px;
-    }
-</style>
 <link rel="stylesheet" type="text/css" href="resources/css/user_css.css">
 <link rel="stylesheet" type="text/css" href="resources/css/home.css">
 <link rel="stylesheet" type="text/css" href="resources/css/register.css">
+<link rel="stylesheet" type="text/css" href="resources/css/scheduler.css">
 
 </head>
 <body>
@@ -48,9 +44,9 @@
   <div class="lds-roller" id="loading_icon"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
 <div id="page-container" class="container-fluid" style="background-color: rgba(255, 255, 255, 0.5); display:none;">
   <div id="content-wrap">
-    <h1>Account Management</h1>
+    <h1 class="text-center">Account Management</h1>
 
-    <div id="general-info">
+    <div id="general-info" class="container">
       <div class="row">
         <div class="col">
           <form id="display-details" onsubmit="return updateaccount()">
@@ -60,12 +56,12 @@
       </div>
     </div>
     
-      <div id="personal-info" style="display:none;">
+      <div id="personal-info" class="container" style="display:none;">
       </div>
 
       <div class="form-group row">
         <div class ="col">
-          <a class="btn btn-primary" href="home.html">Return Home</a>
+          <a class="btn btn-primary rounded-pill" href="home.html">Return Home</a>
         </div>
       </div>
   </div>
@@ -91,6 +87,7 @@
 <script src="resources/js/manageSettings.js"></script>
 <script src="resources/js/register_scripts.js"></script>
 <script src="resources/js/nav.js"></script>
+<script src="resources/js/scheduler.js"></script>
 <script>$("select").imagepicker()</script>
 </body>
 </html>

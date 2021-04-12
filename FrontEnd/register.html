@@ -4,7 +4,7 @@
 <title>Telect - Account Register</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
+<link rel="icon" href="resources/img/icon.png" type="image/png">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
@@ -67,11 +67,11 @@
 
     <div id="page-container" class="container-fluid">
         <div id="content-wrap">
-<div id="register_fields" class="container-fluid required" style="display: none;">
+<div id="register_fields" class="container required" style="display: none;">
     <form onsubmit="return display_review()" oninput='pass2.setCustomValidity(pass2.value != pass1.value ? "Passwords do not match." : "")'>
         <br>
-        <h1>We just need a few things before you can get started</h1>        
-        <h3>Setup your account</h3>
+        <h1>We just need a few things before you can get started</h1><br>        
+        <h2>Setup your account</h2>
             <div class="form-group row">
                 <div class="col-md-3">
                     <label for="fname" class="control-label">First Name</label>
@@ -110,7 +110,7 @@
                     <input type="password" id="inputConfirmPassword" name="pass2" class="form-control" placeholder="Confirm Password">    
                 </div>
             </div>
-
+            <br>
             <h2>Add your current address</h2>
 
             <div class="form-group row">
@@ -193,10 +193,13 @@
                     </select>
                 </div>
             </div>
+            <br>
+            <h2>Session Preferences</h2>
+            <br>
 
-            <h2>Fill Out Your Availability</h2>
+            <h4 class="header-control">Fill Out Your Availability</h4>
 
-            <div class = "scheduler">
+            <div class = "scheduler" id='scheduler'>
                 <div class = "free_space">     </div>
                 <div class = "days">Monday</div>
                 <div class = "days">Tuesday</div>
@@ -407,9 +410,10 @@
                 <div class = "scheduler_item" id = "Sunday_2000" onclick="addItem(this.id)">     </div>
     
             </div>
+            <br>
 
             <div id="parentFields">
-                <h3 class="header-control">Enter the minimum amount you would like to pay for a session</h3>
+                <h4 class="header-control">Enter the minimum amount you would like to pay for a session</h4>
                 <div class="form-group form-inline">
                     <label for="minSession">$</label>
                     <div class="col-md-3">
@@ -417,7 +421,7 @@
                     </div>
                 </div>
 
-                <h3 class="header-control">Enter the maximum amount you would like to pay for a session</h3>
+                <h4 class="header-control">Enter the maximum amount you would like to pay for a session</h4>
                 <div class="form-group form-inline">
                     <label for="maxSession">$</label>
                     <div class="col-md-3">
@@ -425,7 +429,7 @@
                     </div>
                 </div>
 
-                <h3 class="header-control">Select your location preference for sessions</h3>
+                <h4 class="header-control">Select your location preference for sessions</h4>
                 <div class="form-group form-inline">
                     <div class="btn-group btn-group-toggle" data-toggle="buttons">
                         <label class="btn btn-outline-primary active">
@@ -437,7 +441,7 @@
                     </div>
                 </div>
 
-                <h3 class="header-control">Would you like your tutors to be background checked?</h3>
+                <h4 class="header-control">Would you like your tutors to be background checked?</h4>
                 <div class="form-group form-inline">
                     <div class="btn-group btn-group-toggle" data-toggle="buttons">
                         <label class="btn btn-outline-primary active">
@@ -449,22 +453,24 @@
                     </div>
                 </div>
 
-                <div class="form-group form-inline">
-                    <div class="com-md-3">
+                <div class="form-group row">
+                    <div class="col-md-3">
                         <button type="button" id="add-child" class="btn btn-secondary rounded-pill" onclick="showAddChild()">Add Child</button>
                     </div>
                 </div>
+
+				<h2 id="child-info-head" class="d-none">Children Information</h2>
                 
                 <div id="child-form1"></div>
                 <div id="child-placeholder"></div>
 
         
 
-                <div class="form-group form-inline">
-                    <div class="col col-lg-2">
+                <div class="form-group row">
+                    <div class="col col-md-2">
                         <button type="button" class="btn btn-secondary rounded-pill d-none" id="addChildButton" onclick="addChildForm()">Add Child</button>
                     </div>
-                    <div class="col col-lg-2">
+                    <div class="col col-md-2">
                         <button type="button" class="btn btn-secondary rounded-pill d-none" id="remChildButton" onclick="delChildForm()">Remove Child</button>
                     </div>
                 </div>
@@ -572,7 +578,7 @@
     </form>
 
 </div>
-<div id="review_div" class="container-fluid" style="display: none;">
+<div id="review_div" class="container" style="display: none;">
     <br>
         <h1>Review your account information, and then get started!</h1>  
         <br>  
@@ -653,6 +659,220 @@
                 </div>
             </div>
 
+            <h2><u>Availability Information</u></h2>
+
+            <div class = "scheduler">
+                <div class = "free_space">     </div>
+                <div class = "days">Monday</div>
+                <div class = "days">Tuesday</div>
+                <div class = "days">Wednesday</div>
+                <div class = "days">Thursday</div>
+                <div class = "days">Friday</div>
+                <div class = "days">Saturday</div>
+                <div class = "days">Sunday</div>
+                <div class = "times">8:00 a.m.</div>
+                <div class = "scheduler_item_review" id = "Monday_0800_review" >     </div>
+                <div class = "scheduler_item_review" id = "Tuesday_0800_review" >     </div>
+                <div class = "scheduler_item_review" id = "Wednesday_0800_review" >     </div>
+                <div class = "scheduler_item_review" id = "Thursday_0800_review" >     </div>
+                <div class = "scheduler_item_review" id = "Friday_0800_review" >     </div>
+                <div class = "scheduler_item_review" id = "Saturday_0800_review" >     </div>
+                <div class = "scheduler_item_review" id = "Sunday_0800_review"  >     </div>
+                <div class = "times">8:30 a.m.</div>
+                <div class = "scheduler_item_review" id = "Monday_0830_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Tuesday_0830_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Wednesday_0830_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Thursday_0830_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Friday_0830_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Saturday_0830_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Sunday_0830_review"  >     </div>
+                <div class = "times">9:00 a.m.</div>
+                <div class = "scheduler_item_review" id = "Monday_0900_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Tuesday_0900_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Wednesday_0900_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Thursday_0900_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Friday_0900_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Saturday_0900_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Sunday_0900_review"  >     </div>
+                <div class = "times">9:30 a.m.</div>
+                <div class = "scheduler_item_review" id = "Monday_0930_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Tuesday_0930_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Wednesday_0930_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Thursday_0930_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Friday_0930_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Saturday_0930_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Sunday_0930_review"  >     </div>
+                <div class = "times">10:00 a.m.</div>
+                <div class = "scheduler_item_review" id = "Monday_1000_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Tuesday_1000_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Wednesday_1000_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Thursday_1000_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Friday_1000_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Saturday_1000_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Sunday_1000_review"  >     </div>
+                <div class = "times">10:30 a.m.</div>
+                <div class = "scheduler_item_review" id = "Monday_1030_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Tuesday_1030_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Wednesday_1030_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Thursday_1030_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Friday_1030_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Saturday_1030_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Sunday_1030_review"  >     </div>
+                <div class = "times">11:00 a.m.</div>
+                <div class = "scheduler_item_review" id = "Monday_1100_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Tuesday_1100_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Wednesday_1100_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Thursday_1100_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Friday_1100_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Saturday_1100_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Sunday_1100_review"  >     </div>
+                <div class = "times">11:30 a.m.</div>
+                <div class = "scheduler_item_review" id = "Monday_1130_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Tuesday_1130_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Wednesday_1130_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Thursday_1130_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Friday_1130_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Saturday_1130_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Monday_1130_review"  >     </div>
+                <div class = "times">12:00 p.m.</div>
+                <div class = "scheduler_item_review" id = "Monday_1200_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Tuesday_1200_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Wednesday_1200_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Thursday_1200_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Friday_1200_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Saturday_1200_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Sunday_1200_review"  >     </div>
+                <div class = "times">12:30 p.m.</div>
+                <div class = "scheduler_item_review" id = "Monday_1230_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Tuesday_1230_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Wednesday_1230_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Thursday_1230_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Friday_1230_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Saturday_1230_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Sunday_1230_review"  >     </div>
+                <div class = "times">1:00 p.m.</div>
+                <div class = "scheduler_item_review" id = "Monday_1300_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Tuesday_1300_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Wednesday_1300_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Thursday_1300_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Friday_1300_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Saturday_1300_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Sunday_1300_review"  >     </div>
+                <div class = "times">1:30 p.m.</div>
+                <div class = "scheduler_item_review" id = "Monday_1330_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Tuesday_1330_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Wednesday_1330_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Thursday_1330_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Friday_1330_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Saturday_1330_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Sunday_1330_review"  >     </div>
+                <div class = "times">2:00 p.m.</div>
+                <div class = "scheduler_item_review" id = "Monday_1400_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Tuesday_1400_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Wednesday_1400_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Thursday_1400_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Friday_1400_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Saturday_1400_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Sunday_1400_review"  >     </div>
+                <div class = "times">2:30 p.m.</div>
+                <div class = "scheduler_item_review" id = "Monday_1430_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Tuesday_1430_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Wednesday_1430_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Thursday_1430_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Friday_1430_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Saturday_1430_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Sunday_1430_review"  >     </div>
+                <div class = "times">3:00 p.m.</div>
+                <div class = "scheduler_item_review" id = "Monday_1500_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Tuesday_1500_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Wednesday_1500_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Thursday_1500_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Friday_1500_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Saturday_1500_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Sunday_1500_review"  >     </div>
+                <div class = "times">3:30 p.m.</div>
+                <div class = "scheduler_item_review" id = "Monday_1530_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Tuesday_1530_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Wednesday_1530_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Thursday_1530_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Friday_1530_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Saturday_1530_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Sunday_1530_review"  >     </div>
+                <div class = "times">4:00 p.m.</div>
+                <div class = "scheduler_item_review" id = "Monday_1600_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Tuesday_1600_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Wednesday_1600_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Thursday_1600_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Friday_1600_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Saturday_1600_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Sunday_1600_review"  >     </div>
+                <div class = "times">4:30 p.m.</div>
+                <div class = "scheduler_item_review" id = "Monday_1630_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Tuesday_1630_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Wednesday_1630_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Thursday_1630_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Friday_1630_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Saturday_1630_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Sunday_1630_review"  >     </div>
+                <div class = "times">5:00 p.m.</div>
+                <div class = "scheduler_item_review" id = "Monday_1700_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Tuesday_1700_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Wednesday_1700_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Thursday_1700_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Friday_1700_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Saturday_1700_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Sunday_1700_review"  >     </div>
+                <div class = "times">5:30 p.m.</div>
+                <div class = "scheduler_item_review" id = "Monday_1730_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Tuesday_1730_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Wednesday_1730_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Thursday_1730_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Friday_1730_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Saturday_1730_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Sunday_1730_review"  >     </div>
+                <div class = "times">6:00 p.m.</div>
+                <div class = "scheduler_item_review" id = "Monday_1800_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Tuesday_1800_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Wednesday_1800_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Thursday_1800_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Friday_1800_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Saturday_1800_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Monday_1800_review"  >     </div>
+                <div class = "times">6:30 p.m.</div>
+                <div class = "scheduler_item_review" id = "Monday_1830_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Tuesday_1830_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Wednesday_1830_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Thursday_1830_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Friday_1830_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Saturday_1830_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Sunday_1830_review"  >     </div>
+                <div class = "times">7:00 p.m.</div>
+                <div class = "scheduler_item_review" id = "Monday_1900_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Tuesday_1900_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Wednesday_1900_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Thursday_1900_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Friday_1900_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Saturday_1900_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Sunday_1900_review"  >     </div>
+                <div class = "times">7:30 p.m.</div>
+                <div class = "scheduler_item_review" id = "Monday_1930_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Tuesday_1930_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Wednesday_1930_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Thursday_1930_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Friday_1930_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Saturday_1930_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Sunday_1930_review"  >     </div>
+                <div class = "times">8:00 p.m.</div>
+                <div class = "scheduler_item_review" id = "Monday_2000_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Tuesday_2000_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Wednesday_2000_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Thursday_2000_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Friday_2000_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Saturday_2000_review"  >     </div>
+                <div class = "scheduler_item_review" id = "Sunday_2000_review"  >     </div>
+    
+            </div>
+
             <br>
             <h2><u>Session Preferences</u></h2>
             <br>
@@ -696,40 +916,36 @@
                 <div class="row">
                 <div class="col-md-3">
                     <h3>Minimum Session Rate</h3>
+                </div>
+                <div class="col-md-3">
+                    <h3>Session Location Preference</h3> 
                 </div> 
                 </div>
                 <div class="row">
                 <div class="col-md-3">
                 <p class="lead" id="minSessionTutor"></p>
                 </div>
-                </div>
-                <div class="row">
-                <div class="col-md-3">
-                    <h3>Session Location Preference</h3> 
-                </div>
-                </div>
-                <div class="row">
                 <div class="col-md-3">
                     <p class="lead" id="session_prefTutor"></p>
                 </div> 
                 </div>
                 <div class="row">
-                <div class="col-md-3">
+                <div class="col-md">
                     <h3>Grade Level(s)</h3> 
                 </div>
                 </div>
                 <div class="row">
-                <div class="col-md-3">
+                <div class="col-md">
                     <p class="lead" id="gradesTutor"></p>
                 </div> 
                 </div>
                 <div class="row">
-                <div class="col-md-3">
+                <div class="col-md">
                     <h3>Subject(s)</h3> 
                 </div>
                 </div>
                 <div class="row">
-                <div class="col-md-3">
+                <div class="col-md">
                     <p class="lead" id="subjectsTutor"></p>
                 </div> 
                 </div>

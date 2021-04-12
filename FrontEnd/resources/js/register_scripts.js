@@ -5,7 +5,7 @@ var location_keys = {'online':'Online','in_person':'In Person'};
 var grade_keys = {'k':'Kindergarten', '1':'1st Grade', '2':'2nd Grade', '3':'3rd Grade', '4':'4th Grade', '5':'5th Grade', '6':'6th Grade', '7':'7th Grade', '8':'8th Grade'}; 
 // Make sure parent doesn't put lower max session value when compared to min session
 $('#minSession').change(function(){
-  var newMin = parseFloat($('#minSession').val())+0.01;
+  var newMin = parseFloat($('#minSession').val());
   $('#maxSession').attr('min', newMin);
 });
 
@@ -30,14 +30,16 @@ function reviewInfo(){
     var basicInfo = JSON.parse(sessionStorage.getItem("basicInfo"));
     var account_specific= JSON.parse(sessionStorage.getItem("account_specific"));
     // console.log(account_specific);
-
+    console.log(basicInfo);
     for (let id in basicInfo){
+      if (id != 'schedule'){
         if (basicInfo[id] == ""){
             $('#'+id+"Review").text("N/A");
         }
         else{
-            $('#'+id+"Review").text(basicInfo[id])
+            $('#'+id+"Review").text(basicInfo[id]);
         }
+      }
     }
     if (account_specific.accountType == "parent"){
         for (let id in account_specific){
@@ -54,7 +56,12 @@ function reviewInfo(){
                 }
               }
               else{
-                $('#'+id+"Parent").text(account_specific[id]);
+                if (id == 'minSession' || id == 'maxSession'){
+                  $('#'+id+"Parent").text('$'+account_specific[id]);
+                }
+                else{
+                  $('#'+id+"Parent").text(account_specific[id]);
+                }
               }
                 
             }
@@ -189,8 +196,9 @@ function reviewInfo(){
         alert("Telect does not currently serve the area that you are currently in, so matching for in-person sessions will be unavailable. However, you may still make an account and we will inform you when Telect has begun supporting your current area.");
       }
     }
-    
+
     request(url);
+    //displayScheduleReview(basicInfo['schedule']);
 }
 
 function show_form(){
@@ -220,7 +228,15 @@ function display_review(){
         var state = document.getElementById("state").value;
         var zipCode = document.getElementById("zipCode").value;
         var schedule = getScheduleDays();
-        console.log("Schedule", schedule);
+        if (checkScheduleReq(schedule[1]) == false){
+          $([document.documentElement, document.body]).animate({
+            scrollTop: $("#scheduler").offset().top-150
+        }, 1000);
+        window.alert("Please choose at least one slot for you availability.");  
+          return false;
+        }
+        //displayScheduleReview(schedule);
+        //console.log("Schedule", schedule);
         var basicInfo = {
           'email':userEmail,
           'inputPassword': userPass,
@@ -232,7 +248,7 @@ function display_review(){
           'city':city,
           'state':state,
           'zipCode':zipCode,
-          'schedule': schedule
+          'schedule': schedule[1]
         };
         if (account_type == "parent"){
           var minSession = document.getElementById("minSession").value;
@@ -302,6 +318,7 @@ function display_review(){
         sessionStorage.setItem("basicInfo", JSON.stringify(basicInfo));
         sessionStorage.setItem("account_specific", JSON.stringify(account_specific));
         // location.replace('register_review.html');
+        displayScheduleReview(schedule[0]);
         reviewInfo();
         $('#register_fields').css('display','none');
         $('#review_div').fadeIn();
@@ -321,10 +338,19 @@ function showAddChild() {
     child_counter++;
     $("#add-child").addClass('d-none');
 
-    var childHTML = `<h3>Add your child's full name (optional)</h3>
+    var childHTML = `
+    <br>
+    <h3 id="child-form-header">Child ${child_counter}</h3>
+    <h4>Add your child's full name (optional)</h4>
+    <div class="form-group row">
+    <div class="col-md-4">
     <input type ="text" id="childName" class="form-control" placeholder="Child's Full Name">
-    <h3 class="header-control">Add your child's current grade level</h3>
+    </div>
+    </div>
+    <h4 class="header-control">Add your child's current grade level</h4>
 
+    <div class="form-group row">
+    <div class="col-md-3">
     <select id="grade" title="Select Grade Level" required>
         <option value="k">Kindergarten</option>
         <option value="1">1st Grade</option>
@@ -336,9 +362,13 @@ function showAddChild() {
         <option value="7">7th Grade</option>
         <option value="8">8th Grade</option>
     </select>
+    </div>
+    </div>
 
-    <h3 class="header-control">Select the subjects your child needs help with</h3>
+    <h4 class="header-control">Select the subjects your child needs help with</h4>
 
+    <div class="form-group row">
+    <div class="col-md-3">
     <select class="selectpicker" id ='subjects' data-live-search="true" multiple title="Select Subjects" required>
         <option value="math">Math</option>
         <option value="geometry">Geometry</option>
@@ -352,27 +382,36 @@ function showAddChild() {
         <option value="language_arts">Language Arts</option>
         <option value="spanish">Spanish</option>
     </select>
+    </div>
+    </div>
 
-    <h3 class="header-control">Choose an avatar for your child</h3>
+    <h4 class="header-control">Choose an avatar for your child</h4>
+    <div class="form-group row">
+    <div class="col">
     <select id="avatar" class="image-picker show-html" required>
         <option data-img-src="resources/img/child-avatar1.png" value="avatar1">Avatar 1</option>
         <option data-img-src="resources/img/child-avatar2.png" value="avatar2">Avatar 2</option>
         <option data-img-src="resources/img/child-avatar3.png" value="avatar3">Avatar 3</option>
         <option data-img-src="resources/img/child-avatar4.png" value="avatar4">Avatar 4</option>
-    </select>`;
+    </select>
+    </div>
+    </div>`;
     $("#child-form1").append(childHTML);
       $("#grade").selectpicker('refresh');
     $("#subjects").selectpicker('refresh');
     $("#avatar").imagepicker('refresh');
     $("#addChildButton").removeClass('d-none');
     $("#remChildButton").removeClass('d-none');
+    $("#child-info-head").removeClass('d-none');
 }
 
 function addChildForm() {
     child_counter++;
 
     var newChildForm = $("#child-form1").clone().find("input").val("").end();
+    newChildForm.prepend('<hr>');
     newChildForm.attr('id', 'child-form'+ child_counter);
+    newChildForm.find("#child-form-header").html('Child '+child_counter);
 
     // rename IDs
     newChildForm.find("input").attr("id", "childName" + child_counter)
@@ -398,6 +437,7 @@ function delChildForm() {
     $("#add-child").removeClass('d-none');
     $("#addChildButton").addClass('d-none');
     $("#remChildButton").addClass('d-none');
+    $("#child-info-head").addClass('d-none');
   }
   else{
     $("#child-form"+child_counter).remove();
@@ -410,6 +450,7 @@ function delChildForm() {
 function create_account(){
   $('#loading_icon').fadeIn();
   $('#review_div').css('filter', 'blur(1.5rem)');
+  $('#footer').css('filter', 'blur(1.5rem)');
   var basicInfo = JSON.parse(sessionStorage.getItem("basicInfo"));
   var account_specific= JSON.parse(sessionStorage.getItem("account_specific"));
   firebase.auth().createUserWithEmailAndPassword(basicInfo['email'], basicInfo['inputPassword']).then(cred => {

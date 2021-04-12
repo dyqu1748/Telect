@@ -7,7 +7,7 @@ header.masthead {
 }
 
 body{
-  background:url(../img/backgroundImage.jpg) no-repeat center center fixed;;
+  background:url(../img/backgroundImage.jpg) no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -32,6 +32,10 @@ nav, .btn-primary{
 }
 
 .btn-primary:hover{
+  background-color: #2f59ff;
+}
+
+.btn-primary:active{
   background-color: #2f59ff;
 }
 
