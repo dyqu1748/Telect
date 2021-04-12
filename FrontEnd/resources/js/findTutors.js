@@ -91,6 +91,7 @@ function display_matches(data) {
     var storage = firebase.storage().ref();
 
     var html = ``;
+    var i;
     for(i = 0; i < data.length; i++) {
       var tutorData = data[i];
   		var all_subjects ="";
@@ -102,7 +103,7 @@ function display_matches(data) {
   		});
 
         html += `
-		<div class="form-group row">
+		    <div class="form-group row">
           <div class="card w-75 mx-auto">
             <div class="card-body">
                 <h5 class="card-title"> ${tutorData.first_name} ${tutorData.last_name}</h5>
@@ -112,7 +113,7 @@ function display_matches(data) {
                         <br>
 						<br>
                         <button onclick="session_details(${i})" class="btn btn-primary rounded-pill">Request Session</button>
-						<button onclick="display_info(${i})" class="btn btn-secondary rounded-pill">More Info</button>
+						    <button onclick="display_info(${i})" class="btn btn-secondary rounded-pill">More Info</button>
                     </div>
                     <div class="col">
                         <p id="selected_tutor_${i}" style="display: none;">${i}</p>
@@ -225,7 +226,7 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
           for (var i = 0; i < user_info.children.length; i++) {
           html += `
           <label class="btn btn-outline-primary">
-            <input type="radio" name="child" value=${user_info.children[i].child_name} required> ${user_info.children[i].child_name}
+            <input type="radio" id="child" value=${user_info.children[i].child_name} required> ${user_info.children[i].child_name}
           </label>
           `;
         }
@@ -242,10 +243,10 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
                 html += `<div>
                 <div class="btn-group btn-group-toggle" data-toggle="buttons">
                   <label class="btn btn-outline-primary active">
-                  <input type="radio" name="location_pref" value="online" required> Online
+                  <input type="radio" id="location-pref" value="online" required> Online
                   </label>
                   <label class="btn btn-outline-primary">
-                  <input type="radio" name="location_pref" value="in_person"> In-Person
+                  <input type="radio" id="location-pref" value="in_person"> In-Person
                   </label>
                 </div>
               </div>
@@ -255,10 +256,10 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
                 html += `<div>
               <div class="btn-group btn-group-toggle" data-toggle="buttons">
                 <label class="btn btn-outline-primary active">
-                <input type="radio" name="location_pref" value="online" > Online
+                <input type="radio" id="location-pref" value="online" > Online
                 </label>
                 <label class="btn btn-outline-primary">
-                <input type="radio" name="location_pref" value="in_person" required> In-Person
+                <input type="radio" id="location-pref" value="in_person" required> In-Person
                 </label>
               </div>
               </div>
@@ -289,7 +290,7 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
         for (var i = 0; i < tutor_info.subjects.length; i++) {
           html += `
            <label class="btn btn-outline-primary">
-            <input type="checkbox" value=${tutor_info.subjects[i]}> ${subject_keys[tutor_info.subjects[i]]}
+            <input id="subject" type="checkbox" value=${tutor_info.subjects[i]}> ${subject_keys[tutor_info.subjects[i]]}
           </label>
           `;
         }
@@ -360,7 +361,7 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
                     completed_session : false,
                     selected_child : document.getElementById("child").value,
                     session_cost : document.getElementById("final_price").value,
-                    session_loc : document.getElementById("location_pref").value,
+                    session_loc : document.getElementById("location-pref").value,
                     session_subject : document.getElementById("subject").value,
                   });
 
