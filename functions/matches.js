@@ -17,9 +17,12 @@ exports.handler =  async function( request, response, database) {
             matchingTutors = [];
             tutorSnapshot.forEach((tutorDoc) => {
                 // look for two consecutive time matches
+
                 i = 0
                 parentAvail = parentDoc.data().schedule
                 tutorAvail = tutorDoc.data().schedule
+                console.log("tutorAvail: " + JSON.stringify(tutorDoc.data()))
+                console.log("tutorAvail: " + JSON.stringify(tutorAvail))
                 matchingTimes = []
                 Object.keys(parentAvail).forEach(key => {
                     parentDay = key
