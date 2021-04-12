@@ -1,5 +1,6 @@
+
 function addItem(id) {
-    //console.log(id);
+    console.log(id);
     if(document.getElementById(id).className == "scheduler_item") {
         document.getElementById(id).className = "scheduler_item_selected";
     } else if (document.getElementById(id).className == "scheduler_item_selected") {
@@ -31,35 +32,23 @@ function getScheduleDays() {
          time = day_time[1];
         schedule[day].push(time); 
      }
-     var scheduleJSON = JSON.stringify(schedule);
-     return [scheduleJSON,schedule];
-}
 
-function displayScheduleReview(schedule) {
-    //console.log("in display schedule review");
-    //console.log("schedule", schedule);
-    schedule_dict = JSON.parse(schedule);
-    console.log("schedule dict: ", schedule_dict);
-    for(var day in schedule_dict) { 
-        if(schedule_dict[day].length != 0) {
-            for(var time in schedule_dict[day]) {
-                //console.log("splitting day and time", day, schedule_dict[day][time]);
-                var id = day + "_" + schedule_dict[day][time] + "_review";
-                console.log(id);
-                if(document.getElementById(id).className == "scheduler_item_review"){
-                    document.getElementById(id).className = "scheduler_item_review_selected";
-                }
-            }
-        }
-    }
-}
+     //post the schedule as their availability to firebase
+    console.log(schedule);
 
-function checkScheduleReq(schedule){
-    var availFill = false;
-    Object.keys(schedule).forEach(function(day){
-      if (schedule[day].length > 0){
-        availFill=true;
-      }
-    })
-    return availFill;
-  }
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    docId = "WuREBBmV6IhrMKlPEp2a"
+    var raw = JSON.stringify({"docid":docId,"availability": schedule});
+    var requestOptions = {
+        mode: 'no-cors',
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
+    };
+    fetch("http://localhost:5001/telect-6026a/us-central1/updateAvailability", requestOptions)
+        .then(response => response.text())
+        .then(result => console.log(result))
+        .catch(error => console.log('error', error));
+}
