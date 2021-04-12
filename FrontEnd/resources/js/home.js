@@ -38,13 +38,13 @@ firebase.auth().onAuthStateChanged(function(user) {
             </a>
         </div>
         `;
-        db.collection('sessions').where("tutor_id", "==", user.uid).where("requested_session", "==", true).get().then((doc) => 
-        {
-            doc.forEach(req =>
-            {
-                $('#view_requests').append('<span class="dot"></span>');
-            })
-        })
+        // db.collection('sessions').where("tutor_id", "==", user.uid).where("requested_session", "==", true).get().then((doc) => 
+        // {
+        //     if(doc.size > 0)
+        //     {
+        //     	$('#view_requests').append('<span class="dot"></span>');
+        //     }
+        // })
 
     }
 
@@ -104,19 +104,19 @@ firebase.auth().onAuthStateChanged(function(user) {
     {
      db.collection('sessions').where("user_id", "==", user.uid).where("accepted_session", "==", true).get().then((doc) => 
       {
-          doc.forEach(req =>
+          if(doc.size > 0)
           {
             $('#manage_matches').append('<span class="dot"></span>');
-          })
+          }
       }) 
     }else if(data.user_type == 'tutor')
     {
       db.collection('sessions').where("tutor_id", "==", user.uid).where("accepted_session", "==", true).get().then((doc) => 
       {
-          doc.forEach(req =>
+          if(doc.size > 0)
           {
               $('#manage_matches').append('<span class="dot"></span>');
-          })
+          }
       })
     }
 }

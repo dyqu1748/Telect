@@ -35,18 +35,24 @@ window.onclick = function(event) {
 // Load the requests based on the tutor's id
 function display_requests(data) {
     var html = ``;
-    var hasSessions = false;
-    db.collection('sessions').where("tutor_id", "==", uuid).where("requested_session", "==", true).get().then((doc) =>
+    db.collection('sessions').where("tutor_id", "==", uuid).where("requested_session", "==", true).
+    where("accepted_session", "==", false).get().then((doc) =>
     {
+      // if(doc.size > 0)
+      // {
+      //   html += `<h3>No Session Requests</h3>`;
+      //   $('#requests').html(html);
+      //   return true;
+      // }
       doc.forEach(req =>
       {
-        hasSessions = true;
         console.log(req.id);
         var req_info = req.data();
         db.collection('users').doc(req_info.user_id).get().then((parent) =>
         {
           console.log(parent.data());
           html += `
+            <br>
             <div class="card w-75">
               <div class="card-body">
                   <h5 class="card-title"> ${parent.data().first_name} ${parent.data().last_name}</h5>
@@ -64,9 +70,9 @@ function display_requests(data) {
           html += ` </br>
                       </div>
                       <div class="col">
-                          <p class="card-text"> Location: ${req_info.session_loc} </p>
+                          <p class="card-text"> Location: ${req_info.session_loc.charAt(0).toUpperCase() +req_info.session_loc.slice(1)} </p>
                           <p class="card-text"> Session Cost: ${"$" + req_info.session_cost}</p>
-                          <p class="card-text"> Subjects: ${req_info.session_subject}</p>
+                          <p class="card-text"> Subjects: ${req_info.session_subject.charAt(0).toUpperCase() +req_info.session_subject.slice(1)}</p>
                           <p class="card-text"> Child: ${req_info.selected_child} </p>
                       </div>
                   </div>
@@ -78,11 +84,6 @@ function display_requests(data) {
         });
       });
     });
-
-    if(!hasSessions){
-      html += `<h3>No Session Requests</h3>`;
-    } 
-    $('#requests').html(html);
 
     $('#loading_icon').fadeOut("fast");
     $('#page-container').fadeIn();
