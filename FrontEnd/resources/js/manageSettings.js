@@ -183,7 +183,7 @@ function displayProfile(data,user)
 				  <div class = "scheduler_item_review" id = "Thursday_1130_review"  >     </div>
 				  <div class = "scheduler_item_review" id = "Friday_1130_review"  >     </div>
 				  <div class = "scheduler_item_review" id = "Saturday_1130_review"  >     </div>
-				  <div class = "scheduler_item_review" id = "Monday_1130_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Sunday_1130_review"  >     </div>
 				  <div class = "times">12:00 p.m.</div>
 				  <div class = "scheduler_item_review" id = "Monday_1200_review"  >     </div>
 				  <div class = "scheduler_item_review" id = "Tuesday_1200_review"  >     </div>
@@ -287,7 +287,7 @@ function displayProfile(data,user)
 				  <div class = "scheduler_item_review" id = "Thursday_1800_review"  >     </div>
 				  <div class = "scheduler_item_review" id = "Friday_1800_review"  >     </div>
 				  <div class = "scheduler_item_review" id = "Saturday_1800_review"  >     </div>
-				  <div class = "scheduler_item_review" id = "Monday_1800_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Sunday_1800_review"  >     </div>
 				  <div class = "times">6:30 p.m.</div>
 				  <div class = "scheduler_item_review" id = "Monday_1830_review"  >     </div>
 				  <div class = "scheduler_item_review" id = "Tuesday_1830_review"  >     </div>
@@ -716,7 +716,7 @@ function editProfile(data, user)
                 <div class = "scheduler_item" id = "Thursday_1130" onclick="addItem(this.id)">     </div>
                 <div class = "scheduler_item" id = "Friday_1130" onclick="addItem(this.id)">     </div>
                 <div class = "scheduler_item" id = "Saturday_1130" onclick="addItem(this.id)">     </div>
-                <div class = "scheduler_item" id = "Monday_1130" onclick="addItem(this.id)">     </div>
+                <div class = "scheduler_item" id = "Sunday_1130" onclick="addItem(this.id)">     </div>
                 <div class = "times">12:00 p.m.</div>
                 <div class = "scheduler_item" id = "Monday_1200" onclick="addItem(this.id)">     </div>
                 <div class = "scheduler_item" id = "Tuesday_1200" onclick="addItem(this.id)">     </div>
@@ -820,7 +820,7 @@ function editProfile(data, user)
                 <div class = "scheduler_item" id = "Thursday_1800" onclick="addItem(this.id)">     </div>
                 <div class = "scheduler_item" id = "Friday_1800" onclick="addItem(this.id)">     </div>
                 <div class = "scheduler_item" id = "Saturday_1800" onclick="addItem(this.id)">     </div>
-                <div class = "scheduler_item" id = "Monday_1800" onclick="addItem(this.id)">     </div>
+                <div class = "scheduler_item" id = "Sunday_1800" onclick="addItem(this.id)">     </div>
                 <div class = "times">6:30 p.m.</div>
                 <div class = "scheduler_item" id = "Monday_1830" onclick="addItem(this.id)">     </div>
                 <div class = "scheduler_item" id = "Tuesday_1830" onclick="addItem(this.id)">     </div>
