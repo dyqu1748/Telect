@@ -65,11 +65,12 @@ firebase.auth().onAuthStateChanged(function(user) {
         navClass[i].classList.add("active");
     }
   }
+
   if (data.notifications !== undefined ){
     if (data.notifications.messages !== undefined){
         if (data.notifications.messages.length > 0){
             $('#message-nav').append('<span class="dotNav"></span>');
-        } 
+        }
     }
     if (data.notifications.sessions !== undefined){
         if (data.notifications.sessions.length > 0){
