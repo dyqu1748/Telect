@@ -28,6 +28,10 @@ exports.tutorMatches =  functions.https.onRequest( async(request, response) => {
     await matches.handler(request,response,firestore);
 });
 
+exports.paywithstripe = functions.https.onRequest((request, response) => {
+    locations.handler(request,response,firestore);
+});
+
 exports.updateAvailability =  functions.https.onRequest(async (request, response) => {
     response.setHeader('Content-Type', 'application/json')
     avail = JSON.parse(request.body)
