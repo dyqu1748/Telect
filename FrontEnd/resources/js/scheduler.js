@@ -1,6 +1,5 @@
 
 function addItem(id) {
-    console.log(id);
     if(document.getElementById(id).className == "scheduler_item") {
         document.getElementById(id).className = "scheduler_item_selected";
     } else if (document.getElementById(id).className == "scheduler_item_selected") {
@@ -33,22 +32,16 @@ function getScheduleDays() {
         schedule[day].push(time); 
      }
 
-     //post the schedule as their availability to firebase
-    console.log(schedule);
-
-    var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    docId = "WuREBBmV6IhrMKlPEp2a"
-    var raw = JSON.stringify({"docid":docId,"availability": schedule});
-    var requestOptions = {
-        mode: 'no-cors',
-        method: 'POST',
-        headers: myHeaders,
-        body: raw,
-        redirect: 'follow'
-    };
-    fetch("http://localhost:5001/telect-6026a/us-central1/updateAvailability", requestOptions)
-        .then(response => response.text())
-        .then(result => console.log(result))
-        .catch(error => console.log('error', error));
+     var scheduleJSON = JSON.stringify(schedule);
+     return [scheduleJSON,schedule];
 }
+
+function checkScheduleReq(schedule){
+    var availFill = false;
+    Object.keys(schedule).forEach(function(day){
+      if (schedule[day].length > 0){
+        availFill=true;
+      }
+    })
+    return availFill;
+  }
