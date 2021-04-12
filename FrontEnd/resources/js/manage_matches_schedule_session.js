@@ -75,8 +75,6 @@ function display_matches(data)
 		  `;
  	}
  	$('#tutors').html(html);
-	$('#loading_icon').fadeOut("fast");
-	$('#page-container').fadeIn();
  }
 
 function session_details()
