@@ -1,3 +1,16 @@
+// Get current user
+firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+      console.log("User found in scheduler");
+      db.collection('users').doc(user.uid).onSnapshot((doc)=> {
+          displaySchedule(doc.data().schedule);
+      });
+    } else {
+      console.log("No user signed in");
+      location.replace("index.html");
+    }
+  });
+
 
 function addItem(id) {
     if(document.getElementById(id).className == "scheduler_item") {
@@ -63,4 +76,20 @@ function checkScheduleReq(schedule){
       }
     })
     return availFill;
+  }
+
+  function displaySchedule(schedule) {
+      console.log("in display schedule", schedule);
+      for( var day in schedule) {
+        if(schedule[day].length != 0) {
+            for(var time in schedule[day]) {
+                //console.log("splitting day and time", day, schedule_dict[day][time]);
+                var id = day + "_" + schedule[day][time];
+                console.log(id);
+                if(document.getElementById(id).className == "scheduler_item_view"){
+                    document.getElementById(id).className = "scheduler_item_view_selected";
+                }
+            }
+        }
+      }
   }
