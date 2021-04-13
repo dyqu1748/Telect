@@ -6,6 +6,9 @@ firebase.auth().onAuthStateChanged(function(user) {
     uuid = user.uid;
     db.collection('users').doc(uuid).get().then((doc) => {
       display_matches(doc.data());
+      if (doc.data().notifications.sess_cancel !== undefined){
+        display_canceled_sess(doc.data());
+      }
     })
   } else {
     console.log("No user signed in");
@@ -46,6 +49,9 @@ function display_matches(data) {
     {
       doc.forEach(req =>
       {
+        db.collection('users').doc(uuid).update({
+          "notifications.sessions":firebase.firestore.FieldValue.arrayRemove(req.id)
+        });
         var req_info = req.data();
         sessions.push(req_info);
         db.collection('users').doc(req_info[otherUserLabel]).get().then((match) => {
@@ -120,6 +126,9 @@ function cancel_session(i) {
         .where("user_id", "==", sessions[tutor].user_id).where("session_time", "==", sessions[tutor].session_time).get()
           .then(snapshot => {
                 snapshot.forEach(doc => {
+                  db.collection('users').doc(sessions[tutor].tutor_id).update({
+                    "notifications.sess_cancel": firebase.firestore.FieldValue.arrayUnion(doc.data())
+                  });
                   var deleteDoc = db.collection('sessions').doc(doc.id).delete();
                 });
               })
@@ -142,4 +151,64 @@ function refresh_sessions() {
     $("#current-matches").removeClass("dialogIsOpen");
     $("#footer").removeClass("dialogIsOpen");
     $("nav").removeClass("dialogIsOpen");
+}
+
+function display_canceled_sess(data){
+  console.log("START");
+  console.log(data);
+  data.notifications.sess_cancel.forEach(function(session){
+    if (data.user_type == "tutor"){
+      db.collection('users').doc(session.user_id).get().then((otherUser)=>{
+        var otherUserData = otherUser.data();
+        var day = session.session_time.match(/[a-zA-Z]+/g);
+        var time = String(session.session_time.match(/\d+/g));
+        if (parseInt(time) >= 1300){
+          time = String(parseInt(time)-1200) + " P.M.";
+        }
+        else{
+          time = time + " A.M.";
+        }
+        time = time.replace(/(?=.{7}$)/,':');
+        var html = `
+              <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>Attention!</strong> ${otherUserData.first_name} ${otherUserData.last_name} has declined/canceled the ${day}, ${time} session with you.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              `;
+        console.log(html);
+        $('#current-matches').prepend(html);
+      })
+    }
+    else{
+      db.collection('users').doc(session.tutor_id).get().then((otherUser)=>{
+        var otherUserData = otherUser.data();
+        console.log(otherUserData);
+        var day = session.session_time.match(/[a-zA-Z]+/g);
+        var time = String(session.session_time.match(/\d+/g));
+        if (parseInt(time) >= 1300){
+          time = String(parseInt(time)-1200) + " P.M.";
+        }
+        else{
+          time = time + " A.M.";
+        }
+        time = time.replace(/(?=.{7}$)/,':');
+        var html = `
+              <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>Attention!</strong> ${otherUserData.first_name} ${otherUserData.last_name} has canceled their ${day}, ${time} session with you.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              `;
+        console.log(html);
+        $('#current-matches').prepend(html);
+      })
+
+    }
+  });
+  db.collection('users').doc(uuid).update({
+    "notifications.sess_cancel":[]
+  });
 }

@@ -38,14 +38,6 @@ firebase.auth().onAuthStateChanged(function(user) {
             </a>
         </div>
         `;
-        db.collection('sessions').where("tutor_id", "==", user.uid).where("requested_session", "==", true).get().then((doc) => 
-        {
-            doc.forEach(req =>
-            {
-                $('#view_requests').append('<span class="dot"></span>');
-            })
-        })
-
     }
 
     html += `
@@ -95,28 +87,20 @@ firebase.auth().onAuthStateChanged(function(user) {
             } 
         }
         if (data.notifications.sessions !== undefined){
-            if (data.notifications.sessions.length > 0){
-                $('#view_requests').append('<span class="dot"></span>');
+            if (data.notifications.sessions.length > 0 ){
+                if (data.user_type == "tutor"){
+                    $('#view_requests').append('<span class="dot"></span>');
+                }
+                else{
+                    $('#manage_matches').append('<span class="dot" id="notif_match"></span>');
+                }
             } 
         }
+        if (data.notifications.sess_cancel !== undefined){
+            if(data.notifications.sess_cancel.length>0 && $("#notif_match").length === 0){
+                $('#manage_matches').append('<span class="dot" id="notif_match"></span>');
+            }
+        }
     }
-    if(data.user_type == 'parent')
-    {
-     db.collection('sessions').where("user_id", "==", user.uid).where("accepted_session", "==", true).get().then((doc) => 
-      {
-          doc.forEach(req =>
-          {
-            $('#manage_matches').append('<span class="dot"></span>');
-          })
-      }) 
-    }else if(data.user_type == 'tutor')
-    {
-      db.collection('sessions').where("tutor_id", "==", user.uid).where("accepted_session", "==", true).get().then((doc) => 
-      {
-          doc.forEach(req =>
-          {
-              $('#manage_matches').append('<span class="dot"></span>');
-          })
-      })
-    }
+
 }

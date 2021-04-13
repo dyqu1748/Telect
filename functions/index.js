@@ -81,15 +81,8 @@ exports.notifyUserSession = functions.firestore
 .onWrite((change, context) => {
     const newValue = change.after.exists ? change.after.data() : null;
     const sess = context.params.sessID;
-    if (newValue === null){
-        //Tutor rejected session; update parent
-        const oldDocument = change.before.data();
-        const notifyId = oldDocument.user_id;
-        return firestore.doc('users/'+notifyId).update({
-            "notifications.sessions":admin.firestore.FieldValue.arrayUnion([sess,false])
-        });
-    }
-    else{
+
+    if (newValue !== null){
         if (newValue.requested_session === true){
             //Parent requested session: Notify tutor
             const notifyId = newValue.tutor_id;
@@ -99,11 +92,11 @@ exports.notifyUserSession = functions.firestore
             });
 
         }
-        else if (newValue.accepted_session === true){
+        else{
             //Tutor acepted session: Notify parent
             const notifyId = newValue.user_id;
             return firestore.doc('users/'+notifyId).update({
-                    "notifications.sessions":admin.firestore.FieldValue.arrayUnion([sess,true])
+                    "notifications.sessions":admin.firestore.FieldValue.arrayUnion(sess)
             });
         }
     }
