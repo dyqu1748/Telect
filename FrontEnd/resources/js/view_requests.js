@@ -77,6 +77,15 @@ function display_requests(data) {
             }
           }
 
+          var subject_keys = {'math':'Math','geometry':'Geometry','pre-algebra':'Pre-Algebra','algebra':'Algebra','science':'Science','geology':'Geology','chemistry':'Chemistry','social_studies':'Social Studies','govtHist': 'U.S. Government and History','language_arts':'Language Arts','spanish': 'Spanish'};
+          var subjects = "";
+          req_info.session_subject.forEach(function(sub,ind){
+            subjects+=subject_keys[sub] + " ";
+            if (ind < req_info.session_subject.length-1){
+              subjects+= ', ';
+            }
+          });
+
           html += ` </br>
                       </div>
                       <div class="col">
@@ -84,7 +93,7 @@ function display_requests(data) {
                           <p class="card-text"> Session Date: ${printTime}</p>
                           <p class="card-text"> Location: ${req_info.session_loc.charAt(0).toUpperCase() +req_info.session_loc.slice(1)} </p>
                           <p class="card-text"> Session Cost: ${"$" + req_info.session_cost}</p>
-                          <p class="card-text"> Subjects: ${req_info.session_subject.charAt(0).toUpperCase() +req_info.session_subject.slice(1)}</p>
+                          <p class="card-text"> Subjects: ${subjects}</p>
                           
                       </div>
                   </div>
