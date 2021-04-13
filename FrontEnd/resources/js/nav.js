@@ -42,7 +42,7 @@ firebase.auth().onAuthStateChanged(function(user) {
     <li class="nav-item" value = "2">
     <a class="nav-link" href = "view_schedule.html"> View Schedule </a>
     </li>
-    <li class="nav-item" value = "3" id="manage_matches_nav">
+    <li class="nav-item" value = "3" id="manage_matches-nav">
     <a class="nav-link" href = "manage_matches.html" > Manage Matches </a>
     </li>
     <li class="nav-item" value = "4" id="message-nav">
@@ -73,31 +73,20 @@ firebase.auth().onAuthStateChanged(function(user) {
         }
     }
     if (data.notifications.sessions !== undefined){
-        if (data.notifications.sessions.length > 0){
-            console.log("BOOP");
+      if (data.notifications.sessions.length > 0){
+        if (data.user_type == "tutor"){
             $('#view_requests-nav').append('<span class="dotNav"></span>');
-        } 
+        }
+        else{
+            $('#manage_matches-nav').append('<span class="dotNav" id="notif_match_nav"></span>');
+        }
+      }
     }
-}
-
-  if(data.user_type == 'parent')
-  {
-     db.collection('sessions').where("user_id", "==", user.uid).where("accepted_session", "==", true).get().then((doc) => 
-      {
-          doc.forEach(req =>
-          {
-            $('#manage_matches_nav').append('<span class="dotNav"></span>');
-          })
-      }) 
-  }else if(data.user_type == 'tutor')
-  {
-      db.collection('sessions').where("tutor_id", "==", user.uid).where("accepted_session", "==", true).get().then((doc) => 
-      {
-          doc.forEach(req =>
-          {
-              $('#manage_matches_nav').append('<span class="dotNav"></span>');
-          })
-      })
+    if (data.notifications.sess_cancel !== undefined){
+      if(data.notifications.sess_cancel.length>0 && $("#notif_match_nav").length === 0){
+          $('#manage_matches-nav').append('<span class="dotNav" id="notif_match_nav"></span>');
+      }
   }
+}
 
   }

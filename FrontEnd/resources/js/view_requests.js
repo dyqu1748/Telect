@@ -39,7 +39,12 @@ function display_requests(data) {
     {
       doc.forEach(req =>
       {
-        console.log(req.id);
+        hasSessions = true;
+        if(!hasSessions){
+          html += `<h3>No Session Requests</h3>`;
+        } 
+        else{
+          console.log(req.id);
         var req_info = req.data();
         db.collection('users').doc(req_info.user_id).get().then((parent) =>
         {
@@ -59,7 +64,7 @@ function display_requests(data) {
           if(req_info.requested_session == true)
           {
             html += `<button onclick="accept_session('${req.id}')" class="btn btn-primary">Accept Request</button> <br><br>`;
-            html += `<button onclick="decline_session()" class="btn btn-primary">Decline Request</button>`;
+            html += `<button onclick="decline_session(${req.id})" class="btn btn-primary">Decline Request</button>`;
           }
 
           var printTime;
@@ -89,6 +94,7 @@ function display_requests(data) {
           
           $('#requests').html(html);
         });
+        }
       });
     });
 
@@ -110,6 +116,10 @@ function accept_session(data)
     accepted_session : true,
   });
 
+  db.collection('users').doc(uuid).update({
+    "notifications.sessions": firebase.firestore.FieldValue.arrayRemove(data)
+  })
+
   // Display the success message
   var html = `
         <h1> Session Accepted </h1>
@@ -118,11 +128,22 @@ function accept_session(data)
 }
 
 // Remove session
-function decline_session()
+function decline_session(data)
 {
   console.log(data);
-
-  db.collection('sessions').doc(data).delete();
+  db.collection('sessions').doc(data).get().then((doc)=>{
+    var sessData = doc.data();
+    db.collection('users').doc(sessData.user_id).update({
+      "notifications.sess_cancel":firebase.firestore.FieldValue.arrayUnion(sessData)
+    }).then(()=>{
+      db.collection('users').doc(uuid).update({
+        "notifications.sessions":firebase.firestore.FieldValue.arrayRemove(data)
+      });
+    }).then(()=>{
+      db.collection('sessions').doc(data).delete();
+    })
+  })
+  
 
   // Display the success message
   var html = `
