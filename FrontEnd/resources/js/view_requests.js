@@ -37,13 +37,13 @@ function display_requests(data) {
     var html = ``;
     db.collection('sessions').where("tutor_id", "==", uuid).where("requested_session", "==", true).get().then((doc) =>
     {
+      console.log(doc.empty);
+      if (doc.empty){
+        html += `<h3>No Session Requests</h3>`;
+        $('#requests').html(html);
+      }
       doc.forEach(req =>
       {
-        hasSessions = true;
-        if(!hasSessions){
-          html += `<h3>No Session Requests</h3>`;
-        } 
-        else{
           console.log(req.id);
         var req_info = req.data();
         db.collection('users').doc(req_info.user_id).get().then((parent) =>
@@ -64,7 +64,7 @@ function display_requests(data) {
           if(req_info.requested_session == true)
           {
             html += `<button onclick="accept_session('${req.id}')" class="btn btn-primary">Accept Request</button> <br><br>`;
-            html += `<button onclick="decline_session(${req.id})" class="btn btn-primary">Decline Request</button>`;
+            html += `<button onclick="decline_session('${req.id}')" class="btn btn-primary">Decline Request</button>`;
           }
 
           var printTime;
@@ -103,7 +103,7 @@ function display_requests(data) {
           
           $('#requests').html(html);
         });
-        }
+        
       });
     });
 
