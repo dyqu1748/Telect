@@ -163,11 +163,17 @@ function display_canceled_sess(data){
         var otherUserData = otherUser.data();
         var day = session.session_time.match(/[a-zA-Z]+/g);
         var time = String(session.session_time.match(/\d+/g));
-        if (parseInt(time) >= 1300){
-          time = String(parseInt(time)-1200) + " P.M.";
+        if (parseInt(time) >= 1200){
+          if (parseInt(time) >= 1300){
+            time = String(parseInt(time)-1200);
+          }
+          time += " P.M."
         }
         else{
-          time = time + " A.M.";
+          if (parseInt(time) < 1000){
+            time = time.substring(1);
+          }
+          time +=  " A.M.";
         }
         time = time.replace(/(?=.{7}$)/,':');
         var html = `
