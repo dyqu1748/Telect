@@ -145,8 +145,8 @@ function display_matches(data) {
     var otherUserRef = db.collection("users");
     if (userType == 'parent'){
         var selected_tutor = response[i];
-        var dispName = `<h2 class="text-left">${selected_tutor.first_name} ${selected_tutor.last_name}</h2>`;
-        $('#message_area').prepend(dispName);
+        // var dispName = `<h2 class="text-left">${selected_tutor.first_name} ${selected_tutor.last_name}</h2>`;
+        // $('#message_area').prepend(dispName);
         userRef.get().then((doc)=>{
             if ($('#notif'+i).length > 0){
                 //Delete notification for current conversation
@@ -250,12 +250,14 @@ function write_messages_to_page(messageData){
             var otherUserType = 'tutor';
             var curUserType = 'parent';
             var tutorPic = otherUserDoc.data().photoUrl;
+            
         }
         else{
             var otherUserType = 'parent';
             var curUserType = 'tutor';
         }
-        var messages = ``;
+        
+        var messages = `<h2 class="text-left">${otherUserDoc.data().first_name} ${otherUserDoc.data().last_name}</h2>`;
         messageData.messages.forEach(function(messageData){
             if (messageData.userId == uuid){
                 //Display message to the right

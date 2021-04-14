@@ -436,7 +436,7 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
        success : function(data) {
            // console.log(data);
            console.log(user);
-           db.collection('users').doc(user.uid).onSnapshot((doc)=> {
+           db.collection('users').doc(user.uid).get().then((doc)=> {
         console.log(doc.data());
         var user_info = doc.data();
              var tutor_info = data[tutor_num];
@@ -572,6 +572,7 @@ function schedule_session()
 {
 var btnLoad = `<div id="btn-load" class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>`;
 $('#confirm_btn').html(btnLoad);
+$('#confirm_btn').prop('disabled',true);
 var user = firebase.auth().currentUser;
 var subjects = [];
 $('input[name="subjects"]:checked').each(function() { 
@@ -587,7 +588,7 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
        url: 'https://us-central1-telect-6026a.cloudfunctions.net/tutorMatches/' + user.uid,
        success : function(data) {
            console.log(data);
-           db.collection('users').doc(user.uid).onSnapshot((doc)=> {
+           db.collection('users').doc(user.uid).get().then((doc)=> {
               console.log(doc.data());
               var user_info = doc.data();
               var tutor_info = data[tutor_num];

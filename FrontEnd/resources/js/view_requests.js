@@ -5,7 +5,7 @@ var tid;
 firebase.auth().onAuthStateChanged(function(user) {
   if (user != null) {
     uuid = user.uid;
-    db.collection('users').doc(uuid).get().then((doc) => {
+    db.collection('users').doc(uuid).onSnapshot((doc) => {
       display_requests(doc.data());
     })
   } else {
@@ -39,8 +39,11 @@ function display_requests(data) {
     {
       console.log(doc.empty);
       if (doc.empty){
-        html += `<h3>No Session Requests</h3>`;
+        html += `<h1 class="text-center">No Session Requests</h1>`;
         $('#requests').html(html);
+      }
+      else{
+        html+=`<h1 class="text-center">Here are Your Requests</h1><br>`;
       }
       doc.forEach(req =>
       {
@@ -54,8 +57,8 @@ function display_requests(data) {
           }
           console.log(parent.data());
           html += `
-            <br>
-            <div class="card w-75">
+          <div class="form-group row" id="req_${req.id}">
+          <div class="card w-75 mx-auto">
               <div class="card-body">
                   <h5 class="card-title"> ${parent.data().first_name} ${parent.data().last_name}</h5>
                   <div class="row">
@@ -63,19 +66,25 @@ function display_requests(data) {
 
           if(req_info.requested_session == true)
           {
-            html += `<button onclick="accept_session('${req.id}')" class="btn btn-primary">Accept Request</button> <br><br>`;
-            html += `<button onclick="decline_session('${req.id}')" class="btn btn-primary">Decline Request</button>`;
+            html += `<button onclick="accept_session('${req.id}')" class="btn btn-primary rounded-pill">Accept Request</button> <br><br>`;
+            html += `<button onclick="decline_session('${req.id}')" class="btn btn-primary rounded-pill">Decline Request</button>`;
           }
 
-          var printTime;
-          for(var c = 0; c < req_info.session_time.length; c++)
-          {
-            if(req_info.session_time[c] >= '0' && req_info.session_time[c] <= '9')
-            {
-              printTime = req_info.session_time.substr(0, c) + " " + req_info.session_time.substr(c+1, req_info.session_time.length);
-              break;
+          var day = req_info.session_time.match(/[a-zA-Z]+/g);
+          var time = String(req_info.session_time.match(/\d+/g));
+          if (parseInt(time) >= 1200){
+          if (parseInt(time) >= 1300){
+              time = String(parseInt(time)-1200);
             }
+            time += " P.M."
           }
+          else{
+            if (parseInt(time) < 1000){
+              time = time.substring(1);
+            }
+            time +=  " A.M.";
+          }
+          time = time.replace(/(?=.{7}$)/,':');
 
           var subject_keys = {'math':'Math','geometry':'Geometry','pre-algebra':'Pre-Algebra','algebra':'Algebra','science':'Science','geology':'Geology','chemistry':'Chemistry','social_studies':'Social Studies','govtHist': 'U.S. Government and History','language_arts':'Language Arts','spanish': 'Spanish'};
           var subjects = "";
@@ -90,7 +99,7 @@ function display_requests(data) {
                       </div>
                       <div class="col">
                           <p class="card-text"> Child: ${req_info.selected_child} </p>
-                          <p class="card-text"> Session Date: ${printTime}</p>
+                          <p class="card-text"> Session Date: ${day} ${time}</p>
                           <p class="card-text"> Location: ${req_info.session_loc.charAt(0).toUpperCase() +req_info.session_loc.slice(1)} </p>
                           <p class="card-text"> Session Cost: ${"$" + req_info.session_cost}</p>
                           <p class="card-text"> Subjects: ${subjects}</p>
@@ -98,6 +107,7 @@ function display_requests(data) {
                       </div>
                   </div>
               </div>
+            </div>
             </div>
           `; 
           
@@ -116,7 +126,7 @@ function display_requests(data) {
 // Change the session status to accepted and change the button to be Join Session
 function accept_session(data)
 {
-  modal.style.display = "block";
+  // modal.style.display = "block";
 
   console.log(data);
 
@@ -130,10 +140,41 @@ function accept_session(data)
   })
 
   // Display the success message
-  var html = `
-        <h1> Session Accepted </h1>
-  `;
-  $('#accept_session').html(html);
+  // var html = `
+  //       <h1> Session Accepted </h1>
+  // `;
+  // $('#accept_session').html(html);
+  db.collection('sessions').doc(data).get().then((doc)=>{
+    var sessInfo = doc.data();
+    var user_id = sessInfo.user_id;
+    var day = sessInfo.session_time.match(/[a-zA-Z]+/g);
+        var time = String(sessInfo.session_time.match(/\d+/g));
+        if (parseInt(time) >= 1200){
+          if (parseInt(time) >= 1300){
+            time = String(parseInt(time)-1200);
+          }
+          time += " P.M."
+        }
+        else{
+          if (parseInt(time) < 1000){
+            time = time.substring(1);
+          }
+          time +=  " A.M.";
+        }
+        time = time.replace(/(?=.{7}$)/,':');
+    db.collection('users').doc(user_id).get().then((userDoc)=>{
+      var otherUserData = userDoc.data()
+      var testHTML = `<br><div class="alert alert-success alert-dismissible fade show" role="alert">
+        You have accepted ${otherUserData.first_name} ${otherUserData.last_name}'s ${day}, ${time} session.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>`;
+      $('#requests').prepend(testHTML);
+    });
+  })
+  $('#req_'+data).fadeOut(300,function(){this.remove();});
+  
 }
 
 // Remove session
@@ -141,9 +182,35 @@ function decline_session(data)
 {
   console.log(data);
   db.collection('sessions').doc(data).get().then((doc)=>{
-    var sessData = doc.data();
-    db.collection('users').doc(sessData.user_id).update({
-      "notifications.sess_cancel":firebase.firestore.FieldValue.arrayUnion(sessData)
+    var sessInfo = doc.data();
+    var user_id = sessInfo.user_id;
+    var day = sessInfo.session_time.match(/[a-zA-Z]+/g);
+        var time = String(sessInfo.session_time.match(/\d+/g));
+        if (parseInt(time) >= 1200){
+          if (parseInt(time) >= 1300){
+            time = String(parseInt(time)-1200);
+          }
+          time += " P.M."
+        }
+        else{
+          if (parseInt(time) < 1000){
+            time = time.substring(1);
+          }
+          time +=  " A.M.";
+        }
+        time = time.replace(/(?=.{7}$)/,':');
+    db.collection('users').doc(user_id).get().then((userDoc)=>{
+      var otherUserData = userDoc.data()
+      var testHTML = `<br><div class="alert alert-success alert-dismissible fade show" role="alert">
+        You have accepted ${otherUserData.first_name} ${otherUserData.last_name}'s ${day}, ${time} session.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>`;
+      $('#requests').prepend(testHTML);
+    });
+    db.collection('users').doc(sessInfo.user_id).update({
+      "notifications.sess_cancel":firebase.firestore.FieldValue.arrayUnion(sessInfo)
     }).then(()=>{
       db.collection('users').doc(uuid).update({
         "notifications.sessions":firebase.firestore.FieldValue.arrayRemove(data)
@@ -155,10 +222,12 @@ function decline_session(data)
   
 
   // Display the success message
-  var html = `
-        <h1> Session Declined </h1>
-  `;
-  $('#accept_session').html(html);
+  // var html = `
+  //       <h1> Session Declined </h1>
+  // `;
+  // $('#accept_session').html(html);
+
+  $('#req_'+data).fadeOut(300,function(){this.remove();});
 }
 
 

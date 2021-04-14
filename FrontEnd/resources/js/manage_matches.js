@@ -4,7 +4,7 @@ var sessions = [];
 firebase.auth().onAuthStateChanged(function(user) {
   if (user != null) {
     uuid = user.uid;
-    db.collection('users').doc(uuid).get().then((doc) => {
+    db.collection('users').doc(uuid).onSnapshot((doc) => {
       display_matches(doc.data());
       if (doc.data().notifications.sess_cancel !== undefined){
         display_canceled_sess(doc.data());
@@ -44,9 +44,15 @@ function display_matches(data) {
     console.log(otherUserLabel);
 
     var html = ``;
-    var i = 0;
     db.collection('sessions').where(currentUserLabel, "==", uuid).where("accepted_session", "==", true).get().then((doc) =>
     {
+      if (doc.empty){
+        html+=`<h1 class="text-center">No Sessions to Manage</h1>`;
+        $('#current-matches').html(html);
+      }
+      else{
+        html+=`<h1 class="text-center">Manage Your Upcoming Sessions</h1><br>`;
+      }
       doc.forEach(req =>
       {
         db.collection('users').doc(uuid).update({
@@ -58,15 +64,28 @@ function display_matches(data) {
             console.log(match.data());
                 console.log("here");
                 html += `
-                  <div class="card w-75">
+                <div class="form-group row" id="req_${req.id}">
+                <div class="card w-75 mx-auto">
                     <div class="card-body">
                         <h5 class="card-title"> ${match.data().first_name} ${match.data().last_name}</h5>
                         <div class="row">
                             <div class="col">`;
 
-                  var time = req_info.session_time.slice(-4)
-                  var printedTime = time.slice(0,2) + ":" + time.slice(2,4);
-                  var formattedDateTime = req_info.session_time.slice(0, req_info.session_time.length - 4) + " " + printedTime;
+                  var day = req_info.session_time.match(/[a-zA-Z]+/g);
+                  var time = String(req_info.session_time.match(/\d+/g));
+                  if (parseInt(time) >= 1200){
+                  if (parseInt(time) >= 1300){
+                      time = String(parseInt(time)-1200);
+                    }
+                    time += " P.M."
+                  }
+                  else{
+                    if (parseInt(time) < 1000){
+                      time = time.substring(1);
+                    }
+                    time +=  " A.M.";
+                  }
+                  time = time.replace(/(?=.{7}$)/,':');
 
                   var all_subjects = "";
                   req_info.session_subject.forEach(function(subject,ind) {
@@ -83,15 +102,14 @@ function display_matches(data) {
                   }
                   html += `
                       </br>
-                      <button onclick="cancel_session(${i})" class="btn btn-primary">Cancel Session</button>
+                      <button onclick="cancel_session('${req.id}','${data.user_type}')" class="btn btn-primary rounded-pill">Cancel Session</button>
                       </br>`;
 
                   html += ` </br>
                               </div>
                               <div class="col">
-                                  <p id="selected_tutor_${i}" style="display: none;">${i}</p>
-                                  <p class="card-text"> Date and Time: ${formattedDateTime} </p>
-                                  <p class="card-text"> Location: ${req_info.session_loc} </p>
+                                  <p class="card-text"> Date and Time: ${day} ${time} </p>
+                                  <p class="card-text"> Location: ${req_info.session_loc.charAt(0).toUpperCase() +req_info.session_loc.slice(1)} </p>
                                   <p class="card-text"> Session Cost: ${"$" + req_info.session_cost}</p>
                                   <p class="card-text"> Subjects: ${all_subjects}</p>
                                   <p class="card-text"> Child: ${req_info.selected_child} </p>
@@ -99,8 +117,8 @@ function display_matches(data) {
                           </div>
                       </div>
                     </div>
+                    </div>
                   `;
-                  i++;
 
           $('#current-matches').html(html);
         });
@@ -108,51 +126,69 @@ function display_matches(data) {
     });
 
     $('#loading_icon').fadeOut("fast");
-    $('#page-container').fadeIn();
+    $('#page-container').fadeIn("slow");
     return true;
 
  }
 
-function cancel_session(i) {
+function cancel_session(i,user_type) {
     console.log("in cancel session");
-    cancelSessionModal.fadeIn();
-    $('#loading_icon_modal').css("display","block");
-    $("nav").addClass("dialogIsOpen");
-    $("#footer").addClass("dialogIsOpen");
-    $("#current-matches").addClass("dialogIsOpen");
-    var tutor = document.getElementById("selected_tutor_"+i).innerHTML;
+    // cancelSessionModal.fadeIn();
+    // $('#loading_icon_modal').css("display","block");
+    // $("nav").addClass("dialogIsOpen");
+    // $("#footer").addClass("dialogIsOpen");
+    // $("#current-matches").addClass("dialogIsOpen");
 
-    console.log(sessions[tutor]);
-    db.collection('sessions').where("tutor_id", "==", sessions[tutor].tutor_id)
-        .where("user_id", "==", sessions[tutor].user_id).where("session_time", "==", sessions[tutor].session_time).get()
-          .then(snapshot => {
-                snapshot.forEach(doc => {
-                  db.collection('users').doc(sessions[tutor].tutor_id).update({
-                    "notifications.sess_cancel": firebase.firestore.FieldValue.arrayUnion(doc.data())
-                  });
-                  var deleteDoc = db.collection('sessions').doc(doc.id).delete();
-                });
-              })
-              .catch(err => {
-                console.log('Error getting documents', err);
-              });
-    var html = ``;
-    html += `
-        <h1> Session Cancelled </h1>
-        <button onclick="refresh_sessions()" class="btn btn-primary">Ok</button>
-        `;
-    $("#temp-info").html(html);
+    db.collection('sessions').doc(i).get().then((doc)=>{
+      var sessInfo = doc.data();
+      var html = `<br><div class="alert alert-success alert-dismissible fade show" role="alert">
+      The session has been successfully canceled.
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>`;
+    $('#content-wrap').prepend(html);
+      console.log(sessInfo);
+      if (user_type == "parent"){
+        db.collection('users').doc(sessInfo.tutor_id).update({
+          "notifications.sess_cancel": firebase.firestore.FieldValue.arrayUnion(sessInfo)
+        });
+      }
+      else{
+        db.collection('users').doc(sessInfo.user_id).update({
+          "notifications.sess_cancel": firebase.firestore.FieldValue.arrayUnion(sessInfo)
+        });
+      }
+    }).then(()=>{
+      db.collection('sessions').doc(i).delete().then(()=>{
+            console.log("Session Deleted");
+          }).catch((error)=>{
+            console.log("Error deleting session: ", error);
+          });
+    }).catch((error)=>{
+      console.log(error);
+    });
+    $('#req_'+i).fadeOut(300,function(){this.remove();});
+
+    
+
+    // var html = ``;
+    // html += `
+    //     <h1> Session Cancelled </h1>
+    //     <button onclick="refresh_sessions()" class="btn btn-primary">Ok</button>
+    //     `;
+    // $("#temp-info").html(html);
 }
 
-function refresh_sessions() {
-    db.collection('users').doc(uuid).get().then((doc) => {
-           display_matches(doc.data());
-         })
-    cancelSessionModal.fadeOut('fast');
-    $("#current-matches").removeClass("dialogIsOpen");
-    $("#footer").removeClass("dialogIsOpen");
-    $("nav").removeClass("dialogIsOpen");
-}
+// function refresh_sessions() {
+//     db.collection('users').doc(uuid).get().then((doc) => {
+//            display_matches(doc.data());
+//          })
+//     cancelSessionModal.fadeOut('fast');
+//     $("#current-matches").removeClass("dialogIsOpen");
+//     $("#footer").removeClass("dialogIsOpen");
+//     $("nav").removeClass("dialogIsOpen");
+// }
 
 function display_canceled_sess(data){
   console.log("START");
@@ -177,15 +213,15 @@ function display_canceled_sess(data){
         }
         time = time.replace(/(?=.{7}$)/,':');
         var html = `
-              <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                <strong>Attention!</strong> ${otherUserData.first_name} ${otherUserData.last_name} has declined/canceled the ${day}, ${time} session with you.
+              <br><div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>Attention!</strong> ${otherUserData.first_name} ${otherUserData.last_name} has canceled the ${day}, ${time} session with you.
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
               `;
         console.log(html);
-        $('#current-matches').prepend(html);
+        $('#content-wrap').prepend(html);
       })
     }
     else{
@@ -194,23 +230,30 @@ function display_canceled_sess(data){
         console.log(otherUserData);
         var day = session.session_time.match(/[a-zA-Z]+/g);
         var time = String(session.session_time.match(/\d+/g));
-        if (parseInt(time) >= 1300){
-          time = String(parseInt(time)-1200) + " P.M.";
+        if (parseInt(time) >= 1200){
+          if (parseInt(time) >= 1300){
+            time = String(parseInt(time)-1200);
+          }
+          time += " P.M."
         }
         else{
-          time = time + " A.M.";
+          if (parseInt(time) < 1000){
+            time = time.substring(1);
+          }
+          time +=  " A.M.";
         }
         time = time.replace(/(?=.{7}$)/,':');
         var html = `
+              <br>
               <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                <strong>Attention!</strong> ${otherUserData.first_name} ${otherUserData.last_name} has canceled their ${day}, ${time} session with you.
+                <strong>Attention!</strong> ${otherUserData.first_name} ${otherUserData.last_name} has declined/canceled your ${day}, ${time} session.
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
               `;
         console.log(html);
-        $('#current-matches').prepend(html);
+        $('#content-wrap').prepend(html);
       })
 
     }
