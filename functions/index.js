@@ -2,6 +2,7 @@ const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const matches = require('./matches');
 const locations = require('./locations');
+const payments = require('./payments');
 const cors = require('cors');
 
 // Set the configuration for your app
@@ -29,7 +30,7 @@ exports.tutorMatches =  functions.https.onRequest( async(request, response) => {
 });
 
 exports.paywithstripe = functions.https.onRequest((request, response) => {
-    locations.handler(request,response,firestore);
+    payments.handler(request,response,firestore);
 });
 
 exports.updateAvailability =  functions.https.onRequest(async (request, response) => {
