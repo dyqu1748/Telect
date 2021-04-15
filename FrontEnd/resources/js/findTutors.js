@@ -89,7 +89,6 @@ function getMatches() {
 
 function display_matches(data) {
     var storage = firebase.storage().ref();
-
     var html = ``;
     var i;
     for(i = 0; i < data.length; i++) {
@@ -435,7 +434,6 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
        url: 'https://us-central1-telect-6026a.cloudfunctions.net/tutorMatches/' + user.uid,
        success : function(data) {
            // console.log(data);
-           console.log(user);
            db.collection('users').doc(user.uid).get().then((doc)=> {
         console.log(doc.data());
         var user_info = doc.data();
@@ -456,7 +454,6 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
           </label>
           `;
         }
-
           html += `</div>
             </div>
              </div>
@@ -465,10 +462,18 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
                  <div class="col-md-3">
                  <select class="selectpicker form-control" name="sessionTime" id="sessionTime" data-live-search="true" required>`
 
+          console.log(user_info.schedule);
+          //matchTimes = user_info.schedule.filter();
           for (var day in tutor_info.schedule) {
-            for (var i = 0; i < tutor_info.schedule[day].length; i++) {
+            console.log(user_info.schedule[day]);
+            // get matching times
+            var matchingTimes = user_info.schedule[day].filter(function (item) {
+                return tutor_info.schedule[day].includes(item);
+            });
+
+            for (var i = 0; i < matchingTimes.length; i++) {
                 // make time look better
-                var time = tutor_info.schedule[day][i];
+                var time = matchingTimes[i];
                 if (parseInt(time) >= 1200){
                   if (parseInt(time) >= 1300){
                     time = String(parseInt(time)-1200);
@@ -484,7 +489,7 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
                 time = time.replace(/(?=.{7}$)/,':');
 
                 // printedTime = tutor_info.schedule[day][i].slice(0,2) + ":" + tutor_info.schedule[day][i].slice(2,4);
-                html += `<option value=${day}${tutor_info.schedule[day][i]}> ${day} ${time}</option>`;
+                html += `<option value=${day}${matchingTimes[i]}> ${day} ${time}</option>`;
             }
           }
 
