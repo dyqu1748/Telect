@@ -27,7 +27,7 @@
     var checkoutButton = document.getElementById("checkout-button");
 
     checkoutButton.addEventListener("click", function () {
-      fetch("http://localhost:5001/telect-6026a/us-central1/paywithstripe", {
+      fetch("https://us-central1-telect-6026a.cloudfunctions.net/paywithstripe", {
         method: "POST",
       })
         .then(function (response) {
