@@ -49,14 +49,6 @@ function addItem(id) {
     }
 }
 
-function addItemViewSchedule(id) {
-    if(document.getElementById(id).className == "scheduler_item") {
-        document.getElementById(id).className = "scheduler_item_selected";
-    } else if (document.getElementById(id).className == "scheduler_item_selected") {
-        document.getElementById(id).className = "scheduler_item";
-    }
-}
-
 function getScheduleDays() {
     var divs = document.getElementsByTagName("div");
     var days = []; 
