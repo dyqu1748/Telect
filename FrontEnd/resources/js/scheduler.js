@@ -1,12 +1,12 @@
 // Get current user
-var sessionsData = [];
 var uuid;
+var userData;
 firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
       uuid = user.uid;
       console.log("User found in scheduler");
       db.collection('users').doc(user.uid).onSnapshot((doc)=> {
-//          getSessions(doc.data());
+          userData = doc.data();
           displaySchedule(doc.data());
       });
     } else {
@@ -15,30 +15,15 @@ firebase.auth().onAuthStateChanged(function(user) {
     }
   });
 
+var subject_keys = {'math':'Math','geometry':'Geometry','pre-algebra':'Pre-Algebra','algebra':'Algebra','science':'Science','geology':'Geology','chemistry':'Chemistry','social_studies':'Social Studies','govtHist': 'U.S. Government and History','language_arts':'Language Arts','spanish': 'Spanish'};
 
-function getSessions(data) {
-    var currentUserLabel = (data.user_type =="parent") ? "user_id" : "tutor_id";
-    var otherUserLabel = (data.user_type =="parent") ? "tutor_id" : "user_id";
 
-    db.collection('sessions').where(currentUserLabel, "==", uuid).where("accepted_session", "==", true).get().then((doc) =>
-    {
-      if (doc.empty){
-        // no sessions
-        sessionsData = {};
-        return false;
-      }
-
-      doc.forEach(req =>
-      {
-        var req_info = req.data();
-//        sessionsData.push(req_info);
-        db.collection('users').doc(req_info[otherUserLabel]).get().then((match) => {
-            req_info["matchData"] = match.data();
-            sessionsData.push(req_info);
-        });
-      });
-    });
-    return true;
+var sessionInfoModal = $("#more-info-session");
+var closeSpan = document.getElementById("close-session-info");
+closeSpan.onclick = function() {
+  $("#footer").removeClass("dialogIsOpen");
+  $("nav").removeClass("dialogIsOpen");
+  sessionInfoModal.fadeOut('fast');
 }
 
 function addItem(id) {
@@ -139,6 +124,7 @@ function checkScheduleReq(schedule){
               if (session_info.accepted_session == true) {
                 if(document.getElementById(schedule_id).className == "scheduler_item_view_selected"){
                   document.getElementById(schedule_id).className = "scheduler_item_accepted_session";
+                  document.getElementById(schedule_id).setAttribute("onclick", "showSessionInfo(this.id)");
                 }
               } else {
                 if(document.getElementById(schedule_id).className == "scheduler_item_view_selected"){
@@ -153,3 +139,92 @@ function checkScheduleReq(schedule){
         }
       });
   }
+
+function showSessionInfo(id) {
+    console.log("in session info");
+    $("#footer").addClass("dialogIsOpen");
+    $("nav").addClass("dialogIsOpen");
+    sessionInfoModal.fadeIn();
+
+    var currentUserLabel = (userData.user_type =="parent") ? "user_id" : "tutor_id";
+    var otherUserLabel = (userData.user_type =="parent") ? "tutor_id" : "user_id";
+
+    var html = ``;
+    var modifiedId = id.replace("_", "");
+    console.log(modifiedId);
+    db.collection('sessions').where(currentUserLabel, "==", uuid).where("session_time", "==", modifiedId).get().then((doc) =>
+    {
+      doc.forEach(req =>
+      {
+        var req_info = req.data();
+        db.collection('users').doc(req_info[otherUserLabel]).get().then((match) => {
+            console.log(match.data());
+                console.log("here");
+                html += `
+                <div class="form-group row" id="req_${req.id}">
+                <div class="card w-75 mx-auto">
+                    <div class="card-body">
+                        <h5 class="card-title"> ${match.data().first_name} ${match.data().last_name}</h5>
+                        <div class="row">
+                            <div class="col">`;
+
+                  var day = req_info.session_time.match(/[a-zA-Z]+/g);
+                  var time = String(req_info.session_time.match(/\d+/g));
+                  if (parseInt(time) >= 1200){
+                  if (parseInt(time) >= 1300){
+                      time = String(parseInt(time)-1200);
+                    }
+                    time += " P.M."
+                  }
+                  else{
+                    if (parseInt(time) < 1000){
+                      time = time.substring(1);
+                    }
+                    time +=  " A.M.";
+                  }
+                  time = time.replace(/(?=.{7}$)/,':');
+
+                  var all_subjects = "";
+                  req_info.session_subject.forEach(function(subject,ind) {
+                    all_subjects+=subject_keys[subject];
+                    if (ind < req_info.session_subject.length-1){
+                      all_subjects+= ', ';
+                    }
+                  });
+                  console.log(req_info);
+                  console.log(req_info.session_subject);
+
+                  if (userData.user_type == "parent") {
+                    html += `<img src= ${match.data().photoUrl} class="tutorPhoto">`
+                  }
+                  html += `
+                      </br>
+                      <button onclick="goToManageMatches()" class="btn btn-primary rounded-pill">Cancel Session</button>
+                      </br>`;
+
+                  html += ` </br>
+                              </div>
+                              <div class="col">
+                                  <p class="card-text"> Date and Time: ${day} ${time} </p>
+                                  <p class="card-text"> Location: ${req_info.session_loc.charAt(0).toUpperCase() +req_info.session_loc.slice(1)} </p>
+                                  <p class="card-text"> Session Cost: ${"$" + req_info.session_cost}</p>
+                                  <p class="card-text"> Subjects: ${all_subjects}</p>
+                                  <p class="card-text"> Child: ${req_info.selected_child} </p>
+                              </div>
+                          </div>
+                      </div>
+                    </div>
+                    </div>
+                  `;
+
+          $('#session-info').html(html);
+        });
+      });
+    });
+}
+
+function goToManageMatches() {
+    location.replace("manage_matches.html");
+}
+
+
