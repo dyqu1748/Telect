@@ -120,7 +120,7 @@ function reviewInfo(){
                 </div>
                 <div class="row">
                     <div class="col">
-                        <img src="resources/img/child-${child.avatar}.png" style="width: 10%">
+                        <img src="resources/img/child-${child.avatar}.png" style="width: 150px">
                 </div> 
                 </div>
                 <br>`;
@@ -168,6 +168,7 @@ function reviewInfo(){
             $('#'+id+"Tutor").text(account_specific[id]);
           }
         }
+        $('#minSessionTutor').prepend('$');
         $('#resumeTutor').text($('#resume').prop('files')[0].name);
         var photo = $('#photo').prop('files')[0];
         if(photo){

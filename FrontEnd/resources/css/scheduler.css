@@ -45,6 +45,13 @@
     place-items: center;
 }
 
+.scheduler_item_view {
+    border:0.5px solid gray;
+    background-color: #ff9194;
+    display: inline-grid;
+    place-items: center;
+}
+
 .scheduler_item:hover {
     background-color: #82c291c5;
 }
@@ -63,8 +70,29 @@
     place-items: center;
 }
 
+.scheduler_item_view_selected {
+    border:0.5px solid gray;
+    background-color: #A7FBBB;
+    display: inline-grid;
+    place-items: center;
+}
+
 .scheduler_item_selected:hover {
     background-color: #82c291c5;
+}
+
+.scheduler_item_accepted_session {
+    border:0.5px solid gray;
+    background-color: #5271FF;
+    display: inline-grid;
+    place-items: center;
+}
+
+.scheduler_item_awaiting_session {
+    border:0.5px solid gray;
+    background-color: #FADF71;
+    display: inline-grid;
+    place-items: center;
 }
 
 

@@ -59,8 +59,53 @@ exports.updateAvailability =  functions.https.onRequest(async (request, response
     }
 });
 
+exports.notifyNewMessage = functions.firestore
+    .document('conversations/{convId}')
+    .onWrite((change, context) => {
+        const newValue = change.after.exists ? change.after.data() : null;
+        const allUsers = newValue.users;
+        const conv = context.params.convId;
+        const newMessageUser = newValue.messages[newValue.messages.length-1].userId;
+        console.log(conv,newMessageUser);
+        if (newMessageUser === allUsers[0]){
+            const notifyUser = allUsers[1];
+            return firestore.doc('users/'+notifyUser).update({
+                "notifications.messages":admin.firestore.FieldValue.arrayUnion(conv)
+            });
+        }
+        else{
+            const notifyUser = allUsers[0];
+            return firestore.doc('users/'+notifyUser).update({
+                "notifications.messages":admin.firestore.FieldValue.arrayUnion(conv)
+            });
+        }
+      });
 
+exports.notifyUserSession = functions.firestore
+.document('sessions/{sessID}')
+.onWrite((change, context) => {
+    const newValue = change.after.exists ? change.after.data() : null;
+    const sess = context.params.sessID;
 
+    if (newValue !== null){
+        if (newValue.requested_session === true){
+            //Parent requested session: Notify tutor
+            const notifyId = newValue.tutor_id;
+            //REMINDER: Need to test to make sure it doesn't overwrite message notification
+            return firestore.doc('users/'+notifyId).update({
+                "notifications.sessions":admin.firestore.FieldValue.arrayUnion(sess)
+            });
+
+        }
+        else{
+            //Tutor acepted session: Notify parent
+            const notifyId = newValue.user_id;
+            return firestore.doc('users/'+notifyId).update({
+                    "notifications.sessions":admin.firestore.FieldValue.arrayUnion(sess)
+            });
+        }
+    }
+});
 
 
 

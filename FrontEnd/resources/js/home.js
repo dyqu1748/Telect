@@ -18,6 +18,7 @@ firebase.auth().onAuthStateChanged(function(user) {
 
   function displayHome(data)
 {
+    var user = firebase.auth().currentUser;
     if (data.user_type == 'parent') {
         var html = `
         <div id= "find_tutors">
@@ -37,7 +38,6 @@ firebase.auth().onAuthStateChanged(function(user) {
             </a>
         </div>
         `;
-
     }
 
     html += `
@@ -81,9 +81,25 @@ firebase.auth().onAuthStateChanged(function(user) {
     document.getElementById("user_name").innerHTML ="Hello, " + data.first_name + ".";
     document.getElementById("dashboard").innerHTML = html;
     if (data.notifications !== undefined ){
-        if (data.notifications.messages.length > 0){
-            $('#messages').append('<span class="dot"></span>');
-        } 
+        if (data.notifications.messages !== undefined){
+            if (data.notifications.messages.length > 0){
+                $('#messages').append('<span class="dot"></span>');
+            } 
+        }
+        if (data.notifications.sessions !== undefined){
+            if (data.notifications.sessions.length > 0 ){
+                if (data.user_type == "tutor"){
+                    $('#view_requests').append('<span class="dot"></span>');
+                }
+                else{
+                    $('#manage_matches').append('<span class="dot" id="notif_match"></span>');
+                }
+            } 
+        }
+        if (data.notifications.sess_cancel !== undefined){
+            if(data.notifications.sess_cancel.length>0 && $("#notif_match").length === 0){
+                $('#manage_matches').append('<span class="dot" id="notif_match"></span>');
+            }
+        }
     }
-	
 }

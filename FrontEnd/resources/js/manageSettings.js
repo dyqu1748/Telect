@@ -52,62 +52,44 @@ function displayProfile(data,user)
 			<h2><u>User information</u></h2> 
 			<br>
 				<div class="row">
-					<div class ="col-md-3">
-						<h3>Name</h3>
+					<div class ="col-md">
+					<h3>Name</h3>
+					<p class="lead">${data.first_name} ${data.last_name}</p>
 					</div>
-					<div class="col-md-3">
+					<div class="col-md">
 						<h3>Phone Number</h3>
+						<p class="lead">${data.phone}</p>
 					</div>
 			  	</div>
-				<div class ="row">
-					<div class="col-md-3">
-						<p class="lead">${data.first_name} ${data.last_name}</p>
-					</div>
-					<div class="col-md-3">
-						<p class="lead">${data.phone}</p>
-					</div> 
-				</div>
 			  <br>
 				<h2><u>Location Information</u></h2>
 				<br>
 			  <div class="row">
-			  	<div class="col-md-3">
+			  	<div class="col-md">
 					<h3>Address</h3>
+					<p class="lead">${data.address}</p>
 				</div>
-				<div class="col-md-3">
+				<div class="col-md">
 					<h3>Apartment Info</h3>
-				</div> 
-			  </div>
-			  <div class="row">
-			  	<div class="col-md-3">
-				  <p class="lead">${data.address}</p>
-				</div>
-			 	<div class="col-md-3">
 					<p class="lead">${data.apartment_info}</p>
-				 </div> 
-			  </div>
-			  <div class="row">
-			  	<div class="col-md-3">
-					<h3>City</h3>
-				</div>
-				<div class="col-md-3">
-					<h3>State</h3>
-				</div>
-				<div class="col-md-3">
-					<h3>Zip Code</h3>
 				</div> 
 			  </div>
+
 			  <div class="row">
-			  	<div class="col-md-3">
-				  <p class="lead">${data.city}</p>
+			  	<div class="col-md">
+					<h3>City</h3>
+					<p class="lead">${data.city}</p>
 				</div>
-			 	<div class="col-md-3">
+				<div class="col-md">
+					<h3>State</h3>
 					<p class="lead">${data.state}</p>
-				 </div>
-				 <div class="col-md-3">
+				</div>
+				<div class="col-md">
+					<h3>Zip Code</h3>
 					<p class="lead">${data.zipCode}</p>
-				 </div>  
+				</div> 
 			  </div>
+
 			  <br>
 			  <h2><u>Availability Information</u></h2>
 				<br>
@@ -183,7 +165,7 @@ function displayProfile(data,user)
 				  <div class = "scheduler_item_review" id = "Thursday_1130_review"  >     </div>
 				  <div class = "scheduler_item_review" id = "Friday_1130_review"  >     </div>
 				  <div class = "scheduler_item_review" id = "Saturday_1130_review"  >     </div>
-				  <div class = "scheduler_item_review" id = "Monday_1130_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Sunday_1130_review"  >     </div>
 				  <div class = "times">12:00 p.m.</div>
 				  <div class = "scheduler_item_review" id = "Monday_1200_review"  >     </div>
 				  <div class = "scheduler_item_review" id = "Tuesday_1200_review"  >     </div>
@@ -287,7 +269,7 @@ function displayProfile(data,user)
 				  <div class = "scheduler_item_review" id = "Thursday_1800_review"  >     </div>
 				  <div class = "scheduler_item_review" id = "Friday_1800_review"  >     </div>
 				  <div class = "scheduler_item_review" id = "Saturday_1800_review"  >     </div>
-				  <div class = "scheduler_item_review" id = "Monday_1800_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Sunday_1800_review"  >     </div>
 				  <div class = "times">6:30 p.m.</div>
 				  <div class = "scheduler_item_review" id = "Monday_1830_review"  >     </div>
 				  <div class = "scheduler_item_review" id = "Tuesday_1830_review"  >     </div>
@@ -330,30 +312,21 @@ function displayProfile(data,user)
 		capBGCheck = capBGCheck.charAt(0).toUpperCase() + capBGCheck.slice(1);
 		html+= `
 		<div class="row">
-				<div class ="col-md-3">
+				<div class ="col-md">
 					<h3>Location Preference</h3> 
-				</div>
-				<div class="col-md-4">
-				<h3>Session Payment Range</h3> 
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-3">
 					<p class="lead">${all_loc}</p>
-				</div> 
-				<div class="col-md-4">
+				</div>
+				<div class="col-md">
+				<h3>Session Payment Range</h3> 
 				<p class="lead">$${data.minSession} to $${data.maxSession}</p>
-			</div> 
+				</div>
 			</div>
+
 		<div class="row">
-			<div class="col-md-3">
+			<div class="col-md">
 				<h3>Prefer Background Checked Tutors</h3> 
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-3">
 				<p class="lead">${capBGCheck}</p>
-			</div> 
+			</div>
 		</div>
 		`;
 		if (data.children.length > 0){
@@ -368,46 +341,35 @@ function displayProfile(data,user)
 				})
                 allChildInfo += `
                 <div class="row">
-                <div class="col-md-3">
+                <div class="col-md">
                     <h3>Child ${index+1}</h3> 
                 </div>
                 </div>
                 <div class="row">
-                <div class="col-md-3">
+                <div class="col-md">
                     <h4>Child Name</h4> 
+					<p class="lead">${child.child_name}</p>
                 </div>
 				<div class ="col-md-3">
                     <h4>Grade Level</h4> 
+					<p class="lead">${grade_keys[child.grade]}</p>
                 </div>
                 </div>
+
                 <div class="row">
-                    <div class="col-md-3">
-                        <p class="lead">${child.child_name}</p>
-                    </div>
-					<div class="col">
-                        <p class="lead">${grade_keys[child.grade]}</p>
-                </div> 
-                </div>
-                <div class="row">
-                <div class ="col-md-3">
+                <div class ="col-md">
                     <h4>Subjects</h4> 
+					<p class="lead">${all_subjects}</p>
                 </div>
                 </div>
+
                 <div class="row">
-                    <div class="col">
-                        <p class="lead">${all_subjects}</p>
-                </div> 
-                </div>
-                <div class="row">
-                <div class ="col-md-3">
+                <div class ="col-md">
                     <h4>Selected Avatar</h4> 
+					<img src="resources/img/child-${child.avatar}.png" style="width: 150px">
                 </div>
                 </div>
-                <div class="row">
-                    <div class="col">
-						<img src="resources/img/child-${child.avatar}.png" style="width: 10%">
-                </div> 
-                </div>
+
 				</br>`; 
                 });
 				html+=allChildInfo;
@@ -430,61 +392,41 @@ function displayProfile(data,user)
 		})
 		html+= `
 		<div class="row">
-				<div class ="col-md-4">
+				<div class ="col-md">
 					<h3>Location Preference</h3> 
-				</div>
-				<div class="col-md-4">
-					<h3>Minimum Session Rate</h3> 
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-4">
 					<p class="lead">${all_loc}</p>
 				</div>
-				<div class="col-md-4">
+				<div class="col-md">
+					<h3>Minimum Session Rate</h3>
 					<p class="lead">$${data.minSession}</p>
-				</div> 
+				</div>
 			</div>
+
 		<div class="row">
-			<div class="col-md-3">
+			<div class="col-md">
 				<h3>Grade Levels</h3> 
-			</div>
-		</div>
-		<div class="row">
-			<div class="col">
 				<p class="lead">${all_grades}</p>
-			</div> 
-		</div>
-		<div class="row">
-			<div class="col">
+			</div>
+			<div class="col-md">
 				<h3>Subjects</h3> 
-			</div>
-		</div>
-		<div class="row">
-			<div class="col">
 				<p class="lead">${all_subjects}</p>
-			</div> 
+			</div>
 		</div>
+
 		<div class="row">
-			<div class="col">
+			<div class="col-md">
 				<h3>Profile Picture</h3> 
+				<img src="${user.photoURL}"  width="250px">
 			</div>
 		</div>
+
 		<div class="row">
-			<div class="col">
-				<img src="${user.photoURL}"  width="15%">
-			</div> 
-		</div>
-		<div class="row">
-			<div class="col">
+			<div class="col-md">
 				<h3>About Me</h3> 
+				<p class="lead">${data.bio}</p>
 			</div>
 		</div>
-		<div class="row">
-			<div class="col">
-				<p class="lead">${data.bio}</p>
-			</div> 
-		</div>
+
 		`;
 	}
 	html += `<div class="form-group row">
@@ -716,7 +658,7 @@ function editProfile(data, user)
                 <div class = "scheduler_item" id = "Thursday_1130" onclick="addItem(this.id)">     </div>
                 <div class = "scheduler_item" id = "Friday_1130" onclick="addItem(this.id)">     </div>
                 <div class = "scheduler_item" id = "Saturday_1130" onclick="addItem(this.id)">     </div>
-                <div class = "scheduler_item" id = "Monday_1130" onclick="addItem(this.id)">     </div>
+                <div class = "scheduler_item" id = "Sunday_1130" onclick="addItem(this.id)">     </div>
                 <div class = "times">12:00 p.m.</div>
                 <div class = "scheduler_item" id = "Monday_1200" onclick="addItem(this.id)">     </div>
                 <div class = "scheduler_item" id = "Tuesday_1200" onclick="addItem(this.id)">     </div>
@@ -820,7 +762,7 @@ function editProfile(data, user)
                 <div class = "scheduler_item" id = "Thursday_1800" onclick="addItem(this.id)">     </div>
                 <div class = "scheduler_item" id = "Friday_1800" onclick="addItem(this.id)">     </div>
                 <div class = "scheduler_item" id = "Saturday_1800" onclick="addItem(this.id)">     </div>
-                <div class = "scheduler_item" id = "Monday_1800" onclick="addItem(this.id)">     </div>
+                <div class = "scheduler_item" id = "Sunday_1800" onclick="addItem(this.id)">     </div>
                 <div class = "times">6:30 p.m.</div>
                 <div class = "scheduler_item" id = "Monday_1830" onclick="addItem(this.id)">     </div>
                 <div class = "scheduler_item" id = "Tuesday_1830" onclick="addItem(this.id)">     </div>

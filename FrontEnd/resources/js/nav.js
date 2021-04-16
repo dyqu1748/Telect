@@ -14,6 +14,7 @@ firebase.auth().onAuthStateChanged(function(user) {
 
   function displayNav(data) 
   {
+    var user = firebase.auth().currentUser;
     if (data.user_type == 'parent') {
       var html = `
       <li class="nav-item">
@@ -23,17 +24,25 @@ firebase.auth().onAuthStateChanged(function(user) {
 
     } else if (data.user_type == 'tutor') {
         var html = `
-        <li class="nav-item" value = "1">
+        <li class="nav-item" value = "1" id="view_requests-nav">
         <a class="nav-link" href = "view_requests.html"> View Requests </a>
         </li>
         `;
+
+        db.collection('sessions').where("tutor_id", "==", user.uid).where("requested_session", "==", true).get().then((doc) => 
+        {
+            doc.forEach(req =>
+            {
+                $('#view_requests_nav').append('<span class="dotNav"></span>');
+            })
+        })
     }
 
     html += `
     <li class="nav-item" value = "2">
     <a class="nav-link" href = "view_schedule.html"> View Schedule </a>
     </li>
-    <li class="nav-item" value = "3">
+    <li class="nav-item" value = "3" id="manage_matches-nav">
     <a class="nav-link" href = "manage_matches.html" > Manage Matches </a>
     </li>
     <li class="nav-item" value = "4" id="message-nav">
@@ -56,10 +65,28 @@ firebase.auth().onAuthStateChanged(function(user) {
         navClass[i].classList.add("active");
     }
   }
-  if (data.notifications !== undefined){
-    if (data.notifications.messages.length>0){
-        $('#message-nav').append('<span class="dotNav"></span>');
+
+  if (data.notifications !== undefined ){
+    if (data.notifications.messages !== undefined){
+        if (data.notifications.messages.length > 0){
+            $('#message-nav').append('<span class="dotNav"></span>');
+        }
     }
+    if (data.notifications.sessions !== undefined){
+      if (data.notifications.sessions.length > 0){
+        if (data.user_type == "tutor"){
+            $('#view_requests-nav').append('<span class="dotNav"></span>');
+        }
+        else{
+            $('#manage_matches-nav').append('<span class="dotNav" id="notif_match_nav"></span>');
+        }
+      }
+    }
+    if (data.notifications.sess_cancel !== undefined){
+      if(data.notifications.sess_cancel.length>0 && $("#notif_match_nav").length === 0){
+          $('#manage_matches-nav').append('<span class="dotNav" id="notif_match_nav"></span>');
+      }
   }
+}
 
   }

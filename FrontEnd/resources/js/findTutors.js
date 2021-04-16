@@ -89,8 +89,8 @@ function getMatches() {
 
 function display_matches(data) {
     var storage = firebase.storage().ref();
-
     var html = ``;
+    var i;
     for(i = 0; i < data.length; i++) {
       var tutorData = data[i];
   		var all_subjects ="";
@@ -102,7 +102,7 @@ function display_matches(data) {
   		});
 
         html += `
-		<div class="form-group row">
+		    <div class="form-group row">
           <div class="card w-75 mx-auto">
             <div class="card-body">
                 <h5 class="card-title"> ${tutorData.first_name} ${tutorData.last_name}</h5>
@@ -111,7 +111,7 @@ function display_matches(data) {
                         <img src= ${tutorData.photoUrl} class="tutorPhoto">
                         <br>
 						<br>
-                        <button onclick="session_details(${i})" class="btn btn-primary rounded-pill">Request Session</button>
+                        <button onclick="session_details(${i})" class="btn btn-primary rounded-pill request_btn${i}">Request Session</button>
 						<button onclick="display_info(${i})" class="btn btn-secondary rounded-pill">More Info</button>
                     </div>
                     <div class="col">
@@ -130,8 +130,11 @@ function display_matches(data) {
     }
 
     $('#tutor-matches').html(html);
+    data.forEach(function(tutorData, ind){
+      disableRequest(ind,tutorData);
+    });
   $('#loading_icon').fadeOut("fast");
-  $('#page-container').fadeIn();
+  $('#page-container').fadeIn("slow");
   return true;
     //          <p id="selected_tutor" style="display: none;">${i}</p>
     //          <button onclick="session_details()">Request Session</button>
@@ -172,7 +175,7 @@ function display_matches(data) {
                 <img src= ${tutorData.photoUrl} class="tutor-photo-more-info">
                 </br>
 				</br>
-                <button onclick="session_details(${i})" class="btn btn-primary rounded-pill">Request Session</button>
+                <button onclick="session_details(${i})" class="btn btn-primary btn-lg rounded-pill request_btn${i}">Request Session</button>
             </div>
             <div class="col">
                 <p id="selected_tutor_${i}" style="display: none;">${i}</p>
@@ -182,11 +185,233 @@ function display_matches(data) {
                 <p class="more_info_text"> About Me: ${tutorData.bio} </p>
                 <a class="more_info_text" href="#" onclick="display_resume(${i})"> Resume </a>
                 </br>
-                <p> insert schedule here </p>
+                <br>
+                <p class="more_info_text"> Weekly Availability:</p>
+                <div class = "scheduler" style="height:5%">
+				  <div class = "free_space">     </div>
+				  <div class = "days">Monday</div>
+				  <div class = "days">Tuesday</div>
+				  <div class = "days">Wednesday</div>
+				  <div class = "days">Thursday</div>
+				  <div class = "days">Friday</div>
+				  <div class = "days">Saturday</div>
+				  <div class = "days">Sunday</div>
+				  <div class = "times">8:00 a.m.</div>
+				  <div class = "scheduler_item_review" id = "Monday_0800_review" >     </div>
+				  <div class = "scheduler_item_review" id = "Tuesday_0800_review" >     </div>
+				  <div class = "scheduler_item_review" id = "Wednesday_0800_review" >     </div>
+				  <div class = "scheduler_item_review" id = "Thursday_0800_review" >     </div>
+				  <div class = "scheduler_item_review" id = "Friday_0800_review" >     </div>
+				  <div class = "scheduler_item_review" id = "Saturday_0800_review" >     </div>
+				  <div class = "scheduler_item_review" id = "Sunday_0800_review"  >     </div>
+				  <div class = "times">8:30 a.m.</div>
+				  <div class = "scheduler_item_review" id = "Monday_0830_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Tuesday_0830_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Wednesday_0830_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Thursday_0830_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Friday_0830_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Saturday_0830_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Sunday_0830_review"  >     </div>
+				  <div class = "times">9:00 a.m.</div>
+				  <div class = "scheduler_item_review" id = "Monday_0900_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Tuesday_0900_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Wednesday_0900_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Thursday_0900_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Friday_0900_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Saturday_0900_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Sunday_0900_review"  >     </div>
+				  <div class = "times">9:30 a.m.</div>
+				  <div class = "scheduler_item_review" id = "Monday_0930_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Tuesday_0930_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Wednesday_0930_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Thursday_0930_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Friday_0930_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Saturday_0930_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Sunday_0930_review"  >     </div>
+				  <div class = "times">10:00 a.m.</div>
+				  <div class = "scheduler_item_review" id = "Monday_1000_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Tuesday_1000_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Wednesday_1000_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Thursday_1000_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Friday_1000_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Saturday_1000_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Sunday_1000_review"  >     </div>
+				  <div class = "times">10:30 a.m.</div>
+				  <div class = "scheduler_item_review" id = "Monday_1030_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Tuesday_1030_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Wednesday_1030_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Thursday_1030_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Friday_1030_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Saturday_1030_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Sunday_1030_review"  >     </div>
+				  <div class = "times">11:00 a.m.</div>
+				  <div class = "scheduler_item_review" id = "Monday_1100_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Tuesday_1100_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Wednesday_1100_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Thursday_1100_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Friday_1100_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Saturday_1100_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Sunday_1100_review"  >     </div>
+				  <div class = "times">11:30 a.m.</div>
+				  <div class = "scheduler_item_review" id = "Monday_1130_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Tuesday_1130_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Wednesday_1130_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Thursday_1130_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Friday_1130_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Saturday_1130_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Sunday_1130_review"  >     </div>
+				  <div class = "times">12:00 p.m.</div>
+				  <div class = "scheduler_item_review" id = "Monday_1200_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Tuesday_1200_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Wednesday_1200_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Thursday_1200_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Friday_1200_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Saturday_1200_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Sunday_1200_review"  >     </div>
+				  <div class = "times">12:30 p.m.</div>
+				  <div class = "scheduler_item_review" id = "Monday_1230_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Tuesday_1230_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Wednesday_1230_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Thursday_1230_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Friday_1230_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Saturday_1230_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Sunday_1230_review"  >     </div>
+				  <div class = "times">1:00 p.m.</div>
+				  <div class = "scheduler_item_review" id = "Monday_1300_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Tuesday_1300_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Wednesday_1300_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Thursday_1300_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Friday_1300_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Saturday_1300_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Sunday_1300_review"  >     </div>
+				  <div class = "times">1:30 p.m.</div>
+				  <div class = "scheduler_item_review" id = "Monday_1330_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Tuesday_1330_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Wednesday_1330_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Thursday_1330_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Friday_1330_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Saturday_1330_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Sunday_1330_review"  >     </div>
+				  <div class = "times">2:00 p.m.</div>
+				  <div class = "scheduler_item_review" id = "Monday_1400_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Tuesday_1400_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Wednesday_1400_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Thursday_1400_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Friday_1400_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Saturday_1400_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Sunday_1400_review"  >     </div>
+				  <div class = "times">2:30 p.m.</div>
+				  <div class = "scheduler_item_review" id = "Monday_1430_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Tuesday_1430_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Wednesday_1430_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Thursday_1430_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Friday_1430_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Saturday_1430_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Sunday_1430_review"  >     </div>
+				  <div class = "times">3:00 p.m.</div>
+				  <div class = "scheduler_item_review" id = "Monday_1500_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Tuesday_1500_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Wednesday_1500_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Thursday_1500_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Friday_1500_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Saturday_1500_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Sunday_1500_review"  >     </div>
+				  <div class = "times">3:30 p.m.</div>
+				  <div class = "scheduler_item_review" id = "Monday_1530_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Tuesday_1530_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Wednesday_1530_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Thursday_1530_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Friday_1530_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Saturday_1530_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Sunday_1530_review"  >     </div>
+				  <div class = "times">4:00 p.m.</div>
+				  <div class = "scheduler_item_review" id = "Monday_1600_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Tuesday_1600_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Wednesday_1600_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Thursday_1600_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Friday_1600_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Saturday_1600_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Sunday_1600_review"  >     </div>
+				  <div class = "times">4:30 p.m.</div>
+				  <div class = "scheduler_item_review" id = "Monday_1630_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Tuesday_1630_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Wednesday_1630_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Thursday_1630_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Friday_1630_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Saturday_1630_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Sunday_1630_review"  >     </div>
+				  <div class = "times">5:00 p.m.</div>
+				  <div class = "scheduler_item_review" id = "Monday_1700_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Tuesday_1700_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Wednesday_1700_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Thursday_1700_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Friday_1700_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Saturday_1700_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Sunday_1700_review"  >     </div>
+				  <div class = "times">5:30 p.m.</div>
+				  <div class = "scheduler_item_review" id = "Monday_1730_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Tuesday_1730_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Wednesday_1730_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Thursday_1730_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Friday_1730_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Saturday_1730_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Sunday_1730_review"  >     </div>
+				  <div class = "times">6:00 p.m.</div>
+				  <div class = "scheduler_item_review" id = "Monday_1800_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Tuesday_1800_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Wednesday_1800_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Thursday_1800_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Friday_1800_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Saturday_1800_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Sunday_1800_review"  >     </div>
+				  <div class = "times">6:30 p.m.</div>
+				  <div class = "scheduler_item_review" id = "Monday_1830_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Tuesday_1830_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Wednesday_1830_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Thursday_1830_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Friday_1830_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Saturday_1830_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Sunday_1830_review"  >     </div>
+				  <div class = "times">7:00 p.m.</div>
+				  <div class = "scheduler_item_review" id = "Monday_1900_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Tuesday_1900_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Wednesday_1900_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Thursday_1900_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Friday_1900_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Saturday_1900_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Sunday_1900_review"  >     </div>
+				  <div class = "times">7:30 p.m.</div>
+				  <div class = "scheduler_item_review" id = "Monday_1930_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Tuesday_1930_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Wednesday_1930_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Thursday_1930_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Friday_1930_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Saturday_1930_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Sunday_1930_review"  >     </div>
+				  <div class = "times">8:00 p.m.</div>
+				  <div class = "scheduler_item_review" id = "Monday_2000_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Tuesday_2000_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Wednesday_2000_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Thursday_2000_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Friday_2000_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Saturday_2000_review"  >     </div>
+				  <div class = "scheduler_item_review" id = "Sunday_2000_review"  >     </div>
+	  
+			  </div>
             </div>
         </div>
     `;
     $("#info-placeholder").html(html);
+    Object.keys(tutorData.schedule).forEach(function(day){
+      tutorData.schedule[day].forEach(function(time){
+        var curId = day+'_'+time+'_review';
+        console.log(curId);
+        $('#'+curId).addClass('scheduler_item_selected').removeClass('scheduler_item_review');
+      })
+      
+    });
+    document.getElementById("info-placeholder").scrollIntoView({behavior: "smooth"});
+    disableRequest(i,tutorData);
  }
 
 function session_details(i)
@@ -209,14 +434,14 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
        url: 'https://us-central1-telect-6026a.cloudfunctions.net/tutorMatches/' + user.uid,
        success : function(data) {
            // console.log(data);
-           console.log(user);
-           db.collection('users').doc(user.uid).onSnapshot((doc)=> {
+           db.collection('users').doc(user.uid).get().then((doc)=> {
         console.log(doc.data());
         var user_info = doc.data();
              var tutor_info = data[tutor_num];
+             console.log(tutor_info.schedule);
              var html = `
                  <h1>Request a Session with ${tutor_info.first_name} ${tutor_info.last_name}</h1><br>
-                 <h3>Who is this Session For?</h3>
+                 <h3 class="header-control">Who is this Session For?</h3>
             <div class="form-group row">
             <div class="col">
             <div class="btn-group btn-group-toggle" data-toggle="buttons">
@@ -225,52 +450,72 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
           for (var i = 0; i < user_info.children.length; i++) {
           html += `
           <label class="btn btn-outline-primary">
-            <input type="radio" name="child" value=${user_info.children[i].child_name} required> ${user_info.children[i].child_name}
+            <input type="radio" name="child" value="${user_info.children[i].child_name}" required> ${user_info.children[i].child_name}
           </label>
           `;
         }
-
           html += `</div>
             </div>
              </div>
-                 <h3>Date and Time</h3>
-                  <h3>Location Preference</h3>
+                 <h3 class="header-control">Date and Time</h3>
+                 <div class="row">
+                 <div class="col-md-3">
+                 <select class="selectpicker form-control" name="sessionTime" id="sessionTime" data-live-search="true" required>`
+
+          console.log(user_info.schedule);
+          //matchTimes = user_info.schedule.filter();
+          for (var day in tutor_info.schedule) {
+            console.log(user_info.schedule[day]);
+            // get matching times
+            var matchingTimes = user_info.schedule[day].filter(function (item) {
+                return tutor_info.schedule[day].includes(item);
+            });
+
+            for (var i = 0; i < matchingTimes.length; i++) {
+                // make time look better
+                var time = matchingTimes[i];
+                if (parseInt(time) >= 1200){
+                  if (parseInt(time) >= 1300){
+                    time = String(parseInt(time)-1200);
+                  }
+                  time += " P.M."
+                }
+                else{
+                  if (parseInt(time) < 1000){
+                    time = time.substring(1);
+                  }
+                  time +=  " A.M.";
+                }
+                time = time.replace(/(?=.{7}$)/,':');
+
+                // printedTime = tutor_info.schedule[day][i].slice(0,2) + ":" + tutor_info.schedule[day][i].slice(2,4);
+                html += `<option value=${day}${matchingTimes[i]}> ${day} ${time}</option>`;
+            }
+          }
+
+
+          html +=  `
+            </select>
+            </div>
+            </div>
+            <h3 class="header-control">Location Preference</h3>
             <div class="form-group form-inline">
-                 `;
-             if(user_info.location_pref == "online")
-             {
-                html += `<div>
-                <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                  <label class="btn btn-outline-primary active">
-                  <input type="radio" name="location_pref" value="online" required> Online
-                  </label>
-                  <label class="btn btn-outline-primary">
-                  <input type="radio" name="location_pref" value="in_person"> In-Person
-                  </label>
-                </div>
-              </div>
-               </div>`;
-
-             }else{
-                html += `<div>
-              <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                <label class="btn btn-outline-primary active">
-                <input type="radio" name="location_pref" value="online" > Online
-                </label>
-                <label class="btn btn-outline-primary">
-                <input type="radio" name="location_pref" value="in_person" required> In-Person
-                </label>
-              </div>
-              </div>
-               </div>`;
-             }
-
-             html += `
+            <div>
+            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+              <label class="btn btn-outline-primary active">
+              <input type="radio" name="location_pref" value="online" required> Online
+              </label>
+              <label class="btn btn-outline-primary">
+              <input type="radio" name="location_pref" value="in_person"> In-Person
+              </label>
+            </div>
+          </div>
+           </div>
                  <h3>Price</h3>
                  <p>Your Current Price Range: $${user_info.minSession} - $${user_info.maxSession}</p>
                  <p>Tutor Minimum Session Rate: $${tutor_info.minSession}</p>
                  <div>
-                 <h4> Please Input your Desired Session Rate</h4>
+                 <h4 class="header-control"> Please Input your Desired Session Rate</h4>
             <div class="form-group form-inline">
             <label for="final_price">$</label>
             <div class="col">
@@ -278,7 +523,7 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
              </div>
              </div>
             </div>
-                 <h3>Select Subject(s)</h3>
+                 <h3 class="header-control">Select Subject(s)</h3>
                  <div id="subjectsel">
                  </div>
             <div class="form-group row">
@@ -289,7 +534,7 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
         for (var i = 0; i < tutor_info.subjects.length; i++) {
           html += `
            <label class="btn btn-outline-primary">
-            <input type="checkbox" value=${tutor_info.subjects[i]}> ${subject_keys[tutor_info.subjects[i]]}
+            <input type="checkbox" name="subjects" value=${tutor_info.subjects[i]}> ${subject_keys[tutor_info.subjects[i]]}
           </label>
           `;
         }
@@ -299,15 +544,18 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
              </div>
             <div class="form-group row">
              <div class="col">
-            <button type="submit" class="btn btn-lg btn-primary rounded-pill">Confirm Session</button>
+            <button id="confirm_btn" type="submit" class="btn btn-lg btn-primary rounded-pill">Confirm Session</button>
              </div>
              </div>
         `;
 
              $('#schedule_session').html(html);
+             $("#sessionTime").selectpicker('refresh');
+             $('input[name="location_pref"][value="'+user_info.location_pref+'"]').click();
         $('#loading_icon_modal').fadeOut("fast");
         scheduleModal.fadeIn();
         document.getElementById("schedule_session").scrollIntoView({behavior: "smooth", block: "center"});
+        console.log(document.getElementById("sessionTime").value);
        });
        }
    });
@@ -317,7 +565,7 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
   checked = $("input[type=checkbox]:checked").length;
 
    if(!checked) {
-     alert("You must check at least one checkbox.");
+     alert("Please select at least one subject you would like you session to focus on.");
      return false;
    }else{
    	schedule_session();
@@ -327,9 +575,14 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
 
 function schedule_session()
 {
-
-var html = ``;
+var btnLoad = `<div id="btn-load" class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>`;
+$('#confirm_btn').html(btnLoad);
+$('#confirm_btn').prop('disabled',true);
 var user = firebase.auth().currentUser;
+var subjects = [];
+$('input[name="subjects"]:checked').each(function() { 
+  subjects.push(this.value); 
+});
 var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
    getTutorMatches().then((result) => {
        // Read result of the Cloud Function.
@@ -340,7 +593,7 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
        url: 'https://us-central1-telect-6026a.cloudfunctions.net/tutorMatches/' + user.uid,
        success : function(data) {
            console.log(data);
-           db.collection('users').doc(user.uid).onSnapshot((doc)=> {
+           db.collection('users').doc(user.uid).get().then((doc)=> {
               console.log(doc.data());
               var user_info = doc.data();
               var tutor_info = data[tutor_num];
@@ -358,10 +611,11 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
                     requested_session : true,
                     accepted_session : false,
                     completed_session : false,
-                    selected_child : document.getElementById("child").value,
+                    selected_child : $('input[name="child"]:checked').val(),
                     session_cost : document.getElementById("final_price").value,
-                    session_loc : document.getElementById("location_pref").value,
-                    session_subject : document.getElementById("subject").value,
+                    session_loc : $('input[name="location_pref"]:checked').val(),
+                    session_subject : subjects,
+                    session_time: document.getElementById("sessionTime").value
                   });
 
                   // Display the success message
@@ -371,8 +625,9 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
                   $('#schedule_session').html(html);
 
                   var tutor_num_btn = String("request_btn" + tutor_num);
-                  document.getElementById(tutor_num_btn).innerHTML = "Request Pending";
-                  document.getElementById(tutor_num_btn).disabled = true;
+                  // document.getElementsByClassName(tutor_num_btn).innerHTML = "Request Pending";
+                  $('.'+tutor_num_btn).html("Request Pending");
+                  $('.'+tutor_num_btn).prop('disabled',true);
                 })
               })
           });
@@ -382,5 +637,30 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
 }
 
 
-
+function disableRequest(i,tutorData){
+  var userRef = db.collection('users');
+    userRef.doc(uuid).get().then((doc)=>{
+      var curUserData = doc.data();
+      userRef.where("email", "==", tutorData.email)
+    .get()
+    .then((querySnapshot)=>{
+      querySnapshot.forEach((tutorDoc) =>{
+        var tutorId = tutorDoc.id;
+        db.collection('sessions').where("tutor_id","==",tutorId).where("user_id","==", uuid).where("accepted_session", "==", false)
+        .get()
+        .then((sessSnap)=>{
+          sessSnap.forEach((sess)=>{
+            if (sess.exists){
+                var tutor_num_btn = String("request_btn" + i);
+                //Disable request button; request already made
+                $('.'+tutor_num_btn).html("Request Pending");
+                  $('.'+tutor_num_btn).prop('disabled',true);
+              }
+          })
+          
+        })
+      })
+    }) 
+    }) 
+}
 
