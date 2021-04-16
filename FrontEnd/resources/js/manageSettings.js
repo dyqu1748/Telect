@@ -366,7 +366,7 @@ function displayProfile(data,user)
                 <div class="row">
                 <div class ="col-md">
                     <h4>Selected Avatar</h4> 
-					<img src="resources/img/child-${child.avatar}.png" style="width: 10%">
+					<img src="resources/img/child-${child.avatar}.png" style="width: 150px">
                 </div>
                 </div>
 
