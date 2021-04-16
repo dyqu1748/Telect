@@ -17,24 +17,39 @@ exports.handler =  async function( request, response, database) {
             matchingTutors = [];
             tutorSnapshot.forEach((tutorDoc) => {
                 // look for two consecutive time matches
-
                 i = 0
-                parentAvail = parentDoc.data().schedule
-                tutorAvail = tutorDoc.data().schedule
-                console.log("tutorAvail: " + JSON.stringify(tutorDoc.data()))
-                console.log("tutorAvail: " + JSON.stringify(tutorAvail))
+                // parentAvail = parentDoc.data().schedule
+                // tutorAvail = tutorDoc.data().schedule
+                parentAvail = parentDoc.data().availability
+                tutorAvail = tutorDoc.data().availability
+                //console.log("tutorAvail: " + JSON.stringify(tutorDoc.data()))
+                //console.log("tutorAvail: " + JSON.stringify(tutorAvail))
                 matchingTimes = []
                 Object.keys(parentAvail).forEach(key => {
                     parentDay = key
                     if (tutorAvail.hasOwnProperty(parentDay)) {
                         parentTimes = parentAvail[parentDay]
                         tutorTimes = tutorAvail[parentDay]
-                        Object.keys(parentTimes).forEach(key => {
+                        Object.keys(parentTimes).forEach( key => {
                             parentTime = parentTimes[key]
-                            Object.keys(tutorTimes).forEach(key => {
+                             Object.keys(tutorTimes).forEach(async key => {
+                                let sessionMatch = false;
                                 if (parentTime == tutorTimes[key]) {
                                     console.log(parentDay + "_" + parentTime)
-                                    matchingTimes.push(parentDay + "_" + parentTime)
+                                    //check if there is already a session for this user, this tutor
+                                    const sessionsRef = database.collection('sessions');
+                                    console.log(parentDay + "_" + parentTime)
+                                    await sessionsRef.where("user_id", "==", userid).where("tutor_id","==",tutorDoc.id).where('session_time', "==", parentDay + parentTime).get()
+                                        .then((sessionSnapshot) => {
+                                            sessionSnapshot.forEach((sessionDoc) => {
+                                                // doc.data() is never undefined for query doc snapshots
+                                                console.log(sessionDoc.id, " => ", sessionDoc.data());
+                                                console.log("sessionMatch for: " + userid + ", tutor_id: "+ tutorDoc.id + ", and time: " + parentDay + "_" + parentTime)
+                                                sessionMatch = true
+                                            });
+                                        });
+                                    console.log("sessionMatch: "+ sessionMatch + "sessionTime: "+ parentDay + "_" + parentTime)
+                                    if (!sessionMatch) {matchingTimes.push(parentDay + "_" + parentTime)}
                                 }
                             });
                         });
