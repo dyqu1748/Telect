@@ -23,6 +23,9 @@ var closeSpan = document.getElementById("close-session-info");
 closeSpan.onclick = function() {
   $("#footer").removeClass("dialogIsOpen");
   $("nav").removeClass("dialogIsOpen");
+  $("#view-schedule-header").removeClass("dialogIsOpen");
+  $("#scheduler").removeClass("dialogIsOpen");
+  $("#table").removeClass("dialogIsOpen");
   sessionInfoModal.fadeOut('fast');
 }
 
@@ -111,15 +114,12 @@ function checkScheduleReq(schedule){
       // get sessions
       var currentUserLabel = (data.user_type =="parent") ? "user_id" : "tutor_id";
       var otherUserLabel = (data.user_type =="parent") ? "tutor_id" : "user_id";
-      console.log("get sessions");
       db.collection('sessions').where(currentUserLabel, "==", uuid).get().then((doc) =>
       {
         if (!doc.empty) {
             doc.forEach(session => {
               var session_info = session.data();
-              console.log(session_info);
               var schedule_id = session_info.session_time.slice(0, session_info.session_time.length - 4)  + "_" + session_info.session_time.slice(-4);
-              console.log(schedule_id);
 
               if (session_info.accepted_session == true) {
                 if(document.getElementById(schedule_id).className == "scheduler_item_view_selected"){
@@ -129,21 +129,21 @@ function checkScheduleReq(schedule){
               } else {
                 if(document.getElementById(schedule_id).className == "scheduler_item_view_selected"){
                   document.getElementById(schedule_id).className = "scheduler_item_awaiting_session";
+                  document.getElementById(schedule_id).setAttribute("onclick", "showSessionInfo(this.id)");
                 }
               }
 
-              db.collection('users').doc(session_info[otherUserLabel]).get().then((match) => {
-                console.log(match.data());
-              });
             });
         }
       });
   }
 
 function showSessionInfo(id) {
-    console.log("in session info");
     $("#footer").addClass("dialogIsOpen");
     $("nav").addClass("dialogIsOpen");
+    $("#view-schedule-header").addClass("dialogIsOpen");
+    $("#scheduler").addClass("dialogIsOpen");
+    $("#table").addClass("dialogIsOpen");
     sessionInfoModal.fadeIn();
 
     var currentUserLabel = (userData.user_type =="parent") ? "user_id" : "tutor_id";
@@ -151,15 +151,13 @@ function showSessionInfo(id) {
 
     var html = ``;
     var modifiedId = id.replace("_", "");
-    console.log(modifiedId);
     db.collection('sessions').where(currentUserLabel, "==", uuid).where("session_time", "==", modifiedId).get().then((doc) =>
     {
       doc.forEach(req =>
       {
         var req_info = req.data();
         db.collection('users').doc(req_info[otherUserLabel]).get().then((match) => {
-            console.log(match.data());
-                console.log("here");
+
                 html += `
                 <div class="form-group row" id="req_${req.id}">
                 <div class="card w-75 mx-auto">
@@ -191,16 +189,22 @@ function showSessionInfo(id) {
                       all_subjects+= ', ';
                     }
                   });
-                  console.log(req_info);
-                  console.log(req_info.session_subject);
 
                   if (userData.user_type == "parent") {
                     html += `<img src= ${match.data().photoUrl} class="tutorPhoto">`
                   }
-                  html += `
-                      </br>
-                      <button onclick="goToManageMatches()" class="btn btn-primary rounded-pill">Cancel Session</button>
-                      </br>`;
+
+                  if (req_info.accepted_session == true) {
+                    html += `
+                          </br>
+                          <button onclick="goToManageMatches()" class="btn btn-primary rounded-pill">Cancel Session</button>
+                          </br>`;
+                  } else {
+                    html += `
+                          </br>
+                          <button onclick="goToManageMatches()" class="btn btn-primary rounded-pill" disabled> Request Pending</button>
+                          </br>`;
+                  }
 
                   html += ` </br>
                               </div>

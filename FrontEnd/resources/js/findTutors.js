@@ -77,17 +77,26 @@ window.onclick = function(event) {
 }
 
 function getMatches() {
+    console.log(uuid);
     $.ajax({
         url: 'https://us-central1-telect-6026a.cloudfunctions.net/tutorMatches/' + uuid,
         success : function(data) {
             display_matches(data);
             response = data;
+        },
+        error: function(xhr) {
+            $("#match-head").css("display", "none");
+            var html = `<h2> Sorry, no tutors could be found <h2>`;
+            $('#tutor-matches').html(html);
+            $('#loading_icon').fadeOut("fast");
+            $('#page-container').fadeIn("slow");
         }
     });
   return true;
 }
 
 function display_matches(data) {
+    console.log(data);
     var storage = firebase.storage().ref();
     var html = ``;
     var i;
@@ -133,6 +142,7 @@ function display_matches(data) {
     data.forEach(function(tutorData, ind){
       disableRequest(ind,tutorData);
     });
+    console.log("still here");
   $('#loading_icon').fadeOut("fast");
   $('#page-container').fadeIn("slow");
   return true;
@@ -462,16 +472,19 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
                  <div class="col-md-3">
                  <select class="selectpicker form-control" name="sessionTime" id="sessionTime" data-live-search="true" required>`
 
-          console.log(user_info.schedule);
-          //matchTimes = user_info.schedule.filter();
           for (var day in tutor_info.schedule) {
-            console.log(user_info.schedule[day]);
             // get matching times
             var matchingTimes = user_info.schedule[day].filter(function (item) {
                 return tutor_info.schedule[day].includes(item);
             });
 
             for (var i = 0; i < matchingTimes.length; i++) {
+                var id = day+matchingTimes[i];
+
+                if (tutor_info.booked_times.includes(id)) {
+                    continue;
+                }
+
                 // make time look better
                 var time = matchingTimes[i];
                 if (parseInt(time) >= 1200){
