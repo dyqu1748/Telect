@@ -22,6 +22,14 @@ function storeAccountType(account_type){
     }
     sessionStorage.setItem("account_type", account_type);
     $("#account_choice").addClass("d-none");
+    $('#inputConfirmPassword').tooltip({
+      placement: "right",
+      trigger: "focus"
+     });
+     $('#phone').tooltip({
+      placement: "right",
+      trigger: "focus"
+     });
     $('#register_fields').fadeIn();
 }
 
