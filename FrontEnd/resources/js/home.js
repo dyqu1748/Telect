@@ -51,7 +51,7 @@ firebase.auth().onAuthStateChanged(function(user) {
     <div id = "manage_matches">
         <a class="account_options" href = "manage_matches.html">
             <img class="img-fluid" src="resources/img/manage_matches.png"/>
-            <p class="img-label">Manage Matches</p>
+            <p class="img-label">Manage Sessions</p>
         </a>
     </div>
 

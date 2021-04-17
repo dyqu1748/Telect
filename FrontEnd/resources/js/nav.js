@@ -43,7 +43,7 @@ firebase.auth().onAuthStateChanged(function(user) {
     <a class="nav-link" href = "view_schedule.html"> View Schedule </a>
     </li>
     <li class="nav-item" value = "3" id="manage_matches-nav">
-    <a class="nav-link" href = "manage_matches.html" > Manage Matches </a>
+    <a class="nav-link" href = "manage_matches.html" > Manage Sessions </a>
     </li>
     <li class="nav-item" value = "4" id="message-nav">
     <a class="nav-link" href = "messages.html" > Messages </a>
