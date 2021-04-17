@@ -136,6 +136,9 @@ function checkScheduleReq(schedule){
             });
         }
       });
+      console.log("Done");
+    $('#loading_icon').fadeOut("fast");
+    $('#page-container').fadeIn("slow");
   }
 
 function showSessionInfo(id) {

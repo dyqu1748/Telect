@@ -93,7 +93,7 @@
             <div class="form-group row">
                 <div class="col-md-6">
                     <label for="phone" class="control-label">Phone Number</label>
-                    <input type="tel" id="phone" class="form-control" placeholder="Phone Number" pattern="[0-9]{10}" required>
+                    <input type="tel" id="phone" class="form-control" placeholder="Phone Number" pattern="[0-9]{10}" title="Phone numbers must only contain numbers and be in the format shown below." required>
                     <small id="phoneHelp" class="form-text text-muted">Format: 1234567890</small>
                 </div>
             </div>
@@ -107,7 +107,7 @@
                 </div>
                 <div class="col-md-3">
                     <label for="inputConfirmPassword" class="control-label">Confirm Password</label>
-                    <input type="password" id="inputConfirmPassword" name="pass2" class="form-control" placeholder="Confirm Password">    
+                    <input type="password" id="inputConfirmPassword" name="pass2" class="form-control" placeholder="Confirm Password"  title="Both passwords must match." required>    
                 </div>
             </div>
             <br>
@@ -127,7 +127,7 @@
                 </div>
                 <div class="col-md-3">
                     <label for="zipCode" class="control-label">Zip Code</label>
-                    <input id="zipCode" class="form-control" placeholder="Zip Code" pattern="[0-9]{5}" required>
+                    <input id="zipCode" class="form-control" placeholder="Zip Code" pattern="[0-9]{5}" title="Zip code must only contain 5 numbers." required >
                 </div>
             </div>
 

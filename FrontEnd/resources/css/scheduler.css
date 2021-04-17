@@ -86,6 +86,7 @@
     background-color: #5271FF;
     display: inline-grid;
     place-items: center;
+    cursor: pointer;
 }
 
 .scheduler_item_awaiting_session {

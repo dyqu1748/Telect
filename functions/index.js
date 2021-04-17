@@ -86,8 +86,11 @@ exports.notifyUserSession = functions.firestore
         if (newValue.requested_session === true){
             //Parent requested session: Notify tutor
             const notifyId = newValue.tutor_id;
-            //REMINDER: Need to test to make sure it doesn't overwrite message notification
+            firestore.doc('users/'+newValue.user_id).update({
+                "booked_times":admin.firestore.FieldValue.arrayUnion(newValue.session_time)
+            });
             return firestore.doc('users/'+notifyId).update({
+                "booked_times":admin.firestore.FieldValue.arrayUnion(newValue.session_time),
                 "notifications.sessions":admin.firestore.FieldValue.arrayUnion(sess)
             });
 
@@ -95,10 +98,23 @@ exports.notifyUserSession = functions.firestore
         else{
             //Tutor acepted session: Notify parent
             const notifyId = newValue.user_id;
+            firestore.doc('users/'+newValue.tutor_id).update({
+                "booked_times":admin.firestore.FieldValue.arrayUnion(newValue.session_time)
+            });
             return firestore.doc('users/'+notifyId).update({
+                    "booked_times":admin.firestore.FieldValue.arrayUnion(newValue.session_time),
                     "notifications.sessions":admin.firestore.FieldValue.arrayUnion(sess)
             });
         }
+    }
+    else{
+        const oldDocument = change.before.data();
+        firestore.doc('users/'+oldDocument.user_id).update({
+            "booked_times":admin.firestore.FieldValue.arrayRemove(oldDocument.session_time)
+        });
+        return firestore.doc('users/'+oldDocument.tutor_id).update({
+            "booked_times":admin.firestore.FieldValue.arrayRemove(oldDocument.session_time)
+        });
     }
 });
 
