@@ -11,8 +11,7 @@ exports.handler =  async function( request, response, database) {
         response.send({"success": false});
     } else {
         //query for tutor match
-        let tutorSnapshot = await usersRef.where("user_type","==","tutor").where("minSession", '>=',
-            parentDoc.data().minSession).where("minSession", '<=', parentDoc.data().maxSession).get()
+        let tutorSnapshot = await usersRef.where("user_type","==","tutor").where("minSession", '<=', parentDoc.data().maxSession).get()
         try {
             matchingTutors = [];
             let tutorDoc;
