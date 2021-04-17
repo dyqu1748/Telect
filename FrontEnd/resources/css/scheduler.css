@@ -95,4 +95,42 @@
     place-items: center;
 }
 
+.not_available {
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    background-color: #ff9194;
+    left: 5px;
+    top: 5px;
+}
+
+.available {
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    background-color: #A7FBBB;
+    left: 5px;
+    top: 5px;
+}
+
+.pending_session {
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    background-color: #FADF71;
+    left: 5px;
+    top: 5px;
+
+}
+
+.accepted_session {
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    background-color: #5271FF;
+    left: 5px;
+    top: 5px;
+
+}
+
 
