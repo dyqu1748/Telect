@@ -61,7 +61,7 @@ exports.handler =  async function( request, response, database) {
                         }
                     }
                 }
-                console.log("matchintTimes.length: " + matchingTimes.length)
+                console.log("matchingTimes.length: " + matchingTimes.length)
                 if (matchingTimes.length > 0) {
                     let tutor = tutorDoc.data()
                     tutor['matchingtimes'] = matchingTimes
