@@ -57,11 +57,14 @@ exports.updateAvailability =  functions.https.onRequest(async (request, response
 exports.notifyNewMessage = functions.firestore
     .document('conversations/{convId}')
     .onWrite((change, context) => {
+        //When a message is created or updated, notify the recieving user of a new message.
         const newValue = change.after.exists ? change.after.data() : null;
         const allUsers = newValue.users;
         const conv = context.params.convId;
+        //Get the user who sent the newest message
         const newMessageUser = newValue.messages[newValue.messages.length-1].userId;
         console.log(conv,newMessageUser);
+        //Send notification to other user about new message.
         if (newMessageUser === allUsers[0]){
             const notifyUser = allUsers[1];
             return firestore.doc('users/'+notifyUser).update({
@@ -79,16 +82,20 @@ exports.notifyNewMessage = functions.firestore
 exports.notifyUserSession = functions.firestore
 .document('sessions/{sessID}')
 .onWrite((change, context) => {
+    //When a session is created/updated/deleted, inform the recieving user.
     const newValue = change.after.exists ? change.after.data() : null;
     const sess = context.params.sessID;
 
+    //Check if session was cancelled.
     if (newValue !== null){
         if (newValue.requested_session === true){
-            //Parent requested session: Notify tutor
+            //Parent requested session.
             const notifyId = newValue.tutor_id;
+            //Add time of session to booked time attribute of both users. Ensures of no double-booking
             firestore.doc('users/'+newValue.user_id).update({
                 "booked_times":admin.firestore.FieldValue.arrayUnion(newValue.session_time)
             });
+            //Send notification to tutor about requested session 
             return firestore.doc('users/'+notifyId).update({
                 "booked_times":admin.firestore.FieldValue.arrayUnion(newValue.session_time),
                 "notifications.sessions":admin.firestore.FieldValue.arrayUnion(sess)
@@ -96,11 +103,13 @@ exports.notifyUserSession = functions.firestore
 
         }
         else{
-            //Tutor acepted session: Notify parent
+            //Tutor acepted session
             const notifyId = newValue.user_id;
+            //Add time of session to booked time attribute of both users. Ensures of no double-booking
             firestore.doc('users/'+newValue.tutor_id).update({
                 "booked_times":admin.firestore.FieldValue.arrayUnion(newValue.session_time)
             });
+            //Send notification to parent about accepted session 
             return firestore.doc('users/'+notifyId).update({
                     "booked_times":admin.firestore.FieldValue.arrayUnion(newValue.session_time),
                     "notifications.sessions":admin.firestore.FieldValue.arrayUnion(sess)
@@ -108,6 +117,7 @@ exports.notifyUserSession = functions.firestore
         }
     }
     else{
+        //Session canceled. Removed booked time from both users.
         const oldDocument = change.before.data();
         firestore.doc('users/'+oldDocument.user_id).update({
             "booked_times":admin.firestore.FieldValue.arrayRemove(oldDocument.session_time)
