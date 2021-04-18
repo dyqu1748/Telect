@@ -2,16 +2,9 @@
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
     console.log("User found");
-	user.providerData.forEach(function (profile) {
-		console.log("Sign-in provider: " + profile.providerId);
-		console.log("  Provider-specific UID: " + profile.uid);
-		console.log("  Name: " + profile.displayName);
-		console.log("  Email: " + profile.email);
-		console.log("  Photo URL: " + profile.photoURL);
-	  });
 
 	db.collection('users').doc(user.uid).onSnapshot((doc)=> {
-		console.log(doc.data());
+		//Display current user's info
 		const reveal = async () => {
 			const result = await displayProfile(doc.data(),user)
 			$('#loading_icon').css('display','none');
@@ -20,23 +13,23 @@ firebase.auth().onAuthStateChanged(function(user) {
 		reveal();
 	});
   } else {
+	// No user logged in. Redirect to landing page.
     console.log("No user signed in");
 	location.replace("index.html");
   }
 });
 
+//Dictionaries for use later to present information more nicely
 var subject_keys = {'math':'Math','geometry':'Geometry','pre-algebra':'Pre-Algebra','algebra':'Algebra','science':'Science','geology':'Geology','chemistry':'Chemistry','social_studies':'Social Studies','govtHist': 'U.S. Government and History','language_arts':'Language Arts','spanish': 'Spanish'};
 var location_keys = {'online':'Online','in_person':'In Person'};
 var grade_keys = {'k':'Kindergarten', '1':'1st Grade', '2':'2nd Grade', '3':'3rd Grade', '4':'4th Grade', '5':'5th Grade', '6':'6th Grade', '7':'7th Grade', '8':'8th Grade'}; 
 
 function displayProfile(data,user)
 {
-	// Account Info
-	for (let key in data){
-		console.log(key);
-	}
+
 	var all_loc ="";
 	if (typeof data.location_pref != "string"){
+		//For tutor, build location preference string if they have more than one preference
 		data.location_pref.forEach(function(locat,ind){
 		all_loc+= location_keys[locat]
 		if (ind < data.location_pref.length-1){
@@ -45,9 +38,10 @@ function displayProfile(data,user)
 	});
 	}
 	else{
+		//Parent location preference is just a string. Set location to its value.
 		all_loc = location_keys[data.location_pref];
 	}
-	
+	//Build and display user info
 	var html =  `<br>  
 			<h2><u>User information</u></h2> 
 			<br>
@@ -308,6 +302,7 @@ function displayProfile(data,user)
 			<h2><u>Session Preferences</u></h2>
 			<br>`;
 	if (data.user_type == 'parent'){
+		//Build and display parent specific info
 		var capBGCheck = data.background_check;
 		capBGCheck = capBGCheck.charAt(0).toUpperCase() + capBGCheck.slice(1);
 		html+= `
@@ -329,6 +324,7 @@ function displayProfile(data,user)
 			</div>
 		</div>
 		`;
+		//Build and display children info (if parent has any)
 		if (data.children.length > 0){
 			var allChildInfo = `<br><h2><u>Child Information</u></h2><br>`;
             data.children.forEach(function(child,index){
@@ -377,6 +373,7 @@ function displayProfile(data,user)
 	}
 	else{
 		var all_grades="";
+		//Build a string containing all of the tutor's grade preferences
 		data.grade.forEach(function(curGrade,ind){
 			all_grades+=grade_keys[curGrade];
               if (ind < data.grade.length-1){
@@ -384,12 +381,14 @@ function displayProfile(data,user)
               }
 		})
 		var all_subjects ="";
+		//Build a string containing all of the tutor's subject preferences
 		data.subjects.forEach(function(subject,ind){
 			all_subjects+=subject_keys[subject];
               if (ind < data.subjects.length-1){
                 all_subjects+= ', ';
               }
 		})
+		//Build and display tutor specific info
 		html+= `
 		<div class="row">
 				<div class ="col-md">
@@ -429,6 +428,7 @@ function displayProfile(data,user)
 
 		`;
 	}
+	//Add account management buttons to bottom of page.
 	html += `<div class="form-group row">
 	<div class="col-md-2">
 	<button class="btn btn-secondary rounded-pill" onclick="onEdit()">Edit Profile</button>
@@ -441,15 +441,15 @@ function displayProfile(data,user)
 	</div>
 	</div>`;
 	$('#display-details').html(html);
+	//Fill out scheduler with user's availability.
 	Object.keys(data.schedule).forEach(function(day){
 		data.schedule[day].forEach(function(time){
 			var curId = day+'_'+time+'_review';
-			console.log(curId);
 			$('#'+curId).addClass('scheduler_item_selected').removeClass('scheduler_item_review');
 		})
 		
 	})
-	console.log("DONE");
+
 	return true;
 }
 
@@ -459,7 +459,7 @@ function onEdit()
 	  if (user) {
 	    console.log("User found");
 	    var user = firebase.auth().currentUser;
-
+		//Get info to fill in fields for editing.
 		db.collection('users').doc(user.uid).onSnapshot((doc)=> {
 			editProfile(doc.data(), user);
 		});
@@ -799,6 +799,7 @@ function editProfile(data, user)
             </div>
 			<br>
 				  `;
+	//Build user specific fields and fill them with the user's info
 	if (data.user_type == "parent"){
 		userInfo+= `
 
@@ -846,12 +847,11 @@ function editProfile(data, user)
 		$('input[name="location_pref"][value="'+data.location_pref+'"]').click();
 		$('input[name="background_check"][value="'+data.background_check+'"]').click();
 
+		//Build and fill out child forms if user has any children
 		if (data.children.length > 0){
-			console.log(child_counter);
 			data.children.forEach(function(child){
 				if (child_counter == 0){
 					child_counter++;
-					console.log(child.grade);
 					var childInfo=`
 					<br>
 					<h2 id="child-info-head"><u>Children Information</u></h2>
@@ -928,6 +928,7 @@ function editProfile(data, user)
 				}
 			});
 		}
+		//Display add and remove child buttons if the user already has children
 		if (child_counter > 0){
 			var addChildButtons = `
 		<div class="form-group row">
@@ -945,6 +946,7 @@ function editProfile(data, user)
 		</div>
 		`;
 		}
+		//Only display add child button if user has no children.
 		else{
 			var addChildButtons = `
 			<br>
@@ -1066,6 +1068,7 @@ function editProfile(data, user)
                 </div>
 		`;
 		$('#display-details').html(userInfo);
+		//Fill in tutor fields with their info
 		for (let id in data){
 			if(id == 'location_pref'){
 				if (data[id].length > 1 ){
@@ -1085,14 +1088,17 @@ function editProfile(data, user)
 			}
 		}
 	}
+	//Add submit button to end of form.
 	var subButton = `<div class="form-group row">
 	<div class="col-lg-3">
 	<button type="submit" class="btn btn-lg btn-primary rounded-pill" form="display-details">Update Profile</button>
 	</div>
 	</div>`;
 	$('#display-details').append(subButton);
+	//Refresh imagepicker and selectpicker fields for proper display
 	$(".image-picker").imagepicker('refresh');
 	$(".selectpicker").selectpicker("refresh");
+	//Listen for changes in min session field. Adjust min of maximum session field to match min session field value.
 	$('#minSession').change(function(){
 		var newMin = parseFloat($('#minSession').val());
 		$('#maxSession').attr('min', newMin);
@@ -1101,10 +1107,10 @@ function editProfile(data, user)
 		placement: "right",
 		trigger: "focus"
    });
+   //Fill out scheduler with days already selected in user's info.
    Object.keys(data.schedule).forEach(function(day){
 	data.schedule[day].forEach(function(time){
 		var curId = day+'_'+time;
-		console.log(curId);
 		$('#'+curId).click();
 	})
 	
@@ -1120,7 +1126,7 @@ function updateaccount()
 	    console.log("User found");
 	    var user = firebase.auth().currentUser;
 		var updateUser = db.collection('users').doc(user.uid);
-
+		//Grab field values from the page
 	    var fname = document.getElementById("fname").value;
 		var lname = document.getElementById("lname").value;
 		var phone = document.getElementById("phone").value;
@@ -1131,16 +1137,22 @@ function updateaccount()
 		var zipCode = document.getElementById("zipCode").value;
 		var min_session = document.getElementById("minSession").value;
 		var schedule = getScheduleDays()[1];
+        //Check if the user has selected at least one slot for their schedule
 		if (checkScheduleReq(schedule) == false){
+			//User has not selected a slot. Scroll up to scheduler, inform user to select a slot.
 			$([document.documentElement, document.body]).animate({
 			  scrollTop: $("#scheduler").offset().top-150
 		  }, 1000);
 		  window.alert("Please choose at least one slot for you availability.");  
 			return false;
 		  }
+		//Fade out page and display loader while information is being updated.
 		$('#loading_icon').fadeIn();
   		$('#page-container').css('filter', 'blur(1.5rem)');
+		$('#footer').css('filter', 'blur(1.5rem)');
+		//Check account type by fields present on page
 		if ($('#maxSession').length > 0){
+			//Parent account. Get account specific info and update account info.
 			var max_session = document.getElementById("maxSession").value;
 			var location_pref = $('input[name="location_pref"]:checked').val();
 			var background_check = $('input[name="background_check"]:checked').val();
@@ -1167,8 +1179,7 @@ function updateaccount()
 			}
 			childData.push(childItem)
 			}
-			console.log(child_counter);
-			
+			//Write new info to database
 			return updateUser.update({
 			"first_name": fname,
 			"last_name": lname,
@@ -1188,10 +1199,12 @@ function updateaccount()
 			.then(()=>{
 				return updateUser.get().then((doc) => {
 					if (doc.exists) {
+						//Display updated info to page.
 						displayProfile(doc.data(),user);
 						child_counter = 0;
 						$('#loading_icon').css('display','none');
 						$('#page-container').css('filter', 'blur(0px)');
+						$('#footer').css('filter', 'blur(0px)');
 					} else {
 						// doc.data() will be undefined in this case
 						console.log("No such document!");
@@ -1202,6 +1215,7 @@ function updateaccount()
 			});
 		}
 		else{
+			//Tutor account. Get account specific info and update account info.
 			if ($('input[name="in_person_sessions"]:checked').val() == "yes"){
 				var location_pref = ["in_person","online"];
 			}
@@ -1215,6 +1229,7 @@ function updateaccount()
 			var subjects = $('#subjects').val()
 			var bio = $("#bio").val();
 
+			//Write new info to database
 			return updateUser.update({
 				"first_name": fname,
 				"last_name": lname,
@@ -1232,6 +1247,7 @@ function updateaccount()
 				"bio": bio
 				})
 			.then(()=>{
+				//Upload resume and profile picture files to Firestore
 				var resumeFile = $('#resume').prop('files')[0];
 				var profilePic = $('#photo').prop('files')[0];
 				if (resumeFile != undefined || profilePic != undefined){
@@ -1250,9 +1266,11 @@ function updateaccount()
 			.then(()=>{
 				return updateUser.get().then((doc) => {
 					if (doc.exists) {
+						//Display updated info to page.
 						displayProfile(doc.data(),user);
 						$('#loading_icon').css('display','none');
 						$('#page-container').css('filter', 'blur(0px)');
+						$('#footer').css('filter', 'blur(0px)');
 					} else {
 						// doc.data() will be undefined in this case
 						console.log("No such document!");
@@ -1272,9 +1290,11 @@ function updateaccount()
 
 function uploadPhoto(profilePic, user){
 	var storageRef = firebase.storage().ref();
+	//Rename the file to the user's uid.
 	var picName = 'profilePictures/'+user.uid+'.'+profilePic.name.split('.').pop(); 
 	var picRef = storageRef.child(picName);
 	const userCollectionRef = db.collection('users').doc(user.uid);
+	//Upload file to Firebase
 	return picRef.put(profilePic,profilePic.type).then((snapshot) =>{
 		console.log("Uploaded profile pic!");
 	}).then(()=>{
@@ -1284,19 +1304,23 @@ function uploadPhoto(profilePic, user){
 		});
 	})
 	.then(() =>{
+		//Save file url to user's database document as well for display later
         return storageRef.child(picName).getDownloadURL().then((url) =>{
             return userCollectionRef.update({"photoUrl": url})});
     });
 }
 
 function uploadResume(resumeFile, user){
+	//Rename the file to the user's uid.
 	var storageRef = firebase.storage().ref();
 	var resumeName = 'resumes/'+user.uid+'.'+resumeFile.name.split('.').pop();
 	var resumeRef = storageRef.child(resumeName);
 	const userCollectionRef = db.collection('users').doc(user.uid);
+	//Upload file to Firebase
 	return resumeRef.put(resumeFile,resumeFile.type).then((snapshot) =>{
 		console.log("Uploaded resume!");
 	}).then(() => {
+		//Save file url to user's database document as well for display later
         return storageRef.child(resumeName).getDownloadURL().then((url) => {
             return userCollectionRef.update({"resumeUrl": url})});
       });
@@ -1304,7 +1328,7 @@ function uploadResume(resumeFile, user){
 
 function editPersonalInfo(infoType){
 	if (infoType == "email"){
-		var user = firebase.auth().currentUser;
+		//Build and display edit email fields
 		var html = `
 		<div class="row">
 		<div class="col">
@@ -1339,6 +1363,7 @@ function editPersonalInfo(infoType){
 			`;
 	}
 	else{
+		//Build and display edit password fields
 		var html = `
 		<div class="row">
 		<div class="col">
@@ -1378,15 +1403,17 @@ function editPersonalInfo(infoType){
 		</div>
 		`;
 	}
+	//Fade in personal info fields to page
 	$('#personal-info').html(html);
 	$('#general-info').fadeOut("fast");
 	$('#personal-info').fadeIn();
-	console.log(firebase.auth().currentUser);
 }
 
 function updateEmail(){
+	//Blur page and show loading icon while info is being updated
 	$('#loading_icon').fadeIn();
 	$('#page-container').css('filter', 'blur(1.5rem)');
+	$('#footer').css('filter', 'blur(1.5rem)');
 	var user = firebase.auth().currentUser;
 	var password = $('#password').val();
 	var credential = firebase.auth.EmailAuthProvider.credential(
@@ -1398,7 +1425,7 @@ function updateEmail(){
 	console.log("Reverified");
 	var newEmail = $('#email').val();
 	user.updateEmail(newEmail).then(() => {
-		// Update successful.
+		// Update successful. Display success message to user.
 		console.log("Email Updated");
 		var suc = `<div class="alert alert-success alert-dismissible">
 		<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
@@ -1408,7 +1435,7 @@ function updateEmail(){
 		$('#loading_icon').css('display','none');
 		$('#page-container').css('filter', 'blur(0px)');
 	  }).catch(()=>{
-		// An error happened.
+		// An error happened. Display error message to user.
 		console.log("Failed to update email");
 		var fail = `<div class="alert alert-danger alert-dismissible">
 		<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
@@ -1417,9 +1444,10 @@ function updateEmail(){
 		$('#personal-info').prepend(fail);
 		$('#loading_icon').css('display','none');
 		$('#page-container').css('filter', 'blur(0px)');
+		$('#footer').css('filter', 'blur(0px)');
 	  });
 	}).catch(() => {
-	// An error happened.
+	// An error happened. Display error message to user.
 	console.log("Invalid Credentials");
 	var fail = `<div class="alert alert-danger alert-dismissible">
 		<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
@@ -1428,13 +1456,16 @@ function updateEmail(){
 		$('#personal-info').prepend(fail);
 		$('#loading_icon').css('display','none');
 		$('#page-container').css('filter', 'blur(0px)');
+		$('#footer').css('filter', 'blur(0px)');
 	});
 	return false;
 }
 
 function updatePassword(){
+	//Blur page and show loading icon while info is being updated
 	$('#loading_icon').fadeIn();
 	$('#page-container').css('filter', 'blur(1.5rem)');
+	$('#footer').css('filter', 'blur(1.5rem)');
 	var user = firebase.auth().currentUser;
 	var curPassword = $('#curPassword').val();
 	var credential = firebase.auth.EmailAuthProvider.credential(
@@ -1446,7 +1477,7 @@ function updatePassword(){
 	console.log("Reverified");
 	var newPassword = $('#newPassword').val();
 	user.updatePassword(newPassword).then(() => {
-		// Update successful.
+		// Update successful. Display success message to user.
 		console.log("Password Updated");
 		var suc = `<div class="alert alert-success alert-dismissible">
 		<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
@@ -1456,7 +1487,7 @@ function updatePassword(){
 		$('#loading_icon').css('display','none');
 		$('#page-container').css('filter', 'blur(0px)');
 	  }).catch(() => {
-		// An error happened.
+		// An error happened. Display error message to user.
 		confirm.log("Failed to update password");
 		var fail = `<div class="alert alert-danger alert-dismissible">
 		<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
@@ -1467,7 +1498,7 @@ function updatePassword(){
 		$('#page-container').css('filter', 'blur(0px)');
 	  });
 	}).catch(() => {
-	// An error happened.
+	// An error happened. Display error message to user.
 	console.log("Invalid Credentials");
 	var fail = `<div class="alert alert-danger alert-dismissible">
 		<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
@@ -1481,6 +1512,7 @@ function updatePassword(){
 }
 
 function editGeneralInfo(){
+	//Fade out personal info fields, fade in general info area.
 	$("#personal-info").fadeOut();
 	$("#general-info").fadeIn();
 	$("#personal-info").empty();

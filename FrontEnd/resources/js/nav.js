@@ -1,5 +1,7 @@
+//Check if user is signed in.
 firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
+      //User is signed in, build navbar.
       console.log("User found");
       var user = firebase.auth().currentUser;
   
@@ -7,6 +9,7 @@ firebase.auth().onAuthStateChanged(function(user) {
           displayNav(doc.data());
       });
     } else {
+      //User is not signed in. Redirect to landing page.
       console.log("No user signed in");
       location.replace("index.html");
     }
@@ -15,6 +18,7 @@ firebase.auth().onAuthStateChanged(function(user) {
   function displayNav(data) 
   {
     var user = firebase.auth().currentUser;
+    //Append account specific link to navbar
     if (data.user_type == 'parent') {
       var html = `
       <li class="nav-item">
@@ -28,14 +32,6 @@ firebase.auth().onAuthStateChanged(function(user) {
         <a class="nav-link" href = "view_requests.html"> View Requests </a>
         </li>
         `;
-
-        db.collection('sessions').where("tutor_id", "==", user.uid).where("requested_session", "==", true).get().then((doc) => 
-        {
-            doc.forEach(req =>
-            {
-                $('#view_requests_nav').append('<span class="dotNav"></span>');
-            })
-        })
     }
 
     html += `
@@ -60,6 +56,7 @@ firebase.auth().onAuthStateChanged(function(user) {
     var navClass = document.getElementsByClassName("nav-link");
     var path = window.location.href;
 
+    //Highlight navbar link corresponding to the page the user is currently on.
     for (i = 0; i < navClass.length; i++) {
     if (path.includes(navClass[i].href)) {
         navClass[i].classList.add("active");
@@ -67,6 +64,7 @@ firebase.auth().onAuthStateChanged(function(user) {
   }
 
   if (data.notifications !== undefined ){
+    //Add notifiaction dot to their respective link if any exist
     if (data.notifications.messages !== undefined){
         if (data.notifications.messages.length > 0){
             $('#message-nav').append('<span class="dotNav"></span>');

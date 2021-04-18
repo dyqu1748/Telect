@@ -52,7 +52,7 @@
             </div>
             <div class="card-body">
               <h5 class="card-title text-center">Reset Password</h5>
-              <div class="not_logged_in">
+              <div class="not_logged_in" id ="not_logged_in">
                 
                 <div class="form-group row">
                     <div class="col">
@@ -60,6 +60,12 @@
                         <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required>
                     </div>
                 </div>
+
+                <div class="form-group row" id="error-row" style="display: none;">
+                  <div class="col">
+                      <p id="error-message" class="error"></p>
+                  </div>
+              </div>
 
                 <div class="form-group row">
                     <div class="col">
@@ -74,7 +80,7 @@
                 </div>
               </div>
         
-              <div class="logged_in">
+              <div class="logged_in" id="logged_in">
                 <p>A password reset email has been sent. Please check your inbox to reset your email.</p>
                 <a class="d-block text-center mt-2" href="sign_in.html">Sign in</a>              
               </div>
