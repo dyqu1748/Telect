@@ -7,7 +7,6 @@ app.use(express.static('.'));
 const YOUR_DOMAIN = 'http://localhost:5000';
 
 exports.handler = async function(request, response, database) {
-
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
             line_items: [
