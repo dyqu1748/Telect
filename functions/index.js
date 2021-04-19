@@ -1,3 +1,9 @@
+/**
+ * @index
+ * This file contains the firebase cloud unctions.
+ *
+ */
+
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const matches = require('./matches');
@@ -20,19 +26,22 @@ measurementId: "G-GBP3LB0T8V"
 admin.initializeApp(firebaseConfig)
 const firestore = admin.firestore()
 
-
+//serve caller with Telect approved locations as per locations.js
 exports.availableLocations = functions.https.onRequest((request, response) => {
     locations.handler(request,response,firestore);
 });
 
+//serve caller with tutorMatches as per matches.js
 exports.tutorMatches =  functions.https.onRequest( async(request, response) => {
     await matches.handler(request,response,firestore);
 });
 
+//serve caller with paywithstripe api as per payments.js
 exports.paywithstripe = functions.https.onRequest((request, response) => {
     payments.handler(request,response,firestore);
 });
 
+//this function is to help with testing only, do not use in production
 exports.updateAvailability =  functions.https.onRequest(async (request, response) => {
     response.setHeader('Content-Type', 'application/json')
     avail = JSON.parse(request.body)
@@ -59,6 +68,7 @@ exports.updateAvailability =  functions.https.onRequest(async (request, response
     }
 });
 
+//serves caller with new messages in chat
 exports.notifyNewMessage = functions.firestore
     .document('conversations/{convId}')
     .onWrite((change, context) => {
@@ -84,6 +94,7 @@ exports.notifyNewMessage = functions.firestore
         }
       });
 
+//serves caller with new session
 exports.notifyUserSession = functions.firestore
 .document('sessions/{sessID}')
 .onWrite((change, context) => {
