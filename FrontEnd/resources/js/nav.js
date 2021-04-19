@@ -15,6 +15,12 @@ firebase.auth().onAuthStateChanged(function(user) {
     }
   });
 
+// Display the correct headers depending on whether the user is a parent or a tutor
+// For parent, they will have 'Find Tutors', 'View Schedule', 'Manage Sessions', 
+// 'View Messages', 'Donate', and 'Settings'
+//
+// For tutor, they will have 'View Requests', 'View Schedule', 'Manage Sessions', 
+// 'View Messages', 'Donate', and 'Settings'
   function displayNav(data) 
   {
     var user = firebase.auth().currentUser;
@@ -63,6 +69,8 @@ firebase.auth().onAuthStateChanged(function(user) {
     }
   }
 
+  // Add notification dots to the icon if there is a new message, session request, or
+    // session acceptance.
   if (data.notifications !== undefined ){
     //Add notifiaction dot to their respective link if any exist
     if (data.notifications.messages !== undefined){

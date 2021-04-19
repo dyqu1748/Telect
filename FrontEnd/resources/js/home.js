@@ -1,3 +1,4 @@
+// Get current user
 firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
       console.log("User found");
@@ -16,6 +17,12 @@ firebase.auth().onAuthStateChanged(function(user) {
     }
   });
 
+// Depending on where the user is a parent or a tutor, display the correct icons
+// For parent, they will have 'Find Tutors', 'View Schedule', 'Manage Sessions', 
+// 'View Messages', 'Donate', and 'Settings'
+//
+// For tutor, they will have 'View Requests', 'View Schedule', 'Manage Sessions', 
+// 'View Messages', 'Donate', and 'Settings'
   function displayHome(data)
 {
     var user = firebase.auth().currentUser;
@@ -80,6 +87,9 @@ firebase.auth().onAuthStateChanged(function(user) {
 
     document.getElementById("user_name").innerHTML ="Hello, " + data.first_name + ".";
     document.getElementById("dashboard").innerHTML = html;
+    
+    // Add notification dots to the icon if there is a new message, session request, or
+    // session acceptance.
     if (data.notifications !== undefined ){
         if (data.notifications.messages !== undefined){
             if (data.notifications.messages.length > 0){
