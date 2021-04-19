@@ -481,8 +481,10 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
             for (var i = 0; i < matchingTimes.length; i++) {
                 var id = day+matchingTimes[i];
 
-                if (tutor_info.booked_times.includes(id)) {
-                    continue;
+                if (tutor_info.booked_times) {
+                    if (tutor_info.booked_times.includes(id)) {
+                        continue;
+                    }
                 }
 
                 // make time look better
