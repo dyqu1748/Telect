@@ -7,6 +7,8 @@ app.use(express.static('.'));
 const YOUR_DOMAIN = 'http://localhost:5000';
 
 exports.handler = async function(request, response, database) {
+        payment_details = JSON.parse(request.body);
+        console.log("session_price: " + payment_details.session_price)
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
             line_items: [
@@ -14,17 +16,17 @@ exports.handler = async function(request, response, database) {
                     price_data: {
                         currency: 'usd',
                         product_data: {
-                            name: '1 tutoring session',
-                            images: ['https://i.imgur.com/EHyR2nP.png'],
+                            name: payment_details.session_description,
+                            images: [payment_details.session_image],
                         },
-                        unit_amount: 2000,
+                        unit_amount: payment_details.session_price*100,
                     },
                     quantity: 1,
                 },
             ],
             mode: 'payment',
-            success_url: `${YOUR_DOMAIN}/success.html`,
-            cancel_url: `${YOUR_DOMAIN}/cancel.html`,
+            success_url: `${YOUR_DOMAIN}/` + payment_details.success_url,
+            cancel_url: `${YOUR_DOMAIN}/` + payment_details.cancel_url,
         });
         cors() ( request, response, () => {
         response.json({id: session.id});

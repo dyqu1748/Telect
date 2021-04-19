@@ -10,26 +10,27 @@
     <section>
       <div class="product">
         <img
-          src="https://i.imgur.com/EHyR2nP.png"
-          alt="The cover of Stubborn Attachments"
+          src="https://i.imgur.com/XJoVcqb.png"
+          alt="One Telect Session"
         />
         <div class="description">
-          <h3>Stubborn Attachments</h3>
+          <h3>One Telect Session</h3>
           <h5>$20.00</h5>
         </div>
       </div>
-      <button type="button" id="checkout-button">Checkout</button>
+      <button type="button" id="checkout-button">Confirm Session and Payment</button>
     </section>
   </body>
   <script type="text/javascript">
     // Create an instance of the Stripe object with your publishable API key
     var stripe = Stripe("pk_test_51IfXuHFH7byQmJ4zcpvfyn7oMJUv0MWzlFCXSHzk3XLO5nXRX8IhNelf8KxDIamjKcBCScuVwISkHMF32gum4F4300kmu0IsJL");
     var checkoutButton = document.getElementById("checkout-button");
-
+    var json_body = JSON.stringify({session_price: 20.00, session_description: "1 Telect Session", session_image: "https://i.imgur.com/XJoVcqb.png", success_url:"success.html", cancel_url:"cancel.html"})
     checkoutButton.addEventListener("click", function () {
-      fetch("https://us-central1-telect-6026a.cloudfunctions.net/paywithstripe", {
+      fetch("http://localhost:5001/telect-6026a/us-central1/paywithstripe", {
         method: "POST",
-      })
+        body: json_body
+        })
         .then(function (response) {
           return response.json();
         })
