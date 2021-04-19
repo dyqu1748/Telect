@@ -4,7 +4,7 @@ const cors = require('cors');
 const express = require('express');
 const app = express();
 app.use(express.static('.'));
-const YOUR_DOMAIN = 'http://localhost:5000';
+const YOUR_DOMAIN = 'https://telect.school';
 
 exports.handler = async function(request, response, database) {
         payment_details = JSON.parse(request.body);

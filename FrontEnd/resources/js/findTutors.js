@@ -573,7 +573,12 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
              </div>
             <div class="form-group row">
              <div class="col">
-            <button id="confirm_btn" type="submit" class="btn btn-lg btn-primary rounded-pill">Confirm Session</button>
+            <button id="confirm_btn" type="submit" class="btn btn-lg btn-primary rounded-pill">Schedule and Pay for Session</button>
+             </div>
+             </div>
+             <div class="form-group row">
+             <div class="col">
+                <p><em><strong>Attention!</strong> Our payment system is currently still in development. For now, use the card number 4242 4242 4242 4242 on the payment page with an expiration date later than the current date. The rest of the information can be anything.</em></small></p>
              </div>
              </div>
         `;
@@ -635,7 +640,11 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
                 doc.forEach(tdoc => {
                   tid = tdoc.id;
                   console.log(tdoc.id);
-                  
+                  //Setup attributes for stripe payment
+                  var session_cost = $("#final_price").val();
+                  var session_desc = "1 Telect Session with " + tutor_info.first_name + " " + tutor_info.last_name; 
+                  var json_body = JSON.stringify({session_price: session_cost, session_description: session_desc, session_image: "https://i.imgur.com/XJoVcqb.png", success_url:"find_tutors.html", cancel_url:"find_tutors.html"});
+
                   // Add of the necessary data to the database
                   db.collection('sessions').add({
                     user_id : user.uid,
@@ -648,18 +657,34 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
                     session_loc : $('input[name="location_pref"]:checked').val(),
                     session_subject : subjects,
                     session_time: document.getElementById("sessionTime").value
+                  }).then(()=>{
+                    //Send user to payment page
+                    var stripe = Stripe("pk_test_51IfXuHFH7byQmJ4zcpvfyn7oMJUv0MWzlFCXSHzk3XLO5nXRX8IhNelf8KxDIamjKcBCScuVwISkHMF32gum4F4300kmu0IsJL");
+                    fetch("https://us-central1-telect-6026a.cloudfunctions.net/paywithstripe", {
+                      method: "POST",
+                      body: json_body
+                      })
+                      .then(function (response) {
+                        return response.json();
+                      })
+                      .then(function (session) {
+                        return stripe.redirectToCheckout({ sessionId: session.id });
+                      })
+                      .then(function (result) {
+                        // If redirectToCheckout fails due to a browser or network
+                        // error, you should display the localized error message to your
+                        // customer using error.message.
+                        if (result.error) {
+                          alert(result.error.message);
+                        }
+                      })
+                      .catch(function (error) {
+                        console.error("Error:", error);
+                      });
+                  }).catch(function(error){
+                    console.error("Error:",error);
                   });
 
-                  // Display the success message
-                  var html = `
-                        <h1> Session Request Sent </h1>
-                  `;
-                  $('#schedule_session').html(html);
-
-                  var tutor_num_btn = String("request_btn" + tutor_num);
-                  // document.getElementsByClassName(tutor_num_btn).innerHTML = "Request Pending";
-                  $('.'+tutor_num_btn).html("Request Pending");
-                  $('.'+tutor_num_btn).prop('disabled',true);
                 })
               })
           });
