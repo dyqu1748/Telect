@@ -22,8 +22,8 @@ exports.handler =  async function( request, response, database) {
                 tutorAvail = tutorDoc.data().schedule
                 //parentAvail = parentDoc.data().availability
                 //tutorAvail = tutorDoc.data().availability
-                //console.log("tutorAvail: " + JSON.stringify(tutorDoc.data()))
-                //console.log("tutorAvail: " + JSON.stringify(tutorAvail))
+                console.log("tutorAvail: " + JSON.stringify(tutorDoc.data()))
+                console.log("tutorAvail: " + JSON.stringify(tutorAvail))
                 matchingTimes = []
                 for (let parentAvailKey of Object.keys(parentAvail)) {
                     let parentDay = parentAvailKey
@@ -51,7 +51,7 @@ exports.handler =  async function( request, response, database) {
                                         console.log("sessionMatch for: " + userid + ", tutor_id: " + tutorDoc.id + ", and time: " + parentDay + "_" + parentTime)
                                         sessionMatch = true
                                     }
-                                    //console.log("sessionMatch: " + sessionMatch + " sessionTime: " + parentDay + "_" + parentTime)
+                                    console.log("sessionMatch: " + sessionMatch + " sessionTime: " + parentDay + "_" + parentTime)
                                     if (!sessionMatch) {
                                         matchingTimes.push(parentDay + "_" + parentTime)
                                     }
@@ -79,6 +79,7 @@ exports.handler =  async function( request, response, database) {
          }
         catch(error) {
             cors()(request, response, () => {
+                console.log("Error:" + error)
                 response.send("Error getting documents: " + error);
             });
         }
