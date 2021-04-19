@@ -1,8 +1,10 @@
+// Variables used for later
 var uuid;
 var tutor_num;
 var tid;
 var response;
 
+// Get current user information
 firebase.auth().onAuthStateChanged(function(user) {
   if (user != null) {
     uuid = user.uid;
@@ -13,6 +15,7 @@ firebase.auth().onAuthStateChanged(function(user) {
   }
 });
 
+// Keys for different subjects
 var subject_keys = {'math':'Math','geometry':'Geometry','pre-algebra':'Pre-Algebra','algebra':'Algebra','science':'Science','geology':'Geology','chemistry':'Chemistry','social_studies':'Social Studies','govtHist': 'U.S. Government and History','language_arts':'Language Arts','spanish': 'Spanish'};
 
 
@@ -21,12 +24,13 @@ var scheduleModal = $("#schedule-modal");
 var resumeModal = $("#resume-modal");
 var moreInfoModal = $("#info-modal");
 
-// Get the <span> element that closes the modal
+// Get the <span> element that closes the moda
 var span1 = document.getElementById("close-schedule");
 var span2 = document.getElementById("close-resume");
 var span3 = document.getElementById("close-more-info");
 
 // When the user clicks on <span> (x), close the modal
+// Schedule the session modal
 span1.onclick = function() {
   $("#tutor-matches").removeClass("dialogIsOpen");
   $("#match-head").removeClass("dialogIsOpen");
@@ -35,6 +39,7 @@ span1.onclick = function() {
   scheduleModal.fadeOut('fast');
 }
 
+// Show resume modal
 span2.onclick = function() {
   $("#tutor-matches").removeClass("dialogIsOpen");
   $("#match-head").removeClass("dialogIsOpen");
@@ -43,6 +48,7 @@ span2.onclick = function() {
   resumeModal.fadeOut('fast');
 }
 
+// Show more information about the tutor modal
 span3.onclick = function() {
 	$("#tutor-matches").removeClass("dialogIsOpen");
 	$("#match-head").removeClass("dialogIsOpen");
@@ -76,6 +82,7 @@ window.onclick = function(event) {
   }
 }
 
+// Function to get possible tutor matches
 function getMatches() {
     console.log(uuid);
     $.ajax({
@@ -95,11 +102,14 @@ function getMatches() {
   return true;
 }
 
+// Display cards for matched tutors with their information and button to schedule a session
 function display_matches(data) {
     console.log(data);
     var storage = firebase.storage().ref();
     var html = ``;
     var i;
+
+    // Loop through array of matches tutors and create a card for each tutor
     for(i = 0; i < data.length; i++) {
       var tutorData = data[i];
   		var all_subjects ="";
@@ -143,14 +153,12 @@ function display_matches(data) {
       disableRequest(ind,tutorData);
     });
     console.log("still here");
-  $('#loading_icon').fadeOut("fast");
-  $('#page-container').fadeIn("slow");
-  return true;
-    //          <p id="selected_tutor" style="display: none;">${i}</p>
-    //          <button onclick="session_details()">Request Session</button>
-    //          </div>
+    $('#loading_icon').fadeOut("fast");
+    $('#page-container').fadeIn("slow");
+    return true;
  }
 
+// Display the resume of the tutor in a modal
  function display_resume(i) {
     var tutor_num = document.getElementById("selected_tutor_"+i).innerHTML;
   	$("#tutor-matches").addClass("dialogIsOpen");
@@ -162,6 +170,7 @@ function display_matches(data) {
     $('#temp-resume').html(resumeContent);
  }
 
+// Display the information of the tutor including name, location, cost, subjects, bio, and schedule
  function display_info(i) {
     moreInfoModal.fadeIn();
 	$("#tutor-matches").addClass("dialogIsOpen");
@@ -424,6 +433,7 @@ function display_matches(data) {
     disableRequest(i,tutorData);
  }
 
+// Display a modal where user can select session details and schedule the session
 function session_details(i)
 {
 tutor_num = i;
@@ -434,6 +444,9 @@ $("#footer").addClass("dialogIsOpen");
 $("#match-head").addClass("dialogIsOpen");
 $("#tutor-matches").addClass("dialogIsOpen");
 var user = firebase.auth().currentUser;
+
+// Get the array of matched tutors and match based on the card that the user selected
+// to get the right data for the tutor
 var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
    getTutorMatches().then((result) => {
        // Read result of the Cloud Function.
@@ -472,6 +485,7 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
                  <div class="col-md-3">
                  <select class="selectpicker form-control" name="sessionTime" id="sessionTime" data-live-search="true" required>`
 
+			// Check to make sure the tutor will not be double booked for a session time
           for (var day in tutor_info.schedule) {
             // get matching times
             var matchingTimes = user_info.schedule[day].filter(function (item) {
@@ -481,8 +495,10 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
             for (var i = 0; i < matchingTimes.length; i++) {
                 var id = day+matchingTimes[i];
 
-                if (tutor_info.booked_times.includes(id)) {
-                    continue;
+                if (tutor_info.booked_times) {
+                    if (tutor_info.booked_times.includes(id)) {
+                        continue;
+                    }
                 }
 
                 // make time look better
@@ -574,6 +590,7 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
    });
 }
 
+// Before sending session request, check to make sure all fields are filled in 
  $('#schedule_session').submit(function () {
   checked = $("input[type=checkbox]:checked").length;
 
@@ -586,6 +603,7 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
  }
  });
 
+// Function to schedule the session and write the session details to the database
 function schedule_session()
 {
 var btnLoad = `<div id="btn-load" class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>`;
@@ -618,6 +636,7 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
                   tid = tdoc.id;
                   console.log(tdoc.id);
                   
+                  // Add of the necessary data to the database
                   db.collection('sessions').add({
                     user_id : user.uid,
                     tutor_id : tid,
@@ -649,7 +668,9 @@ var getTutorMatches = firebase.functions().httpsCallable('tutorMatches');
   return true;
 }
 
-
+// Function to disable the 'Request Session' button if the user has requested a session
+// but the tutor has not accepted a session. Once a tutor accepts the session, another
+// session with the same tutor may be requested.
 function disableRequest(i,tutorData){
   var userRef = db.collection('users');
     userRef.doc(uuid).get().then((doc)=>{
