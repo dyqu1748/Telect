@@ -16,8 +16,10 @@ firebase.auth().onAuthStateChanged(function(user) {
   }
 });
 
+// map for formatting subjects
 var subject_keys = {'math':'Math','geometry':'Geometry','pre-algebra':'Pre-Algebra','algebra':'Algebra','science':'Science','geology':'Geology','chemistry':'Chemistry','social_studies':'Social Studies','govtHist': 'U.S. Government and History','language_arts':'Language Arts','spanish': 'Spanish'};
 
+// define modal
 var cancelSessionModal = $("#cancel-session");
 var span1 = document.getElementById("close-cancel");
 span1.onclick = function() {
@@ -27,6 +29,7 @@ span1.onclick = function() {
   cancelSessionModal.fadeOut('fast');
 }
 
+// close modal
 window.onclick = function(event) {
   if (event.target.id == cancelSessionModal.attr('id')) {
 	$("#current-matches").removeClass("dialogIsOpen");
@@ -36,23 +39,24 @@ window.onclick = function(event) {
   }
 }
 
+// function gets tutor matches for current user and displays them all
 function display_matches(data) {
-    console.log(data.user_type);
     var currentUserLabel = (data.user_type =="parent") ? "user_id" : "tutor_id";
-    console.log(currentUserLabel);
     var otherUserLabel = (data.user_type =="parent") ? "tutor_id" : "user_id";
-    console.log(otherUserLabel);
-
     var html = ``;
+
+    // get all sessions with current user that are accepted
     db.collection('sessions').where(currentUserLabel, "==", uuid).where("accepted_session", "==", true).get().then((doc) =>
     {
-      if (doc.empty){
+      if (doc.empty) {
+        // error handling: user has no upcoming sessions
         html+=`<h1 class="text-center">No Sessions to Manage</h1>`;
         $('#current-matches').html(html);
       }
-      else{
+      else {
         html+=`<h1 class="text-center">Manage Your Upcoming Sessions</h1><br>`;
       }
+
       doc.forEach(req =>
       {
         db.collection('users').doc(uuid).update({
@@ -61,8 +65,6 @@ function display_matches(data) {
         var req_info = req.data();
         sessions.push(req_info);
         db.collection('users').doc(req_info[otherUserLabel]).get().then((match) => {
-            console.log(match.data());
-                console.log("here");
                 html += `
                 <div class="form-group row" id="req_${req.id}">
                 <div class="card w-75 mx-auto">
@@ -71,6 +73,7 @@ function display_matches(data) {
                         <div class="row">
                             <div class="col">`;
 
+                  // format time to look nice
                   var day = req_info.session_time.match(/[a-zA-Z]+/g);
                   var time = String(req_info.session_time.match(/\d+/g));
                   if (parseInt(time) >= 1200){
@@ -94,8 +97,6 @@ function display_matches(data) {
                       all_subjects+= ', ';
                     }
                   });
-                  console.log(req_info);
-                  console.log(req_info.session_subject);
 
                   if (data.user_type == "parent") {
                     html += `<img src= ${match.data().photoUrl} class="tutorPhoto">`
@@ -131,14 +132,8 @@ function display_matches(data) {
 
  }
 
+// cancel a session on manage matches page
 function cancel_session(i,user_type) {
-    console.log("in cancel session");
-    // cancelSessionModal.fadeIn();
-    // $('#loading_icon_modal').css("display","block");
-    // $("nav").addClass("dialogIsOpen");
-    // $("#footer").addClass("dialogIsOpen");
-    // $("#current-matches").addClass("dialogIsOpen");
-
     db.collection('sessions').doc(i).get().then((doc)=>{
       var sessInfo = doc.data();
       var html = `<br><div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -148,7 +143,6 @@ function cancel_session(i,user_type) {
       </button>
     </div>`;
     $('#content-wrap').prepend(html);
-      console.log(sessInfo);
       if (user_type == "parent"){
         db.collection('users').doc(sessInfo.tutor_id).update({
           "notifications.sess_cancel": firebase.firestore.FieldValue.arrayUnion(sessInfo)
@@ -169,30 +163,10 @@ function cancel_session(i,user_type) {
       console.log(error);
     });
     $('#req_'+i).fadeOut(300,function(){this.remove();});
-
-    
-
-    // var html = ``;
-    // html += `
-    //     <h1> Session Cancelled </h1>
-    //     <button onclick="refresh_sessions()" class="btn btn-primary">Ok</button>
-    //     `;
-    // $("#temp-info").html(html);
 }
 
-// function refresh_sessions() {
-//     db.collection('users').doc(uuid).get().then((doc) => {
-//            display_matches(doc.data());
-//          })
-//     cancelSessionModal.fadeOut('fast');
-//     $("#current-matches").removeClass("dialogIsOpen");
-//     $("#footer").removeClass("dialogIsOpen");
-//     $("nav").removeClass("dialogIsOpen");
-// }
-
+// function displays cancelled session and updates notifications
 function display_canceled_sess(data){
-  console.log("START");
-  console.log(data);
   data.notifications.sess_cancel.forEach(function(session){
     if (data.user_type == "tutor"){
       db.collection('users').doc(session.user_id).get().then((otherUser)=>{
@@ -220,14 +194,12 @@ function display_canceled_sess(data){
                 </button>
               </div>
               `;
-        console.log(html);
         $('#content-wrap').prepend(html);
       })
     }
     else{
       db.collection('users').doc(session.tutor_id).get().then((otherUser)=>{
         var otherUserData = otherUser.data();
-        console.log(otherUserData);
         var day = session.session_time.match(/[a-zA-Z]+/g);
         var time = String(session.session_time.match(/\d+/g));
         if (parseInt(time) >= 1200){
@@ -252,7 +224,6 @@ function display_canceled_sess(data){
                 </button>
               </div>
               `;
-        console.log(html);
         $('#content-wrap').prepend(html);
       })
 

@@ -11,13 +11,13 @@ firebase.auth().onAuthStateChanged(function(user) {
       });
     } else {
       console.log("No user signed in");
-//      location.replace("index.html");
     }
   });
 
+// map for formatting subjects
 var subject_keys = {'math':'Math','geometry':'Geometry','pre-algebra':'Pre-Algebra','algebra':'Algebra','science':'Science','geology':'Geology','chemistry':'Chemistry','social_studies':'Social Studies','govtHist': 'U.S. Government and History','language_arts':'Language Arts','spanish': 'Spanish'};
 
-
+// define modal and close button on modal
 var sessionInfoModal = $("#more-info-session");
 var closeSpan = document.getElementById("close-session-info");
 closeSpan.onclick = function() {
@@ -29,6 +29,7 @@ closeSpan.onclick = function() {
   sessionInfoModal.fadeOut('fast');
 }
 
+// onclick function that allows the user to select day/time on schedule UI
 function addItem(id) {
     if(document.getElementById(id).className == "scheduler_item") {
         document.getElementById(id).className = "scheduler_item_selected";
@@ -95,6 +96,7 @@ function checkScheduleReq(schedule){
     return availFill;
   }
 
+  // function displays schedule by getting id of day/time div and changing its color
   function displaySchedule(data) {
       console.log("in display schedule", data.schedule);
       schedule = data.schedule;
@@ -111,7 +113,7 @@ function checkScheduleReq(schedule){
         }
       }
 
-      // get sessions
+      // get upcoming sessions to display on view schedule
       var currentUserLabel = (data.user_type =="parent") ? "user_id" : "tutor_id";
       var otherUserLabel = (data.user_type =="parent") ? "tutor_id" : "user_id";
       db.collection('sessions').where(currentUserLabel, "==", uuid).get().then((doc) =>
@@ -122,12 +124,12 @@ function checkScheduleReq(schedule){
               var schedule_id = session_info.session_time.slice(0, session_info.session_time.length - 4)  + "_" + session_info.session_time.slice(-4);
 
               if (session_info.accepted_session == true) {
-                if(document.getElementById(schedule_id).className == "scheduler_item_view_selected"){
+                if(document.getElementById(schedule_id).className == "scheduler_item_view_selected") {
                   document.getElementById(schedule_id).className = "scheduler_item_accepted_session";
                   document.getElementById(schedule_id).setAttribute("onclick", "showSessionInfo(this.id)");
                 }
               } else {
-                if(document.getElementById(schedule_id).className == "scheduler_item_view_selected"){
+                if(document.getElementById(schedule_id).className == "scheduler_item_view_selected") {
                   document.getElementById(schedule_id).className = "scheduler_item_awaiting_session";
                   document.getElementById(schedule_id).setAttribute("onclick", "showSessionInfo(this.id)");
                 }
@@ -136,11 +138,11 @@ function checkScheduleReq(schedule){
             });
         }
       });
-      console.log("Done");
     $('#loading_icon').fadeOut("fast");
     $('#page-container').fadeIn("slow");
   }
 
+// populates dropdown with information about the session that the user selected
 function showSessionInfo(id) {
     $("#footer").addClass("dialogIsOpen");
     $("nav").addClass("dialogIsOpen");
@@ -230,6 +232,7 @@ function showSessionInfo(id) {
     });
 }
 
+// if user wants to cancel a session, they will be rerouted to manage sessions page
 function goToManageMatches() {
     location.replace("manage_matches.html");
 }
