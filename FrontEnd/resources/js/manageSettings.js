@@ -914,13 +914,16 @@ function editProfile(data, user)
 					</div>
 					<div id="child-placeholder"></div>`;
 					$('#display-details').append(childInfo);
+					//Fill in child information with what's present in database
 					$('#childName').val(child.child_name);
 					$('#subjects').val(child.subjects);
 					$('#avatar').val(child.avatar);
-					$('#grade').val(child.grade).change();
+					$('#grade').val(child.grade);
 				}
 				else{
+					//Clone first child fields, change id's to new child's id
 					addChildForm();
+					//Fill in child information with what's present in database
 					$('#childName'+child_counter).val(child.child_name);
 					$('#grade'+child_counter).val(child.grade);
 					$('#subjects'+child_counter).val(child.subjects);
@@ -975,6 +978,7 @@ function editProfile(data, user)
 		$('#display-details').append(addChildButtons);
 	}
 	else{
+		//Build and display tutor fields
 		userInfo+=`
 		<h3>Enter the minimum pay rate you would like to receive for a session</h3>
                 <div class="form-group form-inline">
@@ -1071,6 +1075,7 @@ function editProfile(data, user)
 		//Fill in tutor fields with their info
 		for (let id in data){
 			if(id == 'location_pref'){
+				//Select locations specified in user's info
 				if (data[id].length > 1 ){
 					$('#'+id+"_both").click();
 				}
@@ -1079,11 +1084,13 @@ function editProfile(data, user)
 				}
 			}
 			else if (id == "grade"){
+				//Select grades specified in user's info
 				data[id].forEach(function(grade){
 					$('#grades_'+grade).click();
 				})
 			}
 			else{
+				//Fill in text fields as is
 				$('#'+id).val(data[id]);
 			}
 		}
@@ -1223,13 +1230,14 @@ function updateaccount()
 				var location_pref = ["online"];
 			}
 			var grades = [];
+			//Build grades array for storage in database
 			$('input[name="grades"]:checked').each(function() { 
 				grades.push(this.value); 
 			});
 			var subjects = $('#subjects').val()
 			var bio = $("#bio").val();
 
-			//Write new info to database
+			//Write new info to user document in database
 			return updateUser.update({
 				"first_name": fname,
 				"last_name": lname,
@@ -1247,18 +1255,21 @@ function updateaccount()
 				"bio": bio
 				})
 			.then(()=>{
-				//Upload resume and profile picture files to Firestore
 				var resumeFile = $('#resume').prop('files')[0];
 				var profilePic = $('#photo').prop('files')[0];
+				//Check to see if new resume/profile picture was submitted
 				if (resumeFile != undefined || profilePic != undefined){
 					if (resumeFile != undefined){
+						//Resume file exists; upload resume
 						return uploadResume(resumeFile, user).then(()=>{
 							if (profilePic != undefined){
+								//Profile picture file exists; upload picture
 								return uploadPhoto(profilePic, user);
 							}
 						});
 					}
 					else{
+						//Upload only profile picture
 						return uploadPhoto(profilePic, user);
 					}
 				}

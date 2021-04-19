@@ -1,7 +1,9 @@
+// Variables used for later
 var uuid;
 var tutor_num;
 var tid;
 
+// Get the current logged in user
 firebase.auth().onAuthStateChanged(function(user) {
   if (user != null) {
     uuid = user.uid;
@@ -139,11 +141,6 @@ function accept_session(data)
     "notifications.sessions": firebase.firestore.FieldValue.arrayRemove(data)
   })
 
-  // Display the success message
-  // var html = `
-  //       <h1> Session Accepted </h1>
-  // `;
-  // $('#accept_session').html(html);
   db.collection('sessions').doc(data).get().then((doc)=>{
     var sessInfo = doc.data();
     var user_id = sessInfo.user_id;
@@ -220,12 +217,6 @@ function decline_session(data)
     })
   })
   
-
-  // Display the success message
-  // var html = `
-  //       <h1> Session Declined </h1>
-  // `;
-  // $('#accept_session').html(html);
 
   $('#req_'+data).fadeOut(300,function(){this.remove();});
 }

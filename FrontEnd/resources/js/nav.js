@@ -15,6 +15,12 @@ firebase.auth().onAuthStateChanged(function(user) {
     }
   });
 
+// Display the correct headers depending on whether the user is a parent or a tutor
+// For parent, they will have 'Find Tutors', 'View Schedule', 'Manage Sessions', 
+// 'View Messages', 'Donate', and 'Settings'
+//
+// For tutor, they will have 'View Requests', 'View Schedule', 'Manage Sessions', 
+// 'View Messages', 'Donate', and 'Settings'
   function displayNav(data) 
   {
     var user = firebase.auth().currentUser;
@@ -33,7 +39,7 @@ firebase.auth().onAuthStateChanged(function(user) {
         </li>
         `;
     }
-
+    //Build rest of navbar
     html += `
     <li class="nav-item" value = "2">
     <a class="nav-link" href = "view_schedule.html"> View Schedule </a>
@@ -63,24 +69,31 @@ firebase.auth().onAuthStateChanged(function(user) {
     }
   }
 
+  // Add notification dots to the icon if there is a new message, session request, or
+    // session acceptance.
   if (data.notifications !== undefined ){
     //Add notifiaction dot to their respective link if any exist
     if (data.notifications.messages !== undefined){
+      //If user has new messages, add notification dot to messages button
         if (data.notifications.messages.length > 0){
             $('#message-nav').append('<span class="dotNav"></span>');
         }
     }
     if (data.notifications.sessions !== undefined){
       if (data.notifications.sessions.length > 0){
+        //If user has new messages, add notification dot to the account correct button
+        //If tutor has a notifacation in sessions, that means that they have a requested session. Add notification dot to view requests button.
         if (data.user_type == "tutor"){
             $('#view_requests-nav').append('<span class="dotNav"></span>');
         }
+        //If parent has a notifacation in sessions, that means that they have an accepted session. Add notification dot to manage matches button.
         else{
             $('#manage_matches-nav').append('<span class="dotNav" id="notif_match_nav"></span>');
         }
       }
     }
     if (data.notifications.sess_cancel !== undefined){
+      //If user has new canceled sessions, add notification dot to the manage sessions button.
       if(data.notifications.sess_cancel.length>0 && $("#notif_match_nav").length === 0){
           $('#manage_matches-nav').append('<span class="dotNav" id="notif_match_nav"></span>');
       }

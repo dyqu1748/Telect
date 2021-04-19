@@ -68,7 +68,7 @@
     <div id="page-container" class="container-fluid">
         <div id="content-wrap">
 <div id="register_fields" class="container required" style="display: none;">
-    <form onsubmit="return display_review()" oninput='pass2.setCustomValidity(pass2.value != pass1.value ? "Passwords do not match." : "")'>
+    <form onsubmit="return display_review()">
         <br>
         <h1>We just need a few things before you can get started</h1><br>        
         <h2>Setup your account</h2>
@@ -107,7 +107,7 @@
                 </div>
                 <div class="col-md-3">
                     <label for="inputConfirmPassword" class="control-label">Confirm Password</label>
-                    <input type="password" id="inputConfirmPassword" name="pass2" class="form-control" placeholder="Confirm Password"  title="Both passwords must match." required>    
+                    <input type="password" id="inputConfirmPassword" name="pass2" class="form-control" placeholder="Confirm Password" required>    
                 </div>
             </div>
             <br>
