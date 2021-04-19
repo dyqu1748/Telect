@@ -307,6 +307,7 @@ function write_messages_to_page(messageData){
                 var addParentAvatar = `<div class="circle">
                                         <span class="initials">${otherUserDoc.data().first_name[0]}${otherUserDoc.data().last_name[0]}</span>
                                         </div>`;
+                //Add icons to message boxes
                 $("div[class$='parent']").prepend(addParentAvatar);
                 $("div[class$='parent']").addClass('avatar-added');
                 $("div[class$='tutor']").prepend(addTutorAvatar);
@@ -320,6 +321,7 @@ function write_messages_to_page(messageData){
                 var addParentAvatar = `<div class="circle right">
                 <span class="initials">${curUserDoc.data().first_name[0]}${curUserDoc.data().last_name[0]}</span>
                 </div>`;
+                //Add icons to message boxes
                 $("div[class$='parent']").prepend(addParentAvatar);
                 $("div[class$='parent']").addClass('avatar-added');
                 $("div[class$='tutor']").prepend(addTutorAvatar);

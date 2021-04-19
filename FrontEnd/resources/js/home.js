@@ -91,22 +91,28 @@ firebase.auth().onAuthStateChanged(function(user) {
     // Add notification dots to the icon if there is a new message, session request, or
     // session acceptance.
     if (data.notifications !== undefined ){
+        //Add notifiaction dot to their respective button if any exist
         if (data.notifications.messages !== undefined){
             if (data.notifications.messages.length > 0){
+                //If user has new messages, add notification dot to messages button
                 $('#messages').append('<span class="dot"></span>');
             } 
         }
         if (data.notifications.sessions !== undefined){
             if (data.notifications.sessions.length > 0 ){
+                //If user has new messages, add notification dot to the account correct button
+                //If tutor has a notifacation in sessions, that means that they have a requested session. Add notification dot to view requests button.
                 if (data.user_type == "tutor"){
                     $('#view_requests').append('<span class="dot"></span>');
                 }
+                //If parent has a notifacation in sessions, that means that they have an accepted session. Add notification dot to manage matches button.
                 else{
                     $('#manage_matches').append('<span class="dot" id="notif_match"></span>');
                 }
             } 
         }
         if (data.notifications.sess_cancel !== undefined){
+            //If user has new canceled sessions, add notification dot to the manage sessions button.
             if(data.notifications.sess_cancel.length>0 && $("#notif_match").length === 0){
                 $('#manage_matches').append('<span class="dot" id="notif_match"></span>');
             }

@@ -5,6 +5,23 @@ var subject_keys = {'math':'Math','geometry':'Geometry','pre-algebra':'Pre-Algeb
 var location_keys = {'online':'Online','in_person':'In Person'};
 var grade_keys = {'k':'Kindergarten', '1':'1st Grade', '2':'2nd Grade', '3':'3rd Grade', '4':'4th Grade', '5':'5th Grade', '6':'6th Grade', '7':'7th Grade', '8':'8th Grade'}; 
 
+var password = document.getElementById("inputPassword")
+, confirm_password = document.getElementById("inputConfirmPassword");
+
+function validatePassword(){
+  //Check if confirmation password is same as password. Report validity if invalid.
+  if(password.value != confirm_password.value) {
+    confirm_password.setCustomValidity("Passwords Don't Match");
+    confirm_password.reportValidity();
+  } else {
+    confirm_password.setCustomValidity('');
+  }
+}
+
+//Check password validity when either password or confirm password changes
+password.onchange = validatePassword;
+confirm_password.onkeyup = validatePassword;
+
 // Make sure parent doesn't put lower max session value when compared to min session
 $('#minSession').change(function(){
   var newMin = parseFloat($('#minSession').val());

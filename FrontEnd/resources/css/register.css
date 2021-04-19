@@ -15,6 +15,20 @@ body{
     color: red;
 }
 
+input:valid,
+input:in-range {
+    border-color:hsl(120, 50%, 50%);
+}
+
+input:optional {
+  border:1px dotted hsl(180, 50%, 90%);
+}
+
+input:invalid,
+input:out-of-range  {
+    border-color:hsl(0, 50%, 50%);
+}
+
 .lds-roller {
     display: inline-block;
     position: fixed;
